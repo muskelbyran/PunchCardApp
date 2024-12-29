@@ -50,10 +50,15 @@ else
     Console.WriteLine($"Secrets file not found at: {secretsFilePath}");
 }
 
-// Retrieve the connection string from secrets or appsettings
+// Retrieve the connection strings from secrets or appsettings
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
     ?? builder.Configuration["DatabaseConnectionString"] // Fallback to secrets
     ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+var serviceBusConnectionString = builder.Configuration["AzureServiceBus:ConnectionString"]
+    ?? throw new InvalidOperationException("Azure Service Bus connection string not found.");
+var serviceBusQueueName = builder.Configuration["AzureServiceBus:QueueName"]
+    ?? throw new InvalidOperationException("Azure Service Bus queue name not found.");
+
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
