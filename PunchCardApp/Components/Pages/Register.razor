@@ -1,0 +1,238 @@
+﻿@page "/signup"
+
+@using System.ComponentModel.DataAnnotations
+@using System.Text
+@using System.Text.Encodings.Web
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.WebUtilities
+@using PunchCardApp.Components.Account
+@using PunchCardApp.Components.Account.Shared
+@using PunchCardApp.Data
+@using Azure.Messaging.ServiceBus
+@using Newtonsoft.Json
+@using PunchCardApp.Filters
+
+@inject UserManager<ApplicationUser> UserManager
+@inject IUserStore<ApplicationUser> UserStore
+@inject SignInManager<ApplicationUser> SignInManager
+@inject IEmailSender<ApplicationUser> EmailSender
+@inject ILogger<Register> Logger
+@inject NavigationManager NavigationManager
+@inject IdentityRedirectManager RedirectManager
+@inject IConfiguration Configuration
+
+<PageTitle>Muskelbyrån - Registrering</PageTitle>
+
+<section id="signup">
+    <div class="container">
+        <div class="logo">
+            <a href="/">
+                <img src="/images/header.jpg" alt="Muskelbyrån Logo" />
+            </a>
+        </div>
+
+        @if (!string.IsNullOrEmpty(@StatusMessage))
+        {
+            <div class="alerter">
+                @StatusMessage
+            </div>
+        }
+
+        <StatusMessage Message="@Message" />
+
+        <EditForm Model="SignUpForm" OnValidSubmit="OnValidSubmit" FormName="signup" method="post" novalidate>
+
+            <DataAnnotationsValidator />
+            <h5>Skapa ett konto</h5>
+            <p>Har du redan ett konto? <a href="/signin">Sign in here></a></p>
+
+            <div class="form">
+
+                <div class="form-floating mb-3">
+                    <div id="form-firstname" class="input-group">
+
+                        <InputText @bind-Value="SignUpForm.FirstName" autocomplete="givenname" aria-required="true" placeholder="Förnamn" />
+                        <ValidationMessage For="() => SignUpForm.FirstName" />
+                    </div>
+                </div>
+
+                <div class="form-floating mb-3">
+                    <div id="form-lastname" class="input-group">
+                        <InputText @bind-Value="SignUpForm.LastName" autocomplete="surname" aria-required="true" placeholder="Efternamn" />
+                        <ValidationMessage For="() => SignUpForm.LastName" />
+                    </div>
+                </div>
+
+                <div class="form-floating mb-3">
+                    <div id="form-email" class="input-group">
+                        <InputText @bind-Value="SignUpForm.Email" type="email" autocomplete="email" aria-required="true" placeholder="namn@domain.com" />
+                        <ValidationMessage For="() => SignUpForm.Email" />
+                    </div>
+                </div>
+                <div class="form-floating mb-3">
+                    <div id="form-password" class="input-group">
+                        <InputText @bind-Value="SignUpForm.Password" type="password" autocomplete="password" aria-required="true" placeholder="Lösenord" />
+                        <ValidationMessage For="() => SignUpForm.Password" />
+                    </div>
+                </div>
+
+                <div class="form-floating mb-3">
+                    <div id="form-confirm" class="input-group">
+                        <InputText @bind-Value="SignUpForm.ConfirmPassword" type="password" autocomplete="confirm" aria-required="true" placeholder="Bekräfta lösenord" />
+                        <ValidationMessage For="() => SignUpForm.ConfirmPassword" />
+                    </div>
+                </div>
+
+                <div id="form-terms" class="checkbox mb-3 d-flex align-items-center">
+                    <InputCheckbox @bind-Value="SignUpForm.TermsAndConditions" class="darker-border-checkbox form-check-input me-2" />
+                    <label class="form-label mb-0">I agree to the Terms & Conditions.</label>
+                </div>
+
+
+                <div id="form-button">
+                    <button class="w-100 btn btn-lg btn-primary" type="submit">Registrera konto</button>
+                </div>
+            </div>
+        </EditForm>
+    </div>
+    <div class="social-or">or </div>
+    <div class="social-option">
+        <a href="www.facebook.com" target="_blank" class="socialmedia-item"><i class="fa-brands fa-facebook-f"></i></a>
+        <a href="www.facebook.com" target="_blank" class="socialmedia-item"><i class="fa-brands fa-linkedin"></i></a>
+        <a href="www.facebook.com" target="_blank" class="socialmedia-item"><i class="fa-brands fa-google"></i></a>
+    </div>
+    <div class="login-footer">
+        <p>
+            <a href="Account/ForgotPassword">Forgot your password?</a>
+
+        </p>
+        <p>
+            <a href="@(NavigationManager.GetUriWithQueryParameters("Account/Register", new Dictionary<string, object?> { ["ReturnUrl"] = ReturnUrl }))">Register as a new user</a>
+        </p>
+        <p>
+            <a href="Account/ResendEmailConfirmation">Resend email confirmation</a>
+        </p>
+        <p>
+            <strong>© @DateTime.Now.Year Muskelbyrån.</strong>
+        </p>
+    </div>
+</section>
+
+@code {
+    private IEnumerable<IdentityError>? identityErrors;
+
+    [SupplyParameterFromQuery]
+    public string? StatusMessage { get; set; } = "";
+
+    [SupplyParameterFromQuery]
+    public string? ReturnUrl { get; set; }
+
+    //  private string? Message => identityErrors is null ? null : $"Error: {string.Join(", ", identityErrors.Select(error => error.Description))}";
+    private string? Message => identityErrors?.Any() == true ? $"Error: {string.Join(", ", identityErrors.Select(error => error.Description))}" : null;
+
+    [SupplyParameterFromForm]
+    public SignUpFormModel SignUpForm { get; set; } = new();
+
+    public async Task OnValidSubmit(EditContext editContext)
+    {
+        var user = new ApplicationUser
+            {
+                UserProfile = new UserProfile
+                {
+                    FirstName = SignUpForm.FirstName,
+                    LastName = SignUpForm.LastName
+                },
+                UserName = SignUpForm.Email,
+                Email = SignUpForm.Email
+            };
+
+        try
+        {
+            var alreadyExists = await UserManager.FindByEmailAsync(SignUpForm.Email);
+            if (alreadyExists != null)
+            {
+                StatusMessage = "An account with this e-mail already exists.";
+                return;
+            }
+
+            var result = await UserManager.CreateAsync(user, SignUpForm.Password);
+            if (!result.Succeeded)
+            {
+                StatusMessage = "Unable to register account. Please try again";
+                return;
+            }
+        }
+        catch (Exception)
+        {
+            StatusMessage = "An error occurred!";
+            return;
+        }
+
+        // Access Azure Service Bus configuration from injected Configuration
+        var serviceBusConnectionString = Configuration["AzureServiceBus:ConnectionString"]
+            ?? throw new InvalidOperationException("Azure Service Bus connection string not found.");
+
+        var serviceBusQueueName = Configuration["AzureServiceBus:QueueName"]
+            ?? throw new InvalidOperationException("Azure Service Bus queue name not found.");
+
+        try
+        {
+            var serviceBusClient = new ServiceBusClient(serviceBusConnectionString);
+            var serviceBusSender = serviceBusClient.CreateSender(serviceBusQueueName);
+
+            var messageBody = JsonConvert.SerializeObject(SignUpForm);
+            var serviceBusMessage = new ServiceBusMessage(messageBody);
+
+            await serviceBusSender.SendMessageAsync(serviceBusMessage);
+        }
+        catch (Exception ex)
+        {
+            StatusMessage = $"Failed to send message to Service Bus: {ex.Message}";
+            return;
+        }
+
+        if (UserManager.Options.SignIn.RequireConfirmedAccount)
+        {
+            RedirectManager.RedirectTo("Account/RegisterConfirmation", new() { ["email"] = user.Email, ["returnUrl"] = ReturnUrl });
+        }
+
+        RedirectManager.RedirectTo("Account/RegisterConfirmation", new() { ["email"] = user.Email, ["returnUrl"] = ReturnUrl });
+
+        await SignInManager.SignInAsync(user, isPersistent: false);
+
+        RedirectManager.RedirectTo(ReturnUrl);
+    }
+
+    public class SignUpFormModel
+    {
+        [Display(Name = "Förnamn", Prompt = "Enter your first name", Order = 0)]
+        [Required(ErrorMessage = "First name is required")]
+        public string FirstName { get; set; } = null!;
+
+        [Display(Name = "Last name", Prompt = "Enter your last name", Order = 1)]
+        [Required(ErrorMessage = "Last name is required")]
+        public string LastName { get; set; } = null!;
+
+        [Display(Name = "Email", Prompt = "Enter your email address", Order = 2)]
+        [Required(ErrorMessage = "Email address is required")]
+        [DataType(DataType.EmailAddress)]
+        [RegularExpression(@"^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$", ErrorMessage = "Invalid email address")]
+        public string Email { get; set; } = null!;
+
+        [Display(Name = "Password", Prompt = "Enter your password", Order = 3)]
+        [Required(ErrorMessage = "Password is required")]
+        [DataType(DataType.Password)]
+        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,}$", ErrorMessage = "Invalid password. must be a strong password")]
+        public string Password { get; set; } = null!;
+
+        [Display(Name = "Confirm Password", Prompt = "Confirm password", Order = 4)]
+        [Required(ErrorMessage = "Password must be confirmed")]
+        [DataType(DataType.Password)]
+        [Compare(nameof(Password), ErrorMessage = "Password does not match")]
+        public string ConfirmPassword { get; set; } = null!;
+
+        [CheckboxRequired]
+        [Display(Name = "I agree to the Terms & Condítions.", Prompt = "Terms and Conditions", Order = 5)]
+        public bool TermsAndConditions { get; set; }
+    }
+}

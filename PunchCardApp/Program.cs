@@ -34,12 +34,10 @@ builder.Services.AddAuthentication(options =>
 })
     .AddIdentityCookies();
 
-// ** Load secrets file **
 // Load external secrets file based on the environment
 var secretsFilePath = builder.Environment.IsDevelopment()
         ? "secrets.Development.json"
         : Path.Combine(builder.Environment.ContentRootPath, "../secrets.Production.json");
-
 
 if (File.Exists(secretsFilePath))
 {
@@ -50,7 +48,6 @@ else
     Console.WriteLine($"Secrets file not found at: {secretsFilePath}");
 }
 
-// Retrieve the connection strings from secrets or appsettings
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
     ?? builder.Configuration["DatabaseConnectionString"] // Fallback to secrets
     ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
