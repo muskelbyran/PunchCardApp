@@ -1,0 +1,7 @@
+﻿@using PunchCardApp.Components.Layout
+@using Microsoft.AspNetCore.Components.Authorization
+@layout AdminLayout
+@attribute [Microsoft.AspNetCore.Authorization.Authorize]
+
+@inject UserManager<ApplicationUser> UserManager
+@inject ApplicationDbContext DbContext

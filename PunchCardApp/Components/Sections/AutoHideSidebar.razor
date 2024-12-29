@@ -1,0 +1,166 @@
+﻿@using System.Timers;
+@using PunchCardApp.Services
+
+@implements IDisposable
+@inject NavigationManager NavigationManager
+@inject RoleService RoleService
+@rendermode InteractiveServer﻿
+
+<div class="auto-hiding-nav-menu"
+     @onmouseover="ExpandNavMenu"
+     @onmouseout="CollapseNavMenu">
+
+    <AuthorizeView>
+    <Authorized>
+    <nav class="nav-menu @(collapseNavMenu ? "collapsed" : "expand")">
+        <div>
+            @if (IsUser || IsManager || IsAdmin) 
+            {
+            <NavLink class="nav-link" href="/" Match="NavLinkMatch.All">
+                <span>
+                        <i class="fa-regular fa-user"></i>
+                    <span class="nav-item-text">Profil</span>
+                </span>
+            </NavLink>
+            <NavLink class="nav-link" href="/">
+                <span>
+                    <i class="fa-regular fa-credit-card"></i>
+                    <span class="nav-item-text">Klippkort</span>
+                </span>
+            </NavLink>
+            }
+
+            @if (IsManager || IsAdmin)
+            {
+            <NavLink class="nav-link btn-transparent" href="Admin/Users">
+                <span>
+                    <i class="fa-solid fa-chart-pie"></i>
+                    <span class="nav-item-text">Statistik</span>
+                </span>
+            </NavLink>
+            <NavLink class="nav-link btn-transparent" href="Admin/Users">
+                <span>
+                    <i class="fa-solid fa-users-gear"></i>
+                    <span class="nav-item-text">Användare</span>
+                </span>
+            </NavLink>
+            <NavLink class="nav-link btn-transparent" href="Admin/PunchCard">
+                <span>
+                    <i class="fa-solid fa-money-check-dollar"></i>
+                    <span class="nav-item-text">Klipp kort</span>
+                </span>
+            </NavLink>
+            }
+
+            @if (IsAdmin)
+            {
+            <NavLink class="nav-link btn-transparent" href="Admin/Users">
+                <span>
+                    <i class="fa-solid fa-gauge-high"></i>
+                    <span class="nav-item-text">Dashboard</span>
+                </span>
+            </NavLink>
+            <NavLink class="nav-link btn-transparent" href="Admin/Changelog">
+                <span>
+                    <i class="fa-solid fa-users-between-lines"></i>
+                    <span class="nav-item-text">Users</span>
+                </span>
+            </NavLink>
+            <NavLink class="nav-link btn-transparent" href="Admin/Roles">
+                <span>
+                        <i class="fa-solid fa-user-tie"></i>
+                    <span class="nav-item-text">Behörighet</span>
+                </span>
+            </NavLink>            }
+
+            <NavLink class="nav-link btn-transparent" href="Admin/Landing">
+                <span>
+                    <i class="fa-regular fa-message"></i>
+                    <span class="nav-item-text">Feedback</span>
+                </span>
+            </NavLink>
+            <NavLink class="nav-link btn-transparent" href="Admin/Users">
+                <span>
+                    <i class="fa-regular fa-circle-question"></i>
+                    <span class="nav-item-text">Support</span>
+                </span>
+            </NavLink>
+            <NavLink class="nav-link btn-transparent" href="Admin/Landing">
+                <span>
+                    <i class="fa-regular fa-rectangle-list"></i>
+                    <span class="nav-item-text">Changelog</span>
+                </span>
+            </NavLink>
+            <NavLink class="nav-link" href="/">
+                        <form action="Account/Logout" method="post">
+                            <AntiforgeryToken />
+                            <input type="hidden" name="ReturnUrl" value="@currentUrl" />
+                            <button type="submit" class="nav-link">
+                                <i class="fa-solid fa-right-from-bracket"></i>
+                                <span class="nav-item-text">Logga ut</span>
+                            </button>
+                        </form>
+            </NavLink>            
+        </div>
+    </nav>
+    </Authorized>
+    </AuthorizeView>
+</div>
+
+@code {
+    private bool IsUser { get; set; }
+    private bool IsManager { get; set; }
+    private bool IsAdmin { get; set; }
+    private bool isHovered;
+    private bool collapseNavMenu = true;
+    private Timer? collapseTimer;
+    private string? currentUrl;
+
+    protected override async Task OnInitializedAsync()
+    {
+        IsUser = await RoleService.IsUserAsync();
+        IsManager = await RoleService.IsManagerAsync();
+        IsAdmin = await RoleService.IsAdminAsync();
+        currentUrl = NavigationManager.ToBaseRelativePath(NavigationManager.Uri);
+        NavigationManager.LocationChanged += OnLocationChanged;
+    }
+
+    private void ExpandNavMenu()
+    {
+        isHovered = true;
+              
+        collapseTimer?.Stop();
+        collapseNavMenu = false;  
+    }
+
+    private void CollapseNavMenu()
+    {
+        isHovered = false;
+                
+        collapseTimer = new Timer(300); 
+        collapseTimer.Elapsed += (s, e) =>
+        {            
+            if (!isHovered)
+            {
+                collapseNavMenu = true;
+                InvokeAsync(StateHasChanged); 
+            }
+
+            collapseTimer?.Stop();
+            collapseTimer?.Dispose();
+            collapseTimer = null;
+        };
+        collapseTimer.Start();
+    }
+
+    private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
+    {
+        currentUrl = NavigationManager.ToBaseRelativePath(e.Location);
+        StateHasChanged();
+    }
+
+    public void Dispose()
+    {
+        NavigationManager.LocationChanged -= OnLocationChanged;
+    }
+} 

@@ -1,0 +1,209 @@
+﻿@page "/Admin/Landing"
+
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.EntityFrameworkCore
+@using PunchCardApp.Components.Assets
+@using PunchCardApp.Data
+@using Microsoft.AspNetCore.Components.Authorization
+@using PunchCardApp.Services
+
+@inject UserManager<ApplicationUser> UserManager
+@inject ApplicationDbContext DbContext
+@inject RoleService RoleService
+@inject NavigationManager NavigationManager
+
+@attribute [StreamRendering]
+
+@rendermode InteractiveServer
+
+<AuthorizeView>
+    <Authorized>
+        @if (IsAdmin)
+        {
+            <p>Welcome, Admin!</p>
+        }
+        else if (IsManager)
+        {
+            <p>Welcome, Manager!</p>
+        }
+        else
+        {
+            <p>Welcome, User!</p>
+        }
+
+        <h3>Total Registered Users: @userCount</h3>
+               
+        <input class="form-control" type="text" placeholder="Search by First Name" @bind="searchString" />
+
+        <button class="btn btn-primary mt-2" @onclick="SearchUsers">Search</button>
+
+        @if (filteredUsers != null && filteredUsers.Count > 0)
+        {
+            <table class="table mt-3">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>User Name</th>
+                        <th>Email</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var user in filteredUsers)
+                    {
+                        <tr>
+                            <td>@user.Id</td>
+                            <td>@(user.UserProfile?.FirstName ?? "N/A") @(user.UserProfile?.LastName ?? "N/A")</td>
+                            <td>@user.Email</td>
+                            <td>
+                                <button class="btn btn-theme"
+                                        @onclick="() => EditUser(user.Id)">
+                                    Edit
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            <h3>Confirm Email Status</h3>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Email Confirmation Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var user in filteredUsers)
+                    {
+                        <tr>
+                            <td>@(user.UserProfile?.FirstName ?? "N/A")</td>
+                            <td>@(user.UserProfile?.LastName ?? "N/A")</td>
+                            <td>@(user.EmailConfirmed ? "Confirmed" : "Unconfirmed")</td>
+                            <td>
+                                @if (!user.EmailConfirmed)
+                                {
+                                    <button class="btn btn-theme"
+                                            @onclick="() => ConfirmUserEmail(user)">
+                                        Confirm Email
+                                    </button>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else if (filteredUsers != null)
+        {
+            <p>No users found with the given first name.</p>
+        }
+             
+
+<ConfirmDialog @ref="confirmDialog" />
+
+<button class="btn btn-danger" @onclick="OnDeleteButtonClicked">Delete</button>
+
+        <button class="btn btn-primary" @onclick="ShowDialog">Open Dialog</button>
+
+        <PunchCardApp.Components.Assets.Modal Title="Hello World!" Opened="dialogShown" CloseButtonClicked="@(() => dialogShown = false)">
+            <BodyContent>
+                <p style="font-size: 13px;">
+                    Lorem ipsum dolor sit amet consectetur, adipisicing elit. Vero fugit vitae veritatis error perspiciatis ea eum nihil, illum ut asperiores amet quos quis eos odio laudantium ipsam ullam quidem aut cumque accusantium! Possimus at perferendis consequatur doloremque ad dolore fugiat, explicabo, veniam facere in sed accusantium ex doloribus minus obcaecati vitae tempore exercitationem dicta quia illo, sit culpa fuga. Porro quaerat quae eligendi eius voluptates! Nihil, obcaecati placeat. Dolore dicta odit odio quae libero quod cupiditate molestiae vero magnam. Fugiat mollitia nihil quae, odio possimus animi hic voluptas nesciunt minus quo unde tempora consectetur in eveniet maxime cupiditate eligendi nemo.
+                </p>
+            </BodyContent>
+
+            <FooterContent>
+                <button class="btn">Ok</button>
+            </FooterContent>
+        </PunchCardApp.Components.Assets.Modal>
+
+@code {
+
+}
+
+    </Authorized>
+</AuthorizeView>
+
+@code {
+    private bool IsManager { get; set; }
+    private bool IsAdmin { get; set; }
+    private int userCount;
+    private List<ApplicationUser> filteredUsers;
+    private string searchString;
+
+    private bool dialogShown = false;
+
+    private void ShowDialog()
+    {
+        Console.WriteLine("klick");
+        dialogShown = true;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        IsManager = await RoleService.IsManagerAsync();
+        IsAdmin = await RoleService.IsAdminAsync();
+        userCount = await DbContext.Users.CountAsync();
+    }
+
+    @code {
+        private async Task SearchUsers()
+        {
+            if (!string.IsNullOrWhiteSpace(searchString))
+            {
+                string normalizedSearchString = searchString.ToLower();
+
+                filteredUsers = await DbContext.Users
+                    .Include(u => u.UserProfile)
+                    .Where(u => u.UserProfile != null && EF.Functions.Like(u.UserProfile.FirstName.ToLower(), $"%{normalizedSearchString}%"))
+                    .ToListAsync();
+            }
+            else
+            {
+                filteredUsers = new List<ApplicationUser>();
+            }
+        }
+    }
+
+
+    private void EditUser(string userId)
+    {
+        NavigationManager.NavigateTo($"/users/edit/{userId}");
+    }
+
+    private async Task ConfirmUserEmail(ApplicationUser user)
+    {
+        var token = await UserManager.GenerateEmailConfirmationTokenAsync(user);
+        var result = await UserManager.ConfirmEmailAsync(user, token);
+        if (result.Succeeded)
+        {
+            filteredUsers = await DbContext.Users.Include(u => u.UserProfile)
+                                                 .Where(u => u.UserProfile != null && u.UserProfile.FirstName.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+                                                 .ToListAsync();
+        }
+        else
+        {
+            Console.WriteLine("Error confirming email");
+        }
+    }
+
+        private ConfirmDialog confirmDialog;
+
+        private async Task OnDeleteButtonClicked()
+        {
+    var confirmed = await confirmDialog.ShowAsync("Confirm Delete", "Are you sure you want to delete this item?");
+    if (confirmed)
+    {
+        // Perform the delete operation
+        Console.WriteLine("Item deleted.");
+    }
+    else
+    {
+        // User cancelled the operation
+        Console.WriteLine("Delete operation cancelled.");
+    }
+        }
+}

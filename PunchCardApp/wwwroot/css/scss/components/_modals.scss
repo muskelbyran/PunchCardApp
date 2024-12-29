@@ -1,0 +1,56 @@
+/*
+ *   Referens 1
+     Based on: How to Build A Reusable Dialog With Blazor
+ */
+.overlay {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px); // For Safari
+
+    .dialog {
+        width: 750px;
+        background-color: white;
+        border-radius: 10px;
+        padding: 1rem;
+
+        .dialog-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 2rem;
+        }
+
+        .dialog-body {
+            padding: 2rem;
+        }
+
+        .dialog-footer {
+            padding: 2rem;
+        }
+    }
+
+    .close {
+        height: 40px;
+        width: 40px;
+      //  background-color: transparent;
+        background-color: black;
+        transition: 0.25s ease;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+
+        &:hover {
+            background-color: #ddd;
+        }
+    }
+}

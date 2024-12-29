@@ -1,0 +1,63 @@
+.nav-tabs {
+    border-bottom: 2px solid #ddd;
+
+    .nav-link {
+        color: #007bff;
+        border: 1px solid transparent;
+        border-radius: 0.25rem 0.25rem 0 0;
+        margin-right: 2px;
+        padding: 0.5rem 1rem;
+
+        &:hover {
+            border-color: #e9ecef #e9ecef #ddd;
+            background-color: #f8f9fa;
+        }
+    }
+
+    .nav-item.show .nav-link, .nav-link.active {
+        color: #495057;
+        background-color: #fff;
+        border-color: #ddd #ddd #fff;
+    }
+}
+
+.tab-pane {
+    border: 1px solid #ddd;
+    border-top: none;
+    padding: 1rem;
+    background-color: #fff;
+
+    &.active { /* Styling do not work with Firefox atm */
+        margin: 15px 35px 15px 25px;
+        border: 1px solid #999;
+        border-radius: 10px;
+        box-shadow: 4px 4px 0px #ccc;
+        background: linear-gradient(to bottom, #ddd, #fff 30%);
+    }
+    .kund-content {
+    }
+
+    .klippkort-content {
+    }
+
+    .uppgifter-content {
+    }
+}
+
+input.form-control {
+    border-radius: 0.25rem;
+    padding: 0.5rem;
+    margin-top: 1rem;
+}
+
+button.btn-primary {
+    margin-top: 1rem;
+    padding: 0.5rem 1rem;
+    background-color: #007bff;
+    border-color: #007bff;
+
+    &:hover {
+        background-color: #0056b3;
+        border-color: #004085;
+    }
+}

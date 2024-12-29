@@ -1,0 +1,20 @@
+.container, .container-fluid {
+    position: relative;
+    width: 100%; // Standard i mobilen
+    padding-left: 1rem; // 1 rem = 16px
+    padding-right: 1rem;
+    margin-left: auto; // Centrerar innehållet vid storleksändringar
+    margin-right: auto;
+}
+
+.container {
+ 
+    @include tablet {
+        max-width: 720px;
+    }
+
+    @include desktop {
+       // max-width: 1320px; Boostrap standard
+       max-width: 1200px; // Enligt design mall
+    }
+}

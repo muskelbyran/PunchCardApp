@@ -1,0 +1,4 @@
+REFERENSER
+
+1) How to Build A Reusable Dialog With Blazor - 2024-12-02
+   https://dev.to/rasheedmozaffar/how-to-build-a-reusable-dialog-with-blazor-and-plain-css-1pc 

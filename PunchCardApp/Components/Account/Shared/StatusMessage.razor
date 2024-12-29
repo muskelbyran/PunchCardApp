@@ -1,0 +1,27 @@
+﻿@code {
+    private string? messageFromCookie;
+
+    [Parameter]
+    public string? Message { get; set; }
+
+    // Inject IHttpContextAccessor to access HttpContext
+    [Inject]
+    private IHttpContextAccessor? HttpContextAccessor { get; set; }
+
+    private string? DisplayMessage => Message ?? messageFromCookie;
+
+    protected override void OnInitialized()
+    {
+        // Ensure HttpContext is not null before accessing it
+        var httpContext = HttpContextAccessor?.HttpContext;
+        if (httpContext is not null)
+        {
+            messageFromCookie = httpContext.Request.Cookies[IdentityRedirectManager.StatusCookieName];
+
+            if (messageFromCookie is not null)
+            {
+                httpContext.Response.Cookies.Delete(IdentityRedirectManager.StatusCookieName);
+            }
+        }
+    }
+}

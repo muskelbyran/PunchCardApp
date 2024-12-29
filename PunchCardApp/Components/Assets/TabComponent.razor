@@ -1,0 +1,45 @@
+﻿@using PunchCardApp.Models
+
+@typeparam TItem
+
+<div>
+    <ul class="nav nav-tabs">
+        @for (var i = 0; i < Tabs.Count; i++)
+        {
+            <li class="nav-item">
+                <a class="nav-link @GetTabClass(i)" href="#" @onclick="() => SelectTab(i)">
+                    @Tabs[i].Title
+                </a>
+            </li>
+        }
+    </ul>
+
+    <div class="tab-content">
+        @if (SelectedTabIndex >= 0 && SelectedTabIndex < Tabs.Count)
+        {
+            @Tabs[SelectedTabIndex].Content
+        }
+    </div>
+</div>
+
+@code {
+    private int SelectedTabIndex { get; set; } = 0;
+    private List<TabItemModel<TItem>> Tabs { get; set; } = new List<TabItemModel<TItem>>();
+
+    public void AddTab(TabItemModel<TItem> tab)
+    {
+        Tabs.Add(tab);
+        StateHasChanged();
+    }
+
+    private void SelectTab(int index)
+    {
+        SelectedTabIndex = index;
+        StateHasChanged();
+    }
+
+    private string GetTabClass(int index)
+    {
+        return SelectedTabIndex == index ? "active" : "";
+    }
+}

@@ -1,0 +1,112 @@
+/*@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&display=swap');
+*/
+$font-roboto: 'Roboto', sans-serif;
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@200;300;400;500;600;700;800&display=swap');
+
+@mixin standard-text {
+    line-height: 160%;
+    font-family: "Roboto", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+}
+
+@mixin standard-heading {
+    @include standard-text();
+    font-weight: 800;
+    color: var(--color-gray-900);
+}
+
+@mixin text-nav { @include standard-text; font-size: 16px; color: var(--color-gray-800); font-weight: 600 !important; }
+
+@mixin text-xs { @include standard-text; font-size: 12px !important;}
+@mixin text-s { @include standard-text; font-size: 14px !important; }
+@mixin text-m { @include standard-text; font-size: 16px !important; }
+@mixin text-lg { @include standard-text; font-size: 18px !important; }
+@mixin text-xl { @include standard-text; font-size: 20px !important; }
+@mixin text-lead { @include standard-text; font-size: 24px !important; }
+
+@mixin d1 { @include standard-heading; font-size: 80px !important; }
+@mixin d2 { @include standard-heading; font-size: 72px !important; }
+@mixin d3 { @include standard-heading; font-size: 64px !important; }
+@mixin d4 { @include standard-heading; font-size: 56px !important; }
+@mixin d5 { @include standard-heading; font-size: 48px !important; }
+@mixin d6 { @include standard-heading; font-size: 42px !important; }
+
+@mixin h1 { @include standard-heading; font-size: 40px !important; }
+@mixin h2 { @include standard-heading; font-size: 32px !important; }
+@mixin h3 { @include standard-heading; font-size: 28px !important; }
+@mixin h4 { @include standard-heading; font-size: 24px !important; }
+@mixin h5 { @include standard-heading; font-size: 20px !important; }
+@mixin h6 { @include standard-heading; font-size: 16px !important; }
+
+.text-xs {
+    @include text-xs;
+}
+
+.text-s {
+    @include text-s;
+}
+
+.text-m {
+    @include text-m;
+}
+
+.text-lg {
+    @include text-lg;
+}
+
+.text-xl {
+    @include text-xl;
+}
+
+.text-lead {
+    @include text-lead;
+}
+
+.d1 {
+    @include d1;
+}
+
+.d2 {
+    @include d2;
+}
+
+.d3 {
+    @include d3;
+}
+
+.d4 {
+    @include d4;
+}
+
+.d5 {
+    @include d5;
+}
+
+.d6 {
+    @include d6;
+}
+
+h1, .h1 {
+    @include h1;
+}
+
+h2, .h2 {
+    @include h2;
+}
+
+h3, .h3 {
+    @include h3;
+}
+
+h4, .h4 {
+    @include h4;
+}
+
+h5, .h5 {
+    @include h5;
+}
+
+h6, .h6 {
+    @include h6;
+}

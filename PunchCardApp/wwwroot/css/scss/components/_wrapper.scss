@@ -1,0 +1,11 @@
+// Wrapper justerar hur standard layouten ser ut på en sida.
+// Den säkerställer tex att footer är kvar längst ner på sidan.
+
+.wrapper {
+    display: grid;
+    grid-template-rows: auto 1fr auto; // header, main, footer
+   
+    @include desktop {
+        grid-template-rows: auto auto 1fr auto; // grön rad längst upp, header, main, footer
+    }
+}

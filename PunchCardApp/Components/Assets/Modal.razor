@@ -1,0 +1,52 @@
+﻿@* 
+    Referens 1) How to Build A Reusable Dialog With Blazor
+
+    1: Overlay: Everything surrounding the dialog box.
+    2: Dialog: The container of the dialog itself.
+    3: Dialog Header: The top portion of the dialog.
+    4: Dialog Body: The main content of the dialog.
+    5: Dialog Footer: Action buttons or just empty.
+ *@
+
+@rendermode InteractiveServer
+
+@if (Opened)
+{
+    <div class="overlay">
+        <div class="dialog">
+            <div class="dialog-header">
+                <div>
+                    <h1>@Title</h1>
+                </div>
+
+                <div @onclick="CloseDialog">
+                    <div class="close">
+                        <i class="bi bi-x-lg"> </i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dialog-body">
+                @BodyContent
+            </div>
+
+            <div class="dialog-footer">
+                @FooterContent
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public string? Title { get; set; }
+    [Parameter] public RenderFragment? BodyContent { get; set; }
+    [Parameter] public RenderFragment? FooterContent { get; set; }
+    [Parameter] public bool Opened { get; set; }
+    [Parameter] public EventCallback CloseButtonClicked { get; set; }
+
+    private void CloseDialog()
+    {
+        Opened = false;
+        CloseButtonClicked.InvokeAsync();
+    }
+}

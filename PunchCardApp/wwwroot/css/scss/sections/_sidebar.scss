@@ -1,0 +1,103 @@
+.tags-section {
+    margin: 20px 0; 
+
+    .tags-headline {
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 15px; 
+    }
+
+    .tag-list {
+        display: flex;
+        flex-wrap: wrap; 
+        gap: 10px; 
+    }
+
+    .tag-item {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 8px 16px;
+        border: 1px solid var(--color-dark); 
+        border-radius: 50px; 
+        background-color: var(--color-background); 
+        font-size: 14px; 
+        font-weight: normal;
+        color: var(--color-dark); 
+        text-align: center; 
+        white-space: nowrap;
+        transition: background-color 0.3s ease; 
+        cursor: pointer; 
+    }
+
+    .tag-item:hover {
+        background-color: var(--color-accent); 
+        color: var(--color-light); 
+    }
+}
+
+.sidebar-form {
+    background-color: var(--color-primary);
+    padding: 1em;
+    position: relative; 
+
+    h5, p {
+        color: var(--color-accent);
+        margin: 0 0 0.5rem;
+        width: 90%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    p {
+        color: var(--color-gray);
+    }
+
+    .form {
+        position: relative; 
+        z-index: 2; 
+    }
+
+    .form-input-group {
+        width: 90%;
+        margin: 0 auto;
+        position: relative; 
+
+        .form-label {
+            display: block;
+            font-weight: bold;
+        }
+
+        .input-icon-wrapper {
+            position: relative;
+            width: 100%;
+
+            .form-input {
+                display: block;
+                width: 100%;
+                padding: 10px;
+                padding-right: 40px;
+                border: 1px solid #ccc;
+                box-sizing: border-box;
+                font-style: italic;
+            }
+
+            i {
+                position: absolute;
+                right: 10px;
+                top: 50%;
+                transform: translateY(-50%);
+                font-size: 16px;
+                color: #888;
+                pointer-events: none;
+            }
+        }
+    }
+
+    .form-image {
+        position: absolute;
+        top: -15px;
+        left: 150px;
+        z-index: 1;       
+    }
+}

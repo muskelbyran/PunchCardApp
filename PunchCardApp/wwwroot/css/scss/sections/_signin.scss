@@ -1,0 +1,186 @@
+#signin {
+    height: 100vh;
+    width: 100vw;
+    padding: 2rem 0;
+    background-color: #f9f9f9;
+
+    .container {
+        max-width: 500px;
+        margin: 0 auto;
+        padding: 2rem;
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+        .logo {
+
+            img {
+                width: 75%;
+                height: 75%;
+                margin: auto;
+                display: block;
+            }
+        }
+
+        h5 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        p {
+            text-align: center;
+            font-size: 0.875rem;
+
+            a {
+                color: #007bff;
+                text-decoration: none;
+                transition: color 0.3s;
+
+                &:hover {
+                    color: #0056b3;
+                }
+            }
+        }
+
+        hr {
+            border-top: 1px solid #ddd;
+            margin: 1.5rem 0;
+        }
+
+        .form {
+
+            .form-floating {
+                position: relative;
+                margin-bottom: 1rem;
+
+                label {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    padding: 0.75rem;
+                    pointer-events: none;
+                    transition: all 0.3s;
+                    color: #777;
+                    font-size: 0.875rem;
+                }
+
+                input {
+                    width: 100%;
+                    padding: 1rem;
+                    font-size: 1rem;
+                    border: 1px solid #ddd;
+                    border-radius: 4px;
+
+                    &:focus {
+                        border-color: #007bff;
+                        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+                    }
+                }
+
+                input:focus + label,
+                input:not(:placeholder-shown) + label {
+                    top: -10px;
+                    left: 10px;
+                    font-size: 0.75rem;
+                    color: #007bff;
+                }
+            }
+
+            .checkbox {
+                margin-bottom: 1.5rem;
+
+                label {
+                    display: flex;
+                    align-items: center;
+                    font-size: 0.875rem;
+
+                    .form-check-input {
+                        margin-right: 0.5rem;
+                        width: 18px;
+                        height: 18px;
+                    }
+                }
+            }
+
+            .btn {
+                display: block;
+                width: 100%;
+                padding: 0.75rem;
+                font-size: 1.125rem;
+                background-color: #007bff;
+                color: white;
+                border: none;
+                border-radius: 4px;
+                transition: background-color 0.3s;
+
+                &:hover {
+                    background-color: #0056b3;
+                }
+            }
+
+            .text-danger {
+                color: #dc3545;
+                font-size: 0.875rem;
+            }
+        }
+
+        .social-or {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            margin: 15px 0px;
+
+            &::before,
+            &::after {
+                content: '';
+                flex: 1;
+                border-bottom: 1px solid #DDD;
+                margin: 0 10px;
+            }
+        }
+
+        .social-option {
+            display: flex;
+            justify-content: center; // Ensure icons are horizontally centered in the container
+            align-items: center; // Ensure icons are vertically centered
+            gap: 15px; // Space between each icon
+
+            .socialmedia-item {
+                color: var(--color-primary);
+                display: flex; // Apply flex to center the icons inside their container
+                align-items: center;
+                justify-content: center;
+                margin-bottom: 15px;
+
+                &::after {
+                    content: none;
+                }
+
+                i {
+                    display: flex; // Flexbox for centering the icon inside the circle
+                    justify-content: center; // Horizontally center the icon
+                    align-items: center; // Vertically center the icon
+                    font-size: 24px; // Adjust the size of the icon
+                    width: 50px; // Set equal width and height for the circle
+                    height: 50px;
+                    border: 2px solid var(--color-primary); // Border around the icon
+                    border-radius: 50%; // Make it a perfect circle
+                    background-color: transparent; // Optional: background color for the circle
+                    transition: background-color 0.3s ease; // Smooth transition for hover effects
+                }
+                // Optional: Hover effect
+                i:hover {
+                    background-color: var(--color-secondary); // Background color on hover
+                    color: #fff; // Icon color on hover
+                }
+            }
+        }
+
+
+        .login-footer {
+        }
+    }
+}

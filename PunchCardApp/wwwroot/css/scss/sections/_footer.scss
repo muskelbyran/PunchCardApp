@@ -1,0 +1,116 @@
+footer {
+    padding-top: 20px;
+    padding-bottom: 20px;
+    
+    .copyright {
+        display: flex;
+        justify-content: left; 
+        align-items: left; 
+        flex-wrap: wrap;
+        gap: 20px;
+      }
+      
+      .copyright p {        
+        margin: 0;
+      }
+      
+      .credits a {
+        text-decoration: none; 
+        color: var(--color-accent);
+    }
+      
+      .credits a:hover {
+        text-decoration: underline;
+      }     
+}
+
+#project-footer {
+    position: relative;
+    padding-bottom: 0;  
+    overflow: hidden; 
+
+    .container {
+        display: flex; 
+        align-items: flex-start; 
+        position: relative; 
+        width: 100%; 
+        min-height: 1000px; 
+        justify-content: space-between;
+        padding-left: 150px; 
+        margin-top: -250px;
+
+        .background {
+            position: absolute; 
+            top: 0;
+            left: 0;
+            width: 60%; 
+            height: 100%; 
+            background-size: cover; 
+            background-position: center; 
+            z-index: 1; 
+        }
+
+        .background-map {
+            z-index: 2; 
+            transform: scale(0.7); 
+            transform-origin: center; 
+            top: 150px; 
+        }
+
+        .background-group {
+            z-index: 1; 
+            transform: scale(0.8); 
+            transform-origin: center; 
+            top: 263px; 
+            left: 65px;
+        }
+
+        .right {
+            position: relative; 
+            z-index: 3; 
+            width: 40%; 
+            padding-left: 80px;
+            display: flex; 
+            flex-direction: column; 
+            align-items: flex-start;
+            justify-content: flex-start; 
+            margin-left: auto; 
+            top: 350px;
+            gap: 15px;
+
+
+            .headline {
+                font-size: 36px; 
+                color: var(--color-dark); 
+            }
+
+            .contact-item {
+                display: flex; 
+                
+                align-items: center; 
+                                           
+                i {
+                    margin-right: 8px; 
+                    color: var(--color-accent); 
+                }
+
+                span {
+                    color: var(--color-dark); 
+                }
+            }
+
+            .address {
+                font-size: 16px; 
+                font-style: italic;
+                color: var(--color-dark); 
+                margin-bottom: 20px;
+            }
+        }
+    }
+
+    &:after {
+        content: "";
+        display: block;
+        height: 0; 
+    }
+}
