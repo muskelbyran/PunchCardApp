@@ -1,4 +1,8 @@
 REFERENSER
 
-1) How to Build A Reusable Dialog With Blazor - 2024-12-02
+1) How to Build A Reusable Dialog With Blazor - Rasheed K Mozaffar (2024-12-02)
    https://dev.to/rasheedmozaffar/how-to-build-a-reusable-dialog-with-blazor-and-plain-css-1pc 
+
+2) Blazor-Simplified - Rikam Palkar (2024-11-17)
+
+https://github.com/RikamPalkar/Blazor-Simplified

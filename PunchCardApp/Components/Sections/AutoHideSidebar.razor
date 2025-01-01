@@ -1,4 +1,7 @@
-﻿@using System.Timers;
+﻿@*
+    Baserad på referens (2) Blazor-Simplified - (Palkar R., 2024)
+ *@
+@using System.Timers;
 @using PunchCardApp.Services
 
 @implements IDisposable
@@ -6,14 +9,14 @@
 @inject RoleService RoleService
 @rendermode InteractiveServer﻿
 
-<div class="auto-hiding-nav-menu"
+<aside class="auto-hiding-nav-menu"
      @onmouseover="ExpandNavMenu"
      @onmouseout="CollapseNavMenu">
 
     <AuthorizeView>
     <Authorized>
     <nav class="nav-menu @(collapseNavMenu ? "collapsed" : "expand")">
-        <div>
+                <div class="nav-menu-inner">
             @if (IsUser || IsManager || IsAdmin) 
             {
             <NavLink class="nav-link" href="/" Match="NavLinkMatch.All">
@@ -32,7 +35,7 @@
 
             @if (IsManager || IsAdmin)
             {
-            <NavLink class="nav-link btn-transparent" href="Admin/Users">
+            <NavLink class="nav-link" href="Admin/Users">
                 <span>
                     <i class="fa-solid fa-chart-pie"></i>
                     <span class="nav-item-text">Statistik</span>
@@ -105,7 +108,7 @@
     </nav>
     </Authorized>
     </AuthorizeView>
-</div>
+</aside>
 
 @code {
     private bool IsUser { get; set; }
