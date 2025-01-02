@@ -12,6 +12,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<PunchCardUseEntity> PunchCardUses { get; set; }
     public DbSet<FeatureEntity> Features { get; set; }
     public DbSet<FeatureItemEntity> FeaturesItems { get; set; }
+    public DbSet<FeedbackEntity> Feedbacks { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

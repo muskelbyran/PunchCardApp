@@ -1,0 +1,126 @@
+﻿@page "/Account/Feedback"
+@using PunchCardApp.Components.Account.Shared
+@using PunchCardApp.Components.Assets
+@using PunchCardApp.Models
+@using PunchCardApp.Components.Layout
+@using PunchCardApp.Data
+@using System.ComponentModel.DataAnnotations
+@layout AccountLayout
+
+@rendermode InteractiveServer
+
+<PageTitle>Feedback</PageTitle>
+<main class="main-content">
+    <div class="content-card">
+        <h1>Feedback</h1>
+        <p>Your feedback is essential to improving this site. </p>
+        <EditForm FormName="feedback" Model="FeedbackForm" OnValidSubmit="OnValidSubmit" method="post" novalidate>
+            <DataAnnotationsValidator />
+            <div class="options">
+                <div class="checkbox-group">
+                    <div class="input-group">
+                        <InputCheckbox @bind-Value="FeedbackForm.Typo" />
+                        <label>Typo</label>
+                    </div>
+                </div>
+                <div class="checkbox-group">
+                    <div class="input-group">
+                        <InputCheckbox @bind-Value="FeedbackForm.Bug" />
+                        <label>Bug</label>
+                    </div>
+                </div>
+                <div class="checkbox-group">
+                    <div class="input-group">
+                        <InputCheckbox @bind-Value="FeedbackForm.Idea" />
+                        <label>Idea</label>
+                    </div>
+                </div>
+                <div class="checkbox-group">
+                    <div class="input-group">
+                        <InputCheckbox @bind-Value="FeedbackForm.Praise" />
+                        <label>Praise</label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-message">
+                <label for="feedbackMessage">Your Feedback:</label>
+                <InputTextArea id="feedbackMessage" @bind-Value="FeedbackForm.Message" rows="4" maxlength="500" placeholder="Enter your feedback here..." />
+                <ValidationMessage For="@(() => FeedbackForm.Message)" class="text-danger" />
+            </div>
+            <button type="submit" class="btn btn-theme">Submit Feedback</button>
+            <span class="status-message"></span>
+        </EditForm>
+    </div>
+</main>
+
+@code {
+    [SupplyParameterFromForm]
+    public FeedbackFormModel FeedbackForm { get; set; } = new FeedbackFormModel();
+
+    private UserProfile? CurrentUserProfile { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Fetch user profile from your service (example: IUserProfileService)
+        CurrentUserProfile = await FetchUserProfileAsync();
+    }
+
+    private async Task OnValidSubmit()
+    {
+        try
+        {
+            if (CurrentUserProfile != null)
+            {
+                FeedbackForm.FirstName = CurrentUserProfile.FirstName;
+                FeedbackForm.LastName = CurrentUserProfile.LastName;
+            }
+            else
+            {
+                FeedbackForm.FirstName = "Unknown";
+                FeedbackForm.LastName = "User";
+            }
+
+            FeedbackForm.SubmissionDate = DateTime.UtcNow;
+
+            // Save the feedback to the database
+            await SaveFeedbackToDatabase(FeedbackForm);
+
+            // Show success message or handle response
+        }
+        catch (Exception ex)
+        {
+            // Handle error and show an error message
+        }
+    }
+
+    private async Task<UserProfile?> FetchUserProfileAsync()
+    {
+        // Implement fetching logic from your service or database
+        // Example: return await _userProfileService.GetUserProfileAsync(User.Identity.Name);
+        return new UserProfile
+            {
+                FirstName = "John",
+                LastName = "Doe"
+            };
+    }
+
+    private Task SaveFeedbackToDatabase(FeedbackFormModel feedback)
+    {
+        // Implement database save logic here
+        throw new NotImplementedException();
+    }
+
+    public class FeedbackFormModel
+    {
+        public string FirstName { get; set; } = null!;
+        public string LastName { get; set; } = null!;
+        public bool Typo { get; set; }
+        public bool Bug { get; set; }
+        public bool Idea { get; set; }
+        public bool Praise { get; set; }
+        [Required]
+        [StringLength(500, MinimumLength = 10, ErrorMessage = "Your feedback must be between 10 and 500 characters.")]
+        public string Message { get; set; } = null!;
+        public DateTime SubmissionDate { get; set; }
+    }
+}

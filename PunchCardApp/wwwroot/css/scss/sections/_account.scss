@@ -1,0 +1,45 @@
+.main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+    background-color: #fff6f2;
+    overflow: auto;
+    box-sizing: border-box;
+}
+
+.mobile-nav {
+    display: none;
+    margin-bottom: 1rem;
+    width: 100%;
+    text-align: center;
+
+    button {
+        margin: 0.5rem;
+        padding: 1rem 2rem;
+        font-size: 1.2rem;
+        border: none;
+        border-radius: 10px;
+        background-color: #3498db;
+        color: white;
+        cursor: pointer;
+        transition: background-color 0.3s;
+
+        &:hover {
+            background-color: #2980b9;
+        }
+    }
+}
+
+.content-card {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+    max-width: 800px;
+    width: 100%;
+    text-align: center;
+    background-color: #ffe1d5;
+}
