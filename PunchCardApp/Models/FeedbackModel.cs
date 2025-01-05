@@ -1,16 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
-using PunchCardApp.Entities;
-
-namespace PunchCardApp.Models;
+﻿namespace PunchCardApp.Models;
 
 public class FeedbackModel
 {
-    public int Id { get; set; }
-    public string FromName { get; set; } = null!;
-    public string Message { get; set; } = null!;
+    public string FromName { get; set; } = string.Empty;
+    public string Message { get; set; } = "";
     public bool IsTypo { get; set; }
     public bool IsBug { get; set; }
     public bool IsIdea { get; set; }
     public bool IsPraise { get; set; }
-    public DateTime SubmittedAt { get; set; }
+    public DateTime SubmittedAt { get; set; } // Add this property
 }

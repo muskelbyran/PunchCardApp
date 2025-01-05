@@ -1,126 +1,100 @@
 ﻿@page "/Account/Feedback"
-@using PunchCardApp.Components.Account.Shared
-@using PunchCardApp.Components.Assets
+@using PunchCardApp.Entities
 @using PunchCardApp.Models
-@using PunchCardApp.Components.Layout
-@using PunchCardApp.Data
-@using System.ComponentModel.DataAnnotations
-@layout AccountLayout
-
-@rendermode InteractiveServer
+@using Microsoft.EntityFrameworkCore
+@inject ApplicationDbContext DbContext
+@inject UserManager<ApplicationUser> UserManager
 
 <PageTitle>Feedback</PageTitle>
+
 <main class="main-content">
     <div class="content-card">
         <h1>Feedback</h1>
-        <p>Your feedback is essential to improving this site. </p>
-        <EditForm FormName="feedback" Model="FeedbackForm" OnValidSubmit="OnValidSubmit" method="post" novalidate>
+        <p>Din feedback är viktig för vidareutveckling av den här sidan.</p>
+
+        @if (!string.IsNullOrEmpty(StatusMessage))
+        {
+            <div class="alert alert-info">@StatusMessage</div>
+        }
+
+        <EditForm Model="@FeedbackForm" OnValidSubmit="OnValidSubmit" FormName="feedback" method="post" novalidate>
             <DataAnnotationsValidator />
-            <div class="options">
-                <div class="checkbox-group">
-                    <div class="input-group">
-                        <InputCheckbox @bind-Value="FeedbackForm.Typo" />
-                        <label>Typo</label>
-                    </div>
+            <h5>Skicka feedback</h5>
+
+            <div class="form">
+                <div class="form-floating mb-3">
+                    <InputTextArea @bind-Value="FeedbackForm.Message" autocomplete="off" aria-required="true" placeholder="Din feedback" />
+                    <ValidationMessage For="() => FeedbackForm.Message" />
                 </div>
-                <div class="checkbox-group">
-                    <div class="input-group">
-                        <InputCheckbox @bind-Value="FeedbackForm.Bug" />
-                        <label>Bug</label>
+                <div id="form-issues" class="mb-3">
+                    <label class="form-label">Typ av feedback</label>
+                    <div>
+                        <InputCheckbox @bind-Value="FeedbackForm.IsTypo" class="me-2" /> Typo
+                        <InputCheckbox @bind-Value="FeedbackForm.IsBug" class="me-2" /> Bug
+                        <InputCheckbox @bind-Value="FeedbackForm.IsIdea" class="me-2" /> Idea
+                        <InputCheckbox @bind-Value="FeedbackForm.IsPraise" class="me-2" /> Praise
                     </div>
-                </div>
-                <div class="checkbox-group">
-                    <div class="input-group">
-                        <InputCheckbox @bind-Value="FeedbackForm.Idea" />
-                        <label>Idea</label>
-                    </div>
-                </div>
-                <div class="checkbox-group">
-                    <div class="input-group">
-                        <InputCheckbox @bind-Value="FeedbackForm.Praise" />
-                        <label>Praise</label>
-                    </div>
+                </div>         
+                <div id="form-button">
+                    <button class="w-100 btn btn-lg btn-primary" type="submit">Skicka feedback</button>
                 </div>
             </div>
-            <div class="form-message">
-                <label for="feedbackMessage">Your Feedback:</label>
-                <InputTextArea id="feedbackMessage" @bind-Value="FeedbackForm.Message" rows="4" maxlength="500" placeholder="Enter your feedback here..." />
-                <ValidationMessage For="@(() => FeedbackForm.Message)" class="text-danger" />
-            </div>
-            <button type="submit" class="btn btn-theme">Submit Feedback</button>
-            <span class="status-message"></span>
         </EditForm>
+
     </div>
 </main>
 
 @code {
     [SupplyParameterFromForm]
-    public FeedbackFormModel FeedbackForm { get; set; } = new FeedbackFormModel();
+    private FeedbackModel FeedbackForm { get; set; } = new();
 
-    private UserProfile? CurrentUserProfile { get; set; }
+    [Parameter]
+    public Guid userId { get; set; }
 
-    protected override async Task OnInitializedAsync()
+    private string? StatusMessage;
+
+    private async Task OnValidSubmit(EditContext editContext)
     {
-        // Fetch user profile from your service (example: IUserProfileService)
-        CurrentUserProfile = await FetchUserProfileAsync();
-    }
+        Console.WriteLine($"FromName: {FeedbackForm.FromName}, Message: {FeedbackForm.Message}, IsTypo: {FeedbackForm.IsTypo}");
 
-    private async Task OnValidSubmit()
-    {
+        var currentUser = await DbContext.Users
+            .Include(u => u.UserProfile)
+            .Include(u => u.UserAddress)
+            .FirstOrDefaultAsync(u => u.Id == userId.ToString());
+
+        string FirstName = string.Empty;
+        string LastName = string.Empty;
+
+        if (currentUser != null)
+        {
+            FirstName = currentUser.UserProfile?.FirstName ?? "";
+            LastName = currentUser.UserProfile?.LastName ?? "";
+        }
+
+        Console.WriteLine($"{FirstName} {LastName}");
+
+        var feedbackEntity = new FeedbackEntity
+            {
+                FromName = FirstName + " " + LastName, 
+                Message = FeedbackForm.Message,
+                IsTypo = FeedbackForm.IsTypo,
+                IsBug = FeedbackForm.IsBug,
+                IsIdea = FeedbackForm.IsIdea,
+                IsPraise = FeedbackForm.IsPraise,
+                SubmittedAt = DateTime.UtcNow
+            };
+
         try
         {
-            if (CurrentUserProfile != null)
-            {
-                FeedbackForm.FirstName = CurrentUserProfile.FirstName;
-                FeedbackForm.LastName = CurrentUserProfile.LastName;
-            }
-            else
-            {
-                FeedbackForm.FirstName = "Unknown";
-                FeedbackForm.LastName = "User";
-            }
+            DbContext.Add(feedbackEntity);
+            await DbContext.SaveChangesAsync();
 
-            FeedbackForm.SubmissionDate = DateTime.UtcNow;
-
-            // Save the feedback to the database
-            await SaveFeedbackToDatabase(FeedbackForm);
-
-            // Show success message or handle response
+            StatusMessage = "Feedback submitted successfully!";
+            FeedbackForm = new FeedbackModel(); 
         }
         catch (Exception ex)
         {
-            // Handle error and show an error message
+            StatusMessage = $"An error occurred while submitting feedback: {ex.Message}";
         }
-    }
-
-    private async Task<UserProfile?> FetchUserProfileAsync()
-    {
-        // Implement fetching logic from your service or database
-        // Example: return await _userProfileService.GetUserProfileAsync(User.Identity.Name);
-        return new UserProfile
-            {
-                FirstName = "John",
-                LastName = "Doe"
-            };
-    }
-
-    private Task SaveFeedbackToDatabase(FeedbackFormModel feedback)
-    {
-        // Implement database save logic here
-        throw new NotImplementedException();
-    }
-
-    public class FeedbackFormModel
-    {
-        public string FirstName { get; set; } = null!;
-        public string LastName { get; set; } = null!;
-        public bool Typo { get; set; }
-        public bool Bug { get; set; }
-        public bool Idea { get; set; }
-        public bool Praise { get; set; }
-        [Required]
-        [StringLength(500, MinimumLength = 10, ErrorMessage = "Your feedback must be between 10 and 500 characters.")]
-        public string Message { get; set; } = null!;
-        public DateTime SubmissionDate { get; set; }
     }
 }
