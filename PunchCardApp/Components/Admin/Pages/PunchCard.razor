@@ -1,4 +1,6 @@
-﻿@page "/Admin/PunchCard"
+﻿@*  Referens: ChatGpt created the first version of the tabs based on some really old tabs from a former website I 
+           made a long long time ago. *@
+@page "/Admin/PunchCard"
 @using PunchCardApp.Components.Assets
 @using PunchCardApp.Models
 
@@ -9,11 +11,7 @@
 <AuthorizeView>
     <Authorized>
         <h3>Sök kund:</h3>
-
-        <!-- Search box for filtering users by first name -->
         <input class="form-control" type="text" placeholder="Search by First Name" @bind="searchString" />
-
-        <!-- Search button -->
         <button class="btn btn-primary mt-2" @onclick="SearchUsers">Search</button>
 
         @if (filteredUsers != null && filteredUsers.Count > 0)
@@ -116,7 +114,7 @@
 @code {
     private List<ApplicationUser>? filteredUsers;
     private ApplicationUser selectedUser;
-    private string searchString;
+    private string? searchString;
     private Tab selectedTab = Tab.Kund;
     private bool areTabsVisible = false;
 

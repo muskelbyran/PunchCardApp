@@ -13,37 +13,20 @@
 }
 else
 {
-    <div class="profile">
-        @*     <div class="profile-image">
-    <img src="/images/profiles/avatar.jpg" />
-    </div> *@
+   @*  <div class="profile">
         <h3>@(user.UserProfile?.FirstName ?? "No First Name") @(user.UserProfile?.LastName ?? "No Last Name")</h3>
 
 
         <div class="profile-info">
-            @*    <NavLink><a class="btn-transparent" href="Account/Manage" Match="NavLinkMatch.All">Profile</a></NavLink> *@
             <NavLink><a class="btn-transparent" href="Account/Deets"><i class="fa-regular fa-gear"></i>Meny</a></NavLink>
             <NavLink><a class="btn-transparent" href="Account/Manage/Notifications"><i class="fa-solid fa-arrow-right-to-bracket"></i>Klippkort</a></NavLink>
             <NavLink><a class="btn-transparent" href="Account/SavedCourses"><i class="fa-solid fa-arrow-right-to-bracket"></i>Konto</a></NavLink>
             <NavLink><a class="btn-transparent" href="Account/Manage/Logout"><i class="fa-solid fa-arrow-right-to-bracket"></i>Logga Ut</a></NavLink>
         </div>
 
-@*         @if (IsAdmin)
-        {
-            <p>Welcome, Admin!</p>
-        }
-        else if (IsManager)
-        {
-            <p>Welcome, Manager!</p>
-        }
-        else
-        {
-            <p>Welcome, User!</p>
-        } *@
-
         <NavLink><a class="btn-transparent" href="/Admin/Landing"><i class="fa-solid fa-arrow-right-to-bracket"></i>Admin</a></NavLink>
 
-    </div>
+    </div> *@
 }
 
 @code {

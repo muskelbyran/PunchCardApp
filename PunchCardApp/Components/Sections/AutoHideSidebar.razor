@@ -16,10 +16,14 @@
     <AuthorizeView>
     <Authorized>
     <nav class="nav-menu @(collapseNavMenu ? "collapsed" : "expand")">
+                <div class="sidebar-logo @(collapseNavMenu ? "collapsed" : "")">
+                    <img src="/images/small-logo.png" alt="Muskelbyrån Logo" />
+                </div>
+
                 <div class="nav-menu-inner">
             @if (IsUser || IsManager || IsAdmin) 
             {
-            <NavLink class="nav-link" href="/" Match="NavLinkMatch.All">
+            <NavLink class="nav-link" href="Account/Deets" Match="NavLinkMatch.All">
                 <span>
                         <i class="fa-regular fa-user"></i>
                     <span class="nav-item-text">Profil</span>

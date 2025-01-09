@@ -807,7 +807,6 @@ footer .credits a:hover {
   background-color: var(--color-secondary);
   color: #fff;
 }
-/* Base styles for nav-link */
 .nav-link {
   margin-bottom: 10px;
   padding: 0;
@@ -932,9 +931,30 @@ main {
 .auto-hiding-nav-menu.collapsed {
   width: 50px;
 }
+.auto-hiding-nav-menu.collapsed .sidebar-logo img {
+  width: 25px;
+  height: auto;
+}
 .auto-hiding-nav-menu.expand {
   width: 160px;
   padding: 1rem;
+}
+.auto-hiding-nav-menu.expand .sidebar-logo img {
+  width: 50px;
+  height: auto;
+}
+
+.sidebar-logo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+  transition: all 0.3s ease;
+}
+.sidebar-logo img {
+  width: 50px;
+  height: auto;
+  transition: all 0.3s ease;
 }
 
 .nav-menu {
@@ -1120,7 +1140,6 @@ main {
 }
 
 .content-card {
-  background: white;
   border-radius: 15px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   padding: 2rem;
@@ -1128,4 +1147,50 @@ main {
   width: 100%;
   text-align: center;
   background-color: #ffe1d5;
+}
+.content-card .nav-tabs {
+  border-bottom: 1px solid #dee2e6;
+  display: flex;
+  justify-content: space-around;
+}
+.content-card .nav-tabs .nav-item {
+  margin-bottom: -1px;
+}
+.content-card .nav-tabs .nav-item .nav-link {
+  display: inline-block;
+  padding: 10px 15px;
+  text-decoration: none;
+  color: #000;
+  position: relative;
+  background-color: transparent;
+  border: none;
+}
+.content-card .nav-tabs .nav-item .nav-link.active {
+  color: #000;
+  background-color: transparent;
+}
+.content-card .nav-tabs .nav-item .nav-link.active::after {
+  content: "";
+  display: block;
+  height: 2px;
+  width: 100%;
+  background-color: #000;
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+}
+.content-card .nav-tabs .nav-item .nav-link:not(.active)::after {
+  content: "";
+  display: block;
+  height: 2px;
+  width: 0;
+  background-color: transparent;
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  transition: width 0.3s ease, background-color 0.3s ease;
+}
+.content-card .nav-tabs .nav-item .nav-link:hover:not(.active)::after {
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.2);
 }

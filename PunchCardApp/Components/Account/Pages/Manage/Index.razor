@@ -1,152 +1,242 @@
 ﻿@page "/Account/Deets"
-
+@using Microsoft.Extensions.Logging
+@using PunchCardApp.Components.Assets
+@using PunchCardApp.Models
 @using System.ComponentModel.DataAnnotations
-@using Microsoft.AspNetCore.Identity
-@using Microsoft.AspNetCore.Components.Authorization
-@using Microsoft.EntityFrameworkCore
-@using PunchCardApp.Data
+@inject UserManager<ApplicationUser> UserManager
+@inject ApplicationDbContext DbContext
+@inject AuthenticationStateProvider AuthStateProvider
 
 @rendermode InteractiveServer
 
-@attribute [StreamRendering]
+<PageTitle>Profil</PageTitle>
 
-@inject UserManager<ApplicationUser> UserManager
-@inject NavigationManager NavigationManager
-@inject AuthenticationStateProvider AuthenticationStateProvider
-@inject ApplicationDbContext DbContext
-@inject ILogger<Index> Logger
+<AuthorizeView Context="authContext">
+    <Authorized>
+        <main class="main-content">
+            <div class="content-card">
 
-<PageTitle>Edit Profile</PageTitle>
+              
+                    @if (!string.IsNullOrEmpty(@StatusMessage))
+                    {
+                        <div class="alert alert-info">@StatusMessage</div>
+                    }
 
-<div class="details">
-    <div class="basic-info">
-        @if (!string.IsNullOrEmpty(@StatusMessage))
-        {
-            <div class="alert alert-info">@StatusMessage</div>
-        }
+                <h1>Welcome!</h1>
 
-        <EditForm Model="EditProfileForm" OnValidSubmit="OnValidSubmitAsync" class="edit-form" FormName="editProfile" method="post" novalidate>
-            <DataAnnotationsValidator />
-            <h2>Edit Profile</h2>
+                @if (selectedUser != null)
+                {
+                    <div>
+                        <ul class="nav nav-tabs">
+                            <li class="nav-item">
+                                <a class="nav-link @(selectedTab == Tab.Profil ? "active" : "")" @onclick="() => SelectTab(Tab.Profil)">
+                                    Profil
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link @(selectedTab == Tab.Klippkort ? "active" : "")" @onclick="() => SelectTab(Tab.Klippkort)">
+                                    Klippkort
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link @(selectedTab == Tab.Uppgifter ? "active" : "")" @onclick="() => SelectTab(Tab.Uppgifter)">
+                                    Kontaktuppgifter
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link @(selectedTab == Tab.Historik ? "active" : "")" @onclick="() => SelectTab(Tab.Historik)">
+                                    Historik
+                                </a>
+                            </li>
+                        </ul>
 
-            <div class="content">
-                <div class="input-group" id="form-firstname">
-                    <label>First Name</label>
-                    <InputText @bind-Value="EditProfileForm.FirstName" />
-                    <ValidationMessage For="() => EditProfileForm.FirstName" />
-                </div>
+                        <div class="tab-content mt-3">
+                            @if (selectedTab == Tab.Profil)
+                            {
+                                <div class="tab-pane active">
+                                    <div>
+                                        <h5>@(selectedUser.UserProfile?.FirstName ?? "N/A") @(selectedUser.UserProfile?.LastName ?? "N/A")</h5>
+                                        <p>Email: @selectedUser.Email</p>
+                                        <p>Adress: @selectedUser.UserAddress?.AddressLine_1, @selectedUser.UserAddress?.PostalCode @selectedUser.UserAddress?.City</p>
+                                    </div>
+                                </div>
+                            }
+                            else if (selectedTab == Tab.Klippkort)
+                            {
+                                <div class="tab-pane active">
+                                    I denna fliken så kan man skapa ett nytt klippkort för användaren.
+                                </div>
+                            }
+                            else if (selectedTab == Tab.Uppgifter)
+                            {
+                                <div class="tab-pane active">
+                                    <EditForm Model="EditProfileForm" OnValidSubmit="OnValidSubmitAsync" class="edit-form" FormName="editProfile" method="post" novalidate>
+                                        <DataAnnotationsValidator />
+                                        <h2>Edit Profile</h2>
 
-                <div class="input-group" id="form-lastname">
-                    <label>Last Name</label>
-                    <InputText @bind-Value="EditProfileForm.LastName" />
-                    <ValidationMessage For="() => EditProfileForm.LastName" />
-                </div>
+                                        <div class="content">
+                                            <div class="input-group" id="form-firstname">
+                                                <label>First Name</label>
+                                                <InputText @bind-Value="EditProfileForm.FirstName" />
+                                                <ValidationMessage For="() => EditProfileForm.FirstName" />
+                                            </div>
 
-                <div class="input-group" id="form-phone">
-                    <label>Phone Number</label>
-                    <InputText @bind-Value="EditProfileForm.PhoneNumber" />
-                    <ValidationMessage For="() => EditProfileForm.PhoneNumber" />
-                </div>
+                                            <div class="input-group" id="form-lastname">
+                                                <label>Last Name</label>
+                                                <InputText @bind-Value="EditProfileForm.LastName" />
+                                                <ValidationMessage For="() => EditProfileForm.LastName" />
+                                            </div>
 
-                <div class="input-group" id="form-email">
-                    <label>Email</label>
-                    <InputText @bind-Value="EditProfileForm.Email" />
-                    <ValidationMessage For="() => EditProfileForm.Email" />
-                </div>
+                                            <div class="input-group" id="form-phone">
+                                                <label>Phone Number</label>
+                                                <InputText @bind-Value="EditProfileForm.PhoneNumber" />
+                                                <ValidationMessage For="() => EditProfileForm.PhoneNumber" />
+                                            </div>
 
-                <div class="input-group" id="form-bio">
-                    <label>Biography</label>
-                    <InputTextArea @bind-Value="EditProfileForm.Biography" />
-                    <ValidationMessage For="() => EditProfileForm.Biography" />
-                </div>
+                                            <div class="input-group" id="form-email">
+                                                <label>Email</label>
+                                                <InputText @bind-Value="EditProfileForm.Email" />
+                                                <ValidationMessage For="() => EditProfileForm.Email" />
+                                            </div>
 
-                <div class="form-buttons">
-                    <button class="btn-theme" type="submit">Save changes</button>
-                    <button class="btn-gray" type="reset">Cancel</button>
-                </div>
+                                            <div class="input-group" id="form-bio">
+                                                <label>Biography</label>
+                                                <InputTextArea @bind-Value="EditProfileForm.Biography" />
+                                                <ValidationMessage For="() => EditProfileForm.Biography" />
+                                            </div>
+
+                                            <div class="form-buttons">
+                                                <button class="btn-theme" type="submit">Save changes</button>
+                                                <button class="btn-gray" type="reset">Cancel</button>
+                                            </div>
+                                        </div>
+                                    </EditForm>
+
+                                    <section class="address-info">
+                                        <h5>Address</h5>
+
+                                        <EditForm Model="AddressInfoForm" OnValidSubmit="OnValidSubmitAddressAsync" class="edit-form" FormName="addressForm" method="post" novalidate>
+                                            <DataAnnotationsValidator />
+
+                                            <div class="content">
+                                                <div id="form-addressline-1" class="input-group">
+                                                    <label>Address Line 1</label>
+                                                    <InputText @bind-Value="AddressInfoForm.AddressLine_1" />
+                                                    <ValidationMessage For="() => AddressInfoForm.AddressLine_1" />
+                                                </div>
+
+                                                <div id="form-addressline-2" class="input-group">
+                                                    <label>Address line 2<span>(optional)</span></label>
+                                                    <InputText @bind-Value="AddressInfoForm.AddressLine_2" />
+                                                    <ValidationMessage For="() => AddressInfoForm.AddressLine_2" />
+                                                </div>
+
+                                                <div id="form-postalcode" class="input-group">
+                                                    <label>Postal Code</label>
+                                                    <InputText @bind-Value="AddressInfoForm.PostalCode" />
+                                                    <ValidationMessage For="() => AddressInfoForm.PostalCode" />
+                                                </div>
+
+                                                <div id="form-city" class="input-group">
+                                                    <label>City</label>
+                                                    <InputText @bind-Value="AddressInfoForm.City" />
+                                                    <ValidationMessage For="() => AddressInfoForm.City" />
+                                                </div>
+
+                                                <div class="form-buttons">
+                                                    <button class="btn-gray" type="reset">Cancel</button>
+                                                    <button class="btn-theme" type="submit">Save changes</button>
+                                                </div>
+                                            </div>
+                                        </EditForm>
+                                    </section>
+                                </div>
+                            }
+                            else if (selectedTab == Tab.Historik)
+                            {
+                                <div class="tab-pane active">
+                                    I denna fliken så kan man se sin historik
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <p>Loading user details...</p>
+                }
             </div>
-        </EditForm>
+        </main>
+    </Authorized>
+</AuthorizeView>
 
-        <section class="address-info">
-            <h5>Address</h5>
 
-            <EditForm Model="AddressInfoForm" OnValidSubmit="OnValidSubmitAddressAsync" class="edit-form" FormName="addressForm" method="post" novalidate>
-                <DataAnnotationsValidator />
 
-                <div class="content">
-                    <div id="form-addressline-1" class="input-group">
-                        <label>Address Line 1</label>
-                        <InputText @bind-Value="AddressInfoForm.AddressLine_1" />
-                        <ValidationMessage For="() => AddressInfoForm.AddressLine_1" />
-                    </div>
 
-                    <div id="form-addressline-2" class="input-group">
-                        <label>Address line 2<span>(optional)</span></label>
-                        <InputText @bind-Value="AddressInfoForm.AddressLine_2" />
-                        <ValidationMessage For="() => AddressInfoForm.AddressLine_2" />
-                    </div>
 
-                    <div id="form-postalcode" class="input-group">
-                        <label>Postal Code</label>
-                        <InputText @bind-Value="AddressInfoForm.PostalCode" />
-                        <ValidationMessage For="() => AddressInfoForm.PostalCode" />
-                    </div>
-
-                    <div id="form-city" class="input-group">
-                        <label>City</label>
-                        <InputText @bind-Value="AddressInfoForm.City" />
-                        <ValidationMessage For="() => AddressInfoForm.City" />
-                    </div>
-
-                    <div class="form-buttons">
-                        <button class="btn-gray" type="reset">Cancel</button>
-                        <button class="btn-theme" type="submit">Save changes</button>
-                    </div>
-                </div>
-            </EditForm>
-        </section>
-    </div>
-</div>
 
 @code {
     [SupplyParameterFromQuery]
     public string? StatusMessage { get; set; } = "";
 
+    private ApplicationUser? selectedUser;
+    private Tab selectedTab = Tab.Profil;
     public EditProfileFormModel EditProfileForm { get; set; } = new();
     public AddressInfoFormModel AddressInfoForm { get; set; } = new();
+
+    private enum Tab
+    {
+        Profil,
+        Klippkort,
+        Uppgifter,
+        Historik
+    }
+
+    private void SelectTab(Tab tab)
+    {
+        selectedTab = tab;
+    }
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
-            var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+            var authState = await AuthStateProvider.GetAuthenticationStateAsync();
             var user = authState.User;
 
-            var userId = UserManager.GetUserId(user);
-
-            var currentUser = await DbContext.Users
-                .Include(u => u.UserProfile)
-                .Include(u => u.UserAddress)
-                .FirstOrDefaultAsync(u => u.Id == userId);
-
-            if (currentUser != null)
+            if (user.Identity?.IsAuthenticated ?? false)
             {
-                EditProfileForm.FirstName = currentUser.UserProfile?.FirstName ?? "";
-                EditProfileForm.LastName = currentUser.UserProfile?.LastName ?? "";
-                EditProfileForm.PhoneNumber = currentUser.PhoneNumber ?? "";
-                EditProfileForm.Email = currentUser.Email ?? "";
-                EditProfileForm.Biography = currentUser.UserProfile?.Biography ?? "";
+                var userId = user.FindFirst(c => c.Type == System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
 
-                AddressInfoForm.AddressLine_1 = currentUser.UserAddress?.AddressLine_1 ?? "";
-                AddressInfoForm.AddressLine_2 = currentUser.UserAddress?.AddressLine_2 ?? "";
-                AddressInfoForm.PostalCode = currentUser.UserAddress?.PostalCode ?? "";
-                AddressInfoForm.City = currentUser.UserAddress?.City ?? "";
+                if (userId != null)
+                {
+                    selectedUser = await DbContext.Users
+                        .AsNoTracking()
+                        .Include(u => u.UserProfile)
+                        .Include(u => u.UserAddress)
+                        .FirstOrDefaultAsync(u => u.Id == userId);
+
+                    if (selectedUser != null)
+                    {
+                        EditProfileForm.FirstName = selectedUser.UserProfile?.FirstName ?? "";
+                        EditProfileForm.LastName = selectedUser.UserProfile?.LastName ?? "";
+                        EditProfileForm.PhoneNumber = selectedUser.PhoneNumber ?? "";
+                        EditProfileForm.Email = selectedUser.Email ?? "";
+                        EditProfileForm.Biography = selectedUser.UserProfile?.Biography ?? "";
+
+                        AddressInfoForm.AddressLine_1 = selectedUser.UserAddress?.AddressLine_1 ?? "";
+                        AddressInfoForm.AddressLine_2 = selectedUser.UserAddress?.AddressLine_2 ?? "";
+                        AddressInfoForm.PostalCode = selectedUser.UserAddress?.PostalCode ?? "";
+                        AddressInfoForm.City = selectedUser.UserAddress?.City ?? "";
+
+                        SelectTab(Tab.Profil);
+                    }
+                }
             }
         }
         catch (Exception ex)
         {
-            StatusMessage = "An error occurred while fetching user profile.";
-            Logger.LogError($"Error fetching user profile: {ex.Message}");
+            Console.WriteLine($"Error loading user details: {ex.Message}");
         }
     }
 
@@ -154,7 +244,7 @@
     {
         try
         {
-            var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+            var authState = await AuthStateProvider.GetAuthenticationStateAsync();
             var user = authState.User;
 
             var userId = UserManager.GetUserId(user);
@@ -200,7 +290,8 @@
         catch (Exception ex)
         {
             StatusMessage = "An error occurred while updating profile.";
-            Logger.LogError($"Error updating profile: {ex.Message}");
+         
+
         }
     }
 
@@ -208,7 +299,8 @@
     {
         try
         {
-            var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+            var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+
             var user = authState.User;
 
             var userId = UserManager.GetUserId(user);
@@ -252,7 +344,7 @@
         catch (Exception ex)
         {
             StatusMessage = "An error occurred while updating address.";
-            Logger.LogError($"Error updating address: {ex.Message}");
+           
         }
     }
 
@@ -295,4 +387,20 @@
         [Required(ErrorMessage = "City is required")]
         public string City { get; set; } = "";
     }
+    // public class EditProfileFormModel
+    // {
+    //     public string FirstName { get; set; }
+    //     public string LastName { get; set; }
+    //     public string PhoneNumber { get; set; }
+    //     public string Email { get; set; }
+    //     public string Biography { get; set; }
+    // }
+
+    // public class AddressInfoFormModel
+    // {
+    //     public string AddressLine_1 { get; set; }
+    //     public string? AddressLine_2 { get; set; }
+    //     public string PostalCode { get; set; }
+    //     public string City { get; set; }
+    // }
 }
