@@ -29,22 +29,27 @@
                     <div>
                         <ul class="nav nav-tabs">
                             <li class="nav-item">
-                                <a class="nav-link @(selectedTab == Tab.Profil ? "active" : "")" @onclick="() => SelectTab(Tab.Profil)">
+                                <a class="nav-link profil @(selectedTab == Tab.Profil ? "active" : "")" @onclick="() => SelectTab(Tab.Profil)">
                                     Profil
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link @(selectedTab == Tab.Klippkort ? "active" : "")" @onclick="() => SelectTab(Tab.Klippkort)">
+                                <a class="nav-link klippkort @(selectedTab == Tab.Klippkort ? "active" : "")" @onclick="() => SelectTab(Tab.Klippkort)">
                                     Klippkort
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link @(selectedTab == Tab.Uppgifter ? "active" : "")" @onclick="() => SelectTab(Tab.Uppgifter)">
+                                <a class="nav-link uppgifter @(selectedTab == Tab.Uppgifter ? "active" : "")" @onclick="() => SelectTab(Tab.Uppgifter)">
                                     Kontaktuppgifter
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link @(selectedTab == Tab.Historik ? "active" : "")" @onclick="() => SelectTab(Tab.Historik)">
+                                <a class="nav-link installningar @(selectedTab == Tab.Installningar ? "active" : "")" @onclick="() => SelectTab(Tab.Historik)">
+                                    Inställningar
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link historik @(selectedTab == Tab.Historik ? "active" : "")" @onclick="() => SelectTab(Tab.Historik)">
                                     Historik
                                 </a>
                             </li>
@@ -152,6 +157,12 @@
                                     </section>
                                 </div>
                             }
+                            else if (selectedTab == Tab.Installningar)
+                            {
+                                <div class="tab-pane active">
+                                    I denna fliken så kan man se sina inställningar
+                                </div>
+                            }
                             else if (selectedTab == Tab.Historik)
                             {
                                 <div class="tab-pane active">
@@ -170,11 +181,6 @@
     </Authorized>
 </AuthorizeView>
 
-
-
-
-
-
 @code {
     [SupplyParameterFromQuery]
     public string? StatusMessage { get; set; } = "";
@@ -189,6 +195,7 @@
         Profil,
         Klippkort,
         Uppgifter,
+        Installningar,
         Historik
     }
 

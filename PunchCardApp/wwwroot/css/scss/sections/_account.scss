@@ -60,23 +60,67 @@
                 background-color: transparent;
                 border: none;
 
-                &.active {
-                    color: #000;
-                    background-color: transparent;
+                &.profil {
+                    &.active {
+                        color: #000;
+                        background-color: transparent;
+                    }
 
-                    &::after {
-                        content: '';
-                        display: block;
-                        height: 2px;
+                    &:hover::after {
                         width: 100%;
-                        background-color: #000; // Black underscore
-                        position: absolute;
-                        bottom: -1px;
-                        left: 0;
+                        background-color: rgba(0, 0, 0, 0.2);
                     }
                 }
 
-                &:not(.active)::after {
+                &.klippkort {
+                    &.active {
+                        color: #000;
+                        background-color: transparent;
+                    }
+
+                    &:hover::after {
+                        width: 100%;
+                        background-color: rgba(0, 0, 0, 0.2);
+                    }
+                }
+
+                &.uppgifter {
+                    &.active {
+                        color: #000;
+                        background-color: transparent;
+                    }
+
+                    &:hover::after {
+                        width: 100%;
+                        background-color: rgba(0, 0, 0, 0.2);
+                    }
+                }
+
+                &.installningar {
+                    &.active {
+                        color: #000;
+                        background-color: transparent;
+                    }
+
+                    &:hover::after {
+                        width: 100%;
+                        background-color: rgba(0, 0, 0, 0.2);
+                    }
+                }
+
+                &.historik {
+                    &.active {
+                        color: #000;
+                        background-color: transparent;
+                    }
+
+                    &:hover::after {
+                        width: 100%;
+                        background-color: rgba(0, 0, 0, 0.2);
+                    }
+                }
+
+                &::after {
                     content: '';
                     display: block;
                     height: 2px;
@@ -88,7 +132,7 @@
                     transition: width 0.3s ease, background-color 0.3s ease;
                 }
 
-                &:hover:not(.active)::after {
+                &:hover::after {
                     width: 100%;
                     background-color: rgba(0, 0, 0, 0.2);
                 }

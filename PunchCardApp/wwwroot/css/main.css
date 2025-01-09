@@ -1165,21 +1165,47 @@ main {
   background-color: transparent;
   border: none;
 }
-.content-card .nav-tabs .nav-item .nav-link.active {
+.content-card .nav-tabs .nav-item .nav-link.profil.active {
   color: #000;
   background-color: transparent;
 }
-.content-card .nav-tabs .nav-item .nav-link.active::after {
-  content: "";
-  display: block;
-  height: 2px;
+.content-card .nav-tabs .nav-item .nav-link.profil:hover::after {
   width: 100%;
-  background-color: #000;
-  position: absolute;
-  bottom: -1px;
-  left: 0;
+  background-color: rgba(0, 0, 0, 0.2);
 }
-.content-card .nav-tabs .nav-item .nav-link:not(.active)::after {
+.content-card .nav-tabs .nav-item .nav-link.klippkort.active {
+  color: #000;
+  background-color: transparent;
+}
+.content-card .nav-tabs .nav-item .nav-link.klippkort:hover::after {
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.2);
+}
+.content-card .nav-tabs .nav-item .nav-link.uppgifter.active {
+  color: #000;
+  background-color: transparent;
+}
+.content-card .nav-tabs .nav-item .nav-link.uppgifter:hover::after {
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.2);
+}
+.content-card .nav-tabs .nav-item .nav-link.installningar.active {
+  color: #000;
+  background-color: transparent;
+}
+.content-card .nav-tabs .nav-item .nav-link.installningar:hover::after {
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.2);
+}
+.content-card .nav-tabs .nav-item .nav-link.historik.active {
+  color: #000;
+  background-color: transparent;
+}
+.content-card .nav-tabs .nav-item .nav-link.historik:hover::after {
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.2);
+}
+.content-card .nav-tabs .nav-item .nav-link::after {
   content: "";
   display: block;
   height: 2px;
@@ -1190,7 +1216,7 @@ main {
   left: 0;
   transition: width 0.3s ease, background-color 0.3s ease;
 }
-.content-card .nav-tabs .nav-item .nav-link:hover:not(.active)::after {
+.content-card .nav-tabs .nav-item .nav-link:hover::after {
   width: 100%;
   background-color: rgba(0, 0, 0, 0.2);
 }
