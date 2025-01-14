@@ -144,13 +144,13 @@
 
         .social-option {
             display: flex;
-            justify-content: center; // Ensure icons are horizontally centered in the container
-            align-items: center; // Ensure icons are vertically centered
-            gap: 15px; // Space between each icon
+            justify-content: center; 
+            align-items: center; 
+            gap: 15px; 
 
             .socialmedia-item {
                 color: var(--color-primary);
-                display: flex; // Apply flex to center the icons inside their container
+                display: flex; 
                 align-items: center;
                 justify-content: center;
                 margin-bottom: 15px;
@@ -160,25 +160,24 @@
                 }
 
                 i {
-                    display: flex; // Flexbox for centering the icon inside the circle
-                    justify-content: center; // Horizontally center the icon
-                    align-items: center; // Vertically center the icon
-                    font-size: 24px; // Adjust the size of the icon
-                    width: 50px; // Set equal width and height for the circle
+                    display: flex; 
+                    justify-content: center; 
+                    align-items: center;
+                    font-size: 24px; 
+                    width: 50px; 
                     height: 50px;
-                    border: 2px solid var(--color-primary); // Border around the icon
-                    border-radius: 50%; // Make it a perfect circle
-                    background-color: transparent; // Optional: background color for the circle
-                    transition: background-color 0.3s ease; // Smooth transition for hover effects
+                    border: 2px solid var(--color-primary); 
+                    border-radius: 50%; 
+                    background-color: transparent;
+                    transition: background-color 0.3s ease; 
                 }
-                // Optional: Hover effect
+              
                 i:hover {
-                    background-color: var(--color-secondary); // Background color on hover
-                    color: #fff; // Icon color on hover
+                    background-color: var(--color-secondary);
+                    color: #fff; 
                 }
             }
         }
-
 
         .login-footer {
         }
