@@ -77,7 +77,7 @@ builder.Services.ConfigureApplicationCookie(x =>
     x.LoginPath = "/signin";
     x.AccessDeniedPath = "/Error";
     x.Cookie.HttpOnly = true;
-    x.Cookie.SecurePolicy = CookieSecurePolicy.None; // Change to `Always` in production
+    x.Cookie.SecurePolicy = CookieSecurePolicy.Always; 
     x.ExpireTimeSpan = TimeSpan.FromMinutes(5);
     x.SlidingExpiration = true;
 });
@@ -114,9 +114,11 @@ if (app.Environment.IsDevelopment())
 else
 {
     app.UseExceptionHandler("/Error", createScopeForErrors: true);
+    app.UseHsts();
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
 }
 
+app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseAntiforgery();
 
