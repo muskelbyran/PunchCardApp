@@ -1,0 +1,203 @@
+﻿@page "/Admin/Owlbear"
+
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.EntityFrameworkCore
+@using PunchCardApp.Data
+@using Microsoft.AspNetCore.Components.Authorization
+@using PunchCardApp.Services
+
+@inject UserManager<ApplicationUser> UserManager
+@inject ApplicationDbContext DbContext
+@inject RoleService RoleService
+@inject NavigationManager NavigationManager
+@inject RoleManager<IdentityRole> RoleManager
+
+@attribute [StreamRendering]
+
+@rendermode InteractiveServer
+
+<AuthorizeView>
+    <Authorized>     
+        <section class="owlbear">
+            <main class="main-content">
+            <div class="content-card">
+            @if (IsAdmin)
+            {
+                <p>Welcome, Admin!</p>
+            }
+            else if (IsManager)
+            {
+                <p>Welcome, Manager!</p>
+            }
+            else
+            {
+                <p>Welcome, User!</p>
+            }
+            <h3>Total Registered Users: @userCount</h3>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>User Name</th>
+                        <th>Email</th>
+                    </tr>
+                </thead>
+            <tbody>
+            @foreach (var user in users)
+            {
+                <tr>
+                    <td>@user.Id</td>
+                    <td>@(user.UserProfile?.FirstName ?? "N/A") @(user.UserProfile?.LastName ?? "N/A")</td>
+                    <td>@user.Email</td>
+                    <td>
+                        <button class="button btn-theme"
+                            @onclick="() => EditUser(user.Id)">
+                            Edit
+                        </button>
+                    </td>
+               </tr>
+            }
+            </tbody>
+        </table>
+        <h3>Confirm Email Status</h3>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Email Confirmation Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var user in users)
+            {
+                <tr>
+                    <td>@(user.UserProfile?.FirstName ?? "N/A")</td>
+                    <td>@(user.UserProfile?.LastName ?? "N/A")</td>
+                    <td>@(user.EmailConfirmed ? "Confirmed" : "Unconfirmed")</td>
+                    <td>
+                    @if (!user.EmailConfirmed)
+                    {
+                        <button class="btn btn-theme"
+                            @onclick="() => ConfirmUserEmail(user)">
+                            Confirm Email
+                        </button>
+                    }
+                    </td>
+                </tr>
+                }
+            </tbody>
+        </table>
+        <h3>Role Management</h3>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>User Name</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in usersRole)
+                {
+                    <tr>
+                        <td>@user.User.UserName</td>
+                        <td>@user.User.Email</td>
+                        <td>
+                            <select @bind="user.SelectedRole">
+                                <option value="User">User</option>
+                                <option value="Manager">Manager</option>
+                                <option value="Admin">Admin</option>
+                            </select>
+                        </td>
+                        <td>
+                            <button class="btn btn-primary" @onclick="() => SaveRole(user)">Save</button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+            </main>
+        </section>
+    </Authorized>
+</AuthorizeView>
+
+@code {
+    private bool IsManager { get; set; }
+    private bool IsAdmin { get; set; }
+    private int userCount;
+    private List<ApplicationUser> users = new List<ApplicationUser>();
+    private List<UserWithRole> usersRole = new List<UserWithRole>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        IsManager = await RoleService.IsManagerAsync();
+        IsAdmin = await RoleService.IsAdminAsync();
+        users = await DbContext.Users.Include(u => u.UserProfile).ToListAsync();
+        userCount = users.Count;
+
+        var applicationUsers = await UserManager.Users.ToListAsync();
+        foreach (var user in applicationUsers)
+        {
+            var roles = await UserManager.GetRolesAsync(user);
+            usersRole.Add(new UserWithRole
+                {
+                    User = user,
+                    SelectedRole = roles.FirstOrDefault() ?? "User"
+                });
+        }
+    }
+
+    private void EditUser(string userId)
+    {
+        NavigationManager.NavigateTo($"/users/edit/{userId}");
+    }
+
+    private async Task ConfirmUserEmail(ApplicationUser user)
+    {
+        var token = await UserManager.GenerateEmailConfirmationTokenAsync(user);
+        var result = await UserManager.ConfirmEmailAsync(user, token);
+        if (result.Succeeded)
+        {
+            users = await DbContext.Users.Include(u => u.UserProfile).ToListAsync();
+        }
+        else
+        {
+            Console.WriteLine("Error confirming email");
+        }
+    }
+
+    private async Task SaveRole(UserWithRole userWithRole)
+    {
+        var user = userWithRole.User;
+        var currentRoles = await UserManager.GetRolesAsync(user);
+        var selectedRole = userWithRole.SelectedRole;
+
+        if (!currentRoles.Contains(selectedRole))
+        {
+            await UserManager.RemoveFromRolesAsync(user, currentRoles);
+            await UserManager.AddToRoleAsync(user, selectedRole);
+        }
+
+        usersRole.Clear();
+        var applicationUsers = await UserManager.Users.ToListAsync();
+        foreach (var appUser in applicationUsers)
+        {
+            var roles = await UserManager.GetRolesAsync(appUser);
+            usersRole.Add(new UserWithRole
+                {
+                    User = appUser,
+                    SelectedRole = roles.FirstOrDefault() ?? "User"
+                });
+        }
+    }
+
+    public class UserWithRole
+    {
+        public ApplicationUser User { get; set; } = new ApplicationUser(); // Initialize to avoid null warnings
+        public string SelectedRole { get; set; } = "User"; // Initialize to avoid null warnings
+    }
+}

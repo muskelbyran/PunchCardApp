@@ -16,58 +16,43 @@
     <AuthorizeView>
     <Authorized>
     <nav class="nav-menu @(collapseNavMenu ? "collapsed" : "expand")">
-                <div class="sidebar-logo @(collapseNavMenu ? "collapsed" : "")">
-                    <img src="/images/small-logo.png" alt="Muskelbyrån Logo" />
-                </div>
-
-                <div class="nav-menu-inner">
-            @if (IsUser || IsManager || IsAdmin) 
-            {
+        <div class="sidebar-logo @(collapseNavMenu ? "collapsed" : "")">
+            <img src="/images/small-logo.png" alt="Muskelbyrån Logo" />
+        </div>
+        <div class="nav-menu-inner">
             <NavLink class="nav-link" href="Account/Deets" Match="NavLinkMatch.All">
                 <span>
-                        <i class="fa-regular fa-user"></i>
+                    <i class="fa-regular fa-user"></i>
                     <span class="nav-item-text">Profil</span>
                 </span>
             </NavLink>
-            }
-
             @if (IsManager || IsAdmin)
             {
-            <NavLink class="nav-link" href="Admin/Users">
-                <span>
-                    <i class="fa-solid fa-chart-pie"></i>
-                    <span class="nav-item-text">Statistik</span>
-                </span>
-            </NavLink>
-            <NavLink class="nav-link btn-transparent" href="Admin/Users">
-                <span>
-                    <i class="fa-solid fa-users-gear"></i>
-                    <span class="nav-item-text">Användare</span>
-                </span>
-            </NavLink>
             <NavLink class="nav-link btn-transparent" href="Admin/PunchCard">
                 <span>
                     <i class="fa-solid fa-money-check-dollar"></i>
-                    <span class="nav-item-text">Klipp kort</span>
+                    <span class="nav-item-text">Klippkort</span>
                 </span>
             </NavLink>
             }
-
-            @if (IsAdmin)
+            @if (IsManager || IsAdmin)
             {
-            <NavLink class="nav-link btn-transparent" href="Admin/Users">
+            <NavLink class="nav-link btn-transparent" href="Admin/Aardvark">
                 <span>
                     <i class="fa-solid fa-gauge-high"></i>
                     <span class="nav-item-text">Backoffice</span>
                 </span>
             </NavLink>
-
-            <NavLink class="nav-link btn-transparent" href="Admin/Roles">
+            }
+            @if (IsAdmin)
+            {
+            <NavLink class="nav-link btn-transparent" href="Admin/Owlbear">
                 <span>
-                        <i class="fa-solid fa-user-tie"></i>
-                    <span class="nav-item-text">Behörighet</span>
+                    <i class="fa-solid fa-gauge-high"></i>
+                    <span class="nav-item-text">Backroom</span>
                 </span>
-            </NavLink>            }
+            </NavLink>
+            }
 
             <NavLink class="nav-link btn-transparent" href="Account/Feedback">
                 <span>
@@ -75,7 +60,7 @@
                     <span class="nav-item-text">Feedback</span>
                 </span>
             </NavLink>
-            <NavLink class="nav-link btn-transparent" href="Admin/Users">
+            <NavLink class="nav-link btn-transparent" href="/">
                 <span>
                     <i class="fa-regular fa-circle-question"></i>
                     <span class="nav-item-text">Support</span>
@@ -88,14 +73,14 @@
                 </span>
             </NavLink>
             <NavLink class="nav-link" href="/">
-                        <form action="Account/Logout" method="post">
-                            <AntiforgeryToken />
-                            <input type="hidden" name="ReturnUrl" value="@currentUrl" />
-                            <button type="submit" class="nav-link">
-                                <i class="fa-solid fa-right-from-bracket"></i>
-                                <span class="nav-item-text">Logga ut</span>
-                            </button>
-                        </form>
+                <form action="Account/Logout" method="post">
+                    <AntiforgeryToken />
+                    <input type="hidden" name="ReturnUrl" value="@currentUrl" />
+                    <button type="submit" class="nav-link">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                        <span class="nav-item-text">Logga ut</span>
+                    </button>
+                </form>
             </NavLink>            
         </div>
     </nav>

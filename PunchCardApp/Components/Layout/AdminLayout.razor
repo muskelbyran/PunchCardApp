@@ -1,14 +1,16 @@
 ﻿@inherits LayoutComponentBase
 @layout PunchCardApp.Components.Layout.MainLayout
 
-<section class="account-deets">
-    <div class="container">
-        <aside>
-            <PunchCardApp.Components.Admin.Pages.AdminSidebar />
-            @*     <ManageNavMenu /> *@
-        </aside>
-        <div class="content">
-            @Body
+<section class="adminLayout">
+    @* <PunchCardApp.Components.Sections.AutoHideSidebar></PunchCardApp.Components.Sections.AutoHideSidebar>  *@
+    @*  <PunchCardApp.Components.Layout.NavMenu></PunchCardApp.Components.Layout.NavMenu> *@
+
+    <main>
+        <div class="top-row px-4">
         </div>
-    </div>
+
+        <article class="content px-4">
+            @Body
+        </article>
+    </main>
 </section>
