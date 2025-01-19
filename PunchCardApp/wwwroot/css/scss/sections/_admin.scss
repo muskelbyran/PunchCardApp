@@ -63,11 +63,15 @@ button.btn-primary {
 }
 
 .owlbear {
-    border: 1px solid #ff0000;
 
-    main-content {
-        border: 1px solid #007bff;
+    .main-content {
+        /*  background-color: #582F1E;*/
+        background-color: #E8FAF4;
+
+        .content-card {
+            /*background-color: #E7881F;*/
+            background-color: #254F3A;
+        }
     }
-}
-    
+}    
 

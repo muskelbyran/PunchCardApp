@@ -1273,9 +1273,11 @@ button.btn-primary:hover {
   border-color: #004085;
 }
 
-.owlbear {
-  border: 1px solid #ff0000;
+.owlbear .main-content {
+  /*  background-color: #582F1E;*/
+  background-color: #E8FAF4;
 }
-.owlbear main-content {
-  border: 1px solid #007bff;
+.owlbear .main-content .content-card {
+  /*background-color: #E7881F;*/
+  background-color: #254F3A;
 }

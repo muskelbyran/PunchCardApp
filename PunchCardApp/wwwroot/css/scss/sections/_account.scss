@@ -33,8 +33,7 @@
     }
 }
 
-.content-card {
-    // background: white;
+.content-card {   
     border-radius: 15px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     padding: 2rem;
@@ -46,7 +45,7 @@
     .nav-tabs {
         border-bottom: 1px solid #dee2e6;
         display: flex;
-        justify-content: space-around; // Ensure even spacing of tabs
+        justify-content: space-around; 
 
         .nav-item {
             margin-bottom: -1px;

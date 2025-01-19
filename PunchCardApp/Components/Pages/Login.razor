@@ -47,12 +47,11 @@
                     </label>
                 </div>
                 <div>
-                    <button type="submit" class="w-100 btn btn-lg btn-primary">Log in</button>
-                </div>
-                
+                    <button type="submit" class="w-100 btn btn-lg btn-primary">Logga in</button>
+                </div>                
             </EditForm>
         </div>
-        <div class="social-or">or </div>
+        <div class="social-or">eller </div>
         <div class="social-option">
             <a href="www.facebook.com" target="_blank" class="socialmedia-item"><i class="fa-brands fa-facebook-f"></i></a>
             <a href="www.facebook.com" target="_blank" class="socialmedia-item"><i class="fa-brands fa-linkedin"></i></a>
@@ -93,6 +92,11 @@
         {
             // Clear the existing external cookie to ensure a clean login process
             await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
+
+            if (string.IsNullOrEmpty(ReturnUrl))
+            {
+                ReturnUrl = "/account";
+            }
         }
     }
 
@@ -104,7 +108,9 @@
         if (result.Succeeded)
         {
             Logger.LogInformation("User logged in.");
-            RedirectManager.RedirectTo(ReturnUrl);
+            RedirectManager.RedirectTo(string.IsNullOrEmpty(ReturnUrl) ? "/account" : ReturnUrl);
+
+            // RedirectManager.RedirectTo(ReturnUrl);
         }
         else if (result.RequiresTwoFactor)
         {
