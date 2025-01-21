@@ -94,12 +94,13 @@ builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSe
 builder.Services.AddScoped<FeatureRepository>();
 builder.Services.AddScoped<FeatureItemRepository>();
 builder.Services.AddScoped<FeedbackRepository>();
+builder.Services.AddScoped<PunchCardRepository>();
 
 // Services
 builder.Services.AddScoped<FeatureService>();
 builder.Services.AddScoped<RoleService>();
 builder.Services.AddScoped<FeedbackService>();
-
+builder.Services.AddScoped<PunchCardService>();
 
 var app = builder.Build();
 
