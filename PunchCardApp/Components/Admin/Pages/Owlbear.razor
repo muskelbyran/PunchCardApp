@@ -126,28 +126,29 @@
 </AuthorizeView>
 
 @code {
-    private bool IsManager { get; set; }
-    private bool IsAdmin { get; set; }
-    private int userCount;
-    private List<ApplicationUser> users = new List<ApplicationUser>();
-    private List<UserWithRole> usersRole = new List<UserWithRole>();
 
-    protected override async Task OnInitializedAsync()
+private bool IsManager { get; set; }
+private bool IsAdmin { get; set; }
+private int userCount;
+private List<ApplicationUser> users = new List<ApplicationUser>();
+private List<UserWithRole> usersRole = new List<UserWithRole>();
+
+protected override async Task OnInitializedAsync()
+{
+    IsManager = await RoleService.IsManagerAsync();
+    IsAdmin = await RoleService.IsAdminAsync();
+    users = await DbContext.Users.Include(u => u.UserProfile).ToListAsync();
+    userCount = users.Count;
+
+    var applicationUsers = await UserManager.Users.ToListAsync();
+    foreach (var user in applicationUsers)
     {
-        IsManager = await RoleService.IsManagerAsync();
-        IsAdmin = await RoleService.IsAdminAsync();
-        users = await DbContext.Users.Include(u => u.UserProfile).ToListAsync();
-        userCount = users.Count;
-
-        var applicationUsers = await UserManager.Users.ToListAsync();
-        foreach (var user in applicationUsers)
+        var roles = await UserManager.GetRolesAsync(user);
+        usersRole.Add(new UserWithRole
         {
-            var roles = await UserManager.GetRolesAsync(user);
-            usersRole.Add(new UserWithRole
-                {
-                    User = user,
-                    SelectedRole = roles.FirstOrDefault() ?? "User"
-                });
+            User = user,
+            SelectedRole = roles.FirstOrDefault() ?? "User"
+         });
         }
     }
 

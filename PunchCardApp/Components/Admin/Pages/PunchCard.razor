@@ -1,113 +1,51 @@
-﻿@*  Referens: ChatGpt created the first version of the tabs based on some really old tabs from a former website I 
-           made a long long time ago. *@
-@page "/Admin/PunchCard"
+﻿@page "/Admin/PunchCard"
 @using PunchCardApp.Components.Assets
 @using PunchCardApp.Models
 
 @rendermode InteractiveServer
 
 <PageTitle>Klippkort</PageTitle>
-
 <AuthorizeView>
     <Authorized>
-        <h3>Sök kund:</h3>
-        <input class="form-control" type="text" placeholder="Search by First Name" @bind="searchString" />
-        <button class="btn btn-primary mt-2" @onclick="SearchUsers">Search</button>
-
-        @if (filteredUsers != null && filteredUsers.Count > 0)
-        {
-            <table class="table mt-3">
-                <thead>
-                    <tr>
-                        <th>Id</th>
-                        <th>User Name</th>
-                        <th>Email</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var user in filteredUsers)
-                    {
-                        <tr>
-                            <td>@user.Id</td>
-                            <td>@(user.UserProfile?.FirstName ?? "N/A") @(user.UserProfile?.LastName ?? "N/A")</td>
-                            <td>@user.Email</td>
-                            <td>
-                                <button class="btn btn-theme"
-                                        @onclick="() => EditUser(user)">
-                                    Edit
-                                </button>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        }
-        else if (filteredUsers != null)
-        {
-            <p>No users found with the given first name.</p>
-        }
-
-        @if (areTabsVisible) {        
-        <div>
-            <ul class="nav nav-tabs">
-                <li class="nav-item">
-                    <a class="nav-link @(selectedTab == Tab.Kund ? "active" : "")" @onclick="() => SelectTab(Tab.Kund)">
-                        Kund
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link @(selectedTab == Tab.Klippkort ? "active" : "")" @onclick="() => SelectTab(Tab.Klippkort)">
-                        Klippkort
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link @(selectedTab == Tab.Uppgifter ? "active" : "")" @onclick="() => SelectTab(Tab.Uppgifter)">
-                        Kontaktuppgifter
-                    </a>
-                </li>
-            </ul>
-
-            <div class="tab-content mt-3">
-                @if (selectedTab == Tab.Kund)
+        <main class="main-content">
+            <div class="content-card">
+                <h3>Sök kund:</h3>
+                <input class="form-control" type="text" placeholder="Search by First Name" @bind="searchString" />
+                <button class="btn btn-primary mt-2" @onclick="SearchUsers">Search</button>
+                @if (filteredUsers != null && filteredUsers.Count > 0)
                 {
-                    <div class="tab-pane active">
-                            @if (selectedUser != null)
+                    <table class="table mt-3">
+                        <thead>
+                            <tr>
+                                <th>Id</th>
+                                <th>User Name</th>
+                                <th>Email</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var user in filteredUsers)
                             {
-                                <div>
-                                    <h5>@(selectedUser.UserProfile?.FirstName ?? "N/A") @(selectedUser.UserProfile?.LastName ?? "N/A")</h5>
-                                    <p>Email: @selectedUser.Email</p>
-                                    <p>Adress: @selectedUser.UserAddress?.AddressLine_1, @selectedUser.UserAddress?.PostalCode @selectedUser.UserAddress?.City</p>
-                                    <!-- Add more user details as needed -->
-                                </div>
+                                <tr>
+                                    <td>@user.Id</td>
+                                    <td>@(user.UserProfile?.FirstName ?? "N/A") @(user.UserProfile?.LastName ?? "N/A")</td>
+                                    <td>@user.Email</td>
+                                    <td>
+                                        <button class="btn btn-theme"
+                                                @onclick="() => EditPunchCard(user.Id)">
+                                            Edit
+                                        </button>
+                                    </td>
+                                </tr>
                             }
-                    </div>
+                        </tbody>
+                    </table>
                 }
-                else if (selectedTab == Tab.Klippkort)
+                else if (filteredUsers != null)
                 {
-                    <div class="tab-pane active">
-                        I denna fliken så kan man skapa ett nytt klippkort för användaren.
-                    </div>
-                }
-                else if (selectedTab == Tab.Uppgifter)
-                {
-                    <div class="tab-pane active">
-                        @if (selectedUser != null)
-                        {
-                            <div>
-                                <h5>@(selectedUser.UserProfile?.FirstName ?? "N/A") @(selectedUser.UserProfile?.LastName ?? "N/A")</h5>
-                                <p>Email: @selectedUser.Email</p>
-                                <!-- Add more user details as needed -->
-                            </div>
-                        }
-                        else
-                        {
-                            <p>No user selected for editing.</p>
-                        }
-                    </div>
+                    <p>No users found with the given first name.</p>
                 }
             </div>
-        </div>
-        }
+        </main>
     </Authorized>
 </AuthorizeView>
 
@@ -115,25 +53,7 @@
     private List<ApplicationUser>? filteredUsers;
     private ApplicationUser selectedUser;
     private string? searchString;
-    private Tab selectedTab = Tab.Kund;
-    private bool areTabsVisible = false;
-
-    private void SelectTab(Tab tab)
-    {
-        selectedTab = tab;
-    }
-
-    private string GetActiveClass(Tab tab)
-    {
-        return selectedTab == tab ? "active" : "";
-    }
-
-    private enum Tab
-    {
-        Kund,
-        Klippkort,
-        Uppgifter
-    }
+   
 
     private async Task SearchUsers()
     {
@@ -152,26 +72,8 @@
         }
     }
 
-    private void EditUser(ApplicationUser user)
+    private void EditPunchCard(string userId)
     {
-        selectedUser = user;
-        SelectTab(Tab.Kund);
-        areTabsVisible = true;
-    }
-
-    private async Task ConfirmUserEmail(ApplicationUser user)
-    {
-        var token = await UserManager.GenerateEmailConfirmationTokenAsync(user);
-        var result = await UserManager.ConfirmEmailAsync(user, token);
-        if (result.Succeeded)
-        {
-            filteredUsers = await DbContext.Users.Include(u => u.UserProfile)
-                                                 .Where(u => u.UserProfile != null && u.UserProfile.FirstName.Contains(searchString, StringComparison.OrdinalIgnoreCase))
-                                                 .ToListAsync();
-        }
-        else
-        {
-            Console.WriteLine("Error confirming email");
-        }
+        NavigationManager.NavigateTo($"/punchcards/edit/{userId}");
     }
 }

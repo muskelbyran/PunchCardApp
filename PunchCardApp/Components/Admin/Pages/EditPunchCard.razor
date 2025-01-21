@@ -1,9 +1,14 @@
-﻿@page "/users/punchcard/{userId:guid}"
+﻿@* 
+    Baserad på referens (3) The Complete Tutorial [ASP.NET Core - G-kraven] - Hans Mattin-Lassei (2024-04-04)
+    Även tagit hjälp av ChatGPT med concurrency. 
+ *@
+@page "/punchcards/edit/{userId:guid}"
 @using System.ComponentModel.DataAnnotations
 @using Microsoft.AspNetCore.Identity
 @using Microsoft.AspNetCore.Components.Authorization
 @using Microsoft.EntityFrameworkCore
 @using PunchCardApp.Data
+@using PunchCardApp.Entities
 
 @rendermode InteractiveServer
 
@@ -16,82 +21,60 @@
 
 <PageTitle>Edit User Profile</PageTitle>
 <div class="details">
-    <div class="basic-info">
-        @if (!string.IsNullOrEmpty(@StatusMessage))
-        {
-            <div class="alert alert-info">@StatusMessage</div>
-        }
-
-        <EditForm Model="EditProfileForm" OnValidSubmit="OnValidSubmitAsync" class="edit-form" FormName="editProfile" method="post" novalidate>
+    <section class="punchcard-management">
+        <h2>Punch Card Management</h2>
+        <EditForm Model="PunchCardForm" OnValidSubmit="OnValidSubmitPunchCardAsync">
             <DataAnnotationsValidator />
-            <h2>Edit Profile</h2>
-            <div class="content">
-                <div class="input-group" id="form-firstname">
-                    <label>First Name</label>
-                    <InputText @bind-Value="EditProfileForm.FirstName" />
-                    <ValidationMessage For="() => EditProfileForm.FirstName" />
-                </div>
-                <div class="input-group" id="form-lastname">
-                    <label>Last Name</label>
-                    <InputText @bind-Value="EditProfileForm.LastName" />
-                    <ValidationMessage For="() => EditProfileForm.LastName" />
-                </div>
-                <div class="input-group" id="form-phone">
-                    <label>Phone Number</label>
-                    <InputText @bind-Value="EditProfileForm.PhoneNumber" />
-                    <ValidationMessage For="() => EditProfileForm.PhoneNumber" />
-                </div>
-                <div class="input-group" id="form-email">
-                    <label>Email</label>
-                    <InputText @bind-Value="EditProfileForm.Email" />
-                    <ValidationMessage For="() => EditProfileForm.Email" />
-                </div>
-                <div class="input-group" id="form-bio">
-                    <label>Biography</label>
-                    <InputTextArea @bind-Value="EditProfileForm.Biography" />
-                    <ValidationMessage For="() => EditProfileForm.Biography" />
-                </div>
-                <div class="form-buttons">
-                    <button class="btn-theme" type="submit">Save changes</button>
-                    <button class="btn-gray" type="reset">Cancel</button>
-                </div>
+            <ValidationSummary />
+            <div class="input-group">
+                <label>Type</label>
+                <InputText @bind-Value="PunchCardForm.Type" />
+                <ValidationMessage For="() => PunchCardForm.Type" />
+            </div>
+            <div class="input-group">
+                <label>Total Uses</label>
+                <InputNumber @bind-Value="PunchCardForm.TotalUses" />
+                <ValidationMessage For="() => PunchCardForm.TotalUses" />
+            </div>
+            <div class="form-buttons">
+                <button class="btn-theme" type="submit">Save PunchCard</button>
             </div>
         </EditForm>
-        <section class="address-info">
-            <h5>Address</h5>
-            <EditForm Model="AddressInfoForm" OnValidSubmit="OnValidSubmitAddressAsync" class="edit-form" FormName="addressForm" method="post" novalidate>
-                <DataAnnotationsValidator />
-                <div class="content">
-                    <div id="form-addressline-1" class="input-group">
-                        <label>Address Line 1</label>
-                        <InputText @bind-Value="AddressInfoForm.AddressLine_1" />
-                        <ValidationMessage For="() => AddressInfoForm.AddressLine_1" />
-                    </div>
-                    <div id="form-addressline-2" class="input-group">
-                        <label>Address line 2<span>(optional)</span></label>
-                        <InputText @bind-Value="AddressInfoForm.AddressLine_2" />
-                        <ValidationMessage For="() => AddressInfoForm.AddressLine_2" />
-                    </div>
-                    <div id="form-postalcode" class="input-group">
-                        <label>Postal Code</label>
-                        <InputText @bind-Value="AddressInfoForm.PostalCode" />
-                        <ValidationMessage For="() => AddressInfoForm.PostalCode" />
-                    </div>
-                    <div id="form-city" class="input-group">
-                        <label>City</label>
-                        <InputText @bind-Value="AddressInfoForm.City" />
-                        <ValidationMessage For="() => AddressInfoForm.City" />
-                    </div>
-                    <div class="form-buttons">
-                        <button class="btn-gray" type="reset">Cancel</button>
-                        <button class="btn-theme" type="submit">Save changes</button>
-                    </div>
-                </div>
-            </EditForm>
-        </section>
-    </div>
-</div>
 
+        <h3>Existing Punch Cards</h3>
+        @if (UserPunchCards != null && UserPunchCards.Any())
+        {
+            <table>
+                <thead>
+                    <tr>
+                        <th>Type</th>
+                        <th>Purchased Date</th>
+                        <th>Uses Left</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var card in UserPunchCards)
+                    {
+                        <tr>
+                            <td>@card.Type</td>
+                            <td>@card.PurchasedDate.ToShortDateString()</td>
+                            <td>@card.UsesLeft</td>
+                            <td>
+                                <button @onclick="() => UsePunchCardAsync(card.Id)">Use</button>
+                                <button @onclick="() => DeletePunchCardAsync(card.Id)">Delete</button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <p>No punch cards found.</p>
+        }
+    </section>
+</div>
 
 @code {
     [Parameter]
@@ -100,172 +83,186 @@
     [SupplyParameterFromQuery]
     public string? StatusMessage { get; set; } = "";
 
-    public EditProfileFormModel EditProfileForm { get; set; } = new();
-    public AddressInfoFormModel AddressInfoForm { get; set; } = new();
-
-    protected override async Task OnInitializedAsync()
+    public async Task OnValidSubmitPunchCardAsync()
     {
         try
         {
             var currentUser = await DbContext.Users
                 .Include(u => u.UserProfile)
-                .Include(u => u.UserAddress)
                 .FirstOrDefaultAsync(u => u.Id == userId.ToString());
 
-            if (currentUser != null)
+            if (currentUser == null || string.IsNullOrEmpty(currentUser.UserProfileId))
             {
-                EditProfileForm.FirstName = currentUser.UserProfile?.FirstName ?? "";
-                EditProfileForm.LastName = currentUser.UserProfile?.LastName ?? "";
-                EditProfileForm.PhoneNumber = currentUser.PhoneNumber ?? "";
-                EditProfileForm.Email = currentUser.Email ?? "";
-                EditProfileForm.Biography = currentUser.UserProfile?.Biography ?? "";
-
-                AddressInfoForm.AddressLine_1 = currentUser.UserAddress?.AddressLine_1 ?? "";
-                AddressInfoForm.AddressLine_2 = currentUser.UserAddress?.AddressLine_2 ?? "";
-                AddressInfoForm.PostalCode = currentUser.UserAddress?.PostalCode ?? "";
-                AddressInfoForm.City = currentUser.UserAddress?.City ?? "";
+                StatusMessage = "User or user profile not found.";
+                return;
             }
+
+            var punchCard = new PunchCardEntity
+                {
+                    PurchasedDate = DateTime.UtcNow,
+                    TotalUses = PunchCardForm.TotalUses,
+                    Type = PunchCardForm.Type,
+                    UsesLeft = PunchCardForm.TotalUses,
+                    UserProfileId = currentUser.UserProfileId, // Link to the user profile
+                };
+
+            DbContext.PunchCards.Add(punchCard);
+            await DbContext.SaveChangesAsync();
+
+            StatusMessage = "Punch card created successfully!";
+            await LoadUserPunchCardsAsync();
         }
         catch (Exception ex)
         {
-            StatusMessage = "An error occurred while fetching user profile.";
-            Logger.LogError($"Error fetching user profile: {ex.Message}");
+            Logger.LogError($"Error saving punch card: {ex.Message} | Inner Exception: {ex.InnerException?.Message}");
+            StatusMessage = "An error occurred while creating the punch card.";
         }
     }
 
-    public async Task OnValidSubmitAsync()
+        
+public class PunchCardFormModel
+{
+    [Required]
+    public string Type { get; set; } = "";
+    
+    [Required]
+    [Range(1, int.MaxValue, ErrorMessage = "Total uses must be at least 1.")]
+    public int TotalUses { get; set; }
+}
+
+public PunchCardFormModel PunchCardForm { get; set; } = new();
+public List<PunchCardEntity> UserPunchCards { get; set; } = new();
+
+protected override async Task OnInitializedAsync()
+{
+    await LoadUserPunchCardsAsync();
+}
+
+        private async Task LoadUserPunchCardsAsync()
+        {
+        var currentUser = await DbContext.Users
+     .Include(u => u.UserProfile)
+     .FirstOrDefaultAsync(u => u.Id == userId.ToString());
+
+        if (currentUser == null || string.IsNullOrEmpty(currentUser.UserProfileId))
+        {
+            StatusMessage = "Invalid user or profile not found.";
+            return;
+        }
+
+        UserPunchCards = await DbContext.PunchCards
+            .Where(pc => pc.UserProfileId == currentUser.UserProfileId)
+            .Include(pc => pc.PunchCardUses)
+            .ToListAsync();
+
+        }
+
+        private async Task CreateOrUpdatePunchCardAsync()
+        {
+            try
+            {
+            PunchCardForm = new PunchCardFormModel
+            {
+                Type = "",
+                TotalUses = 0
+            };
+
+                var punchCard = new PunchCardEntity
+                {
+                    UserProfileId = userId.ToString(),
+                    Type = PunchCardForm.Type,
+                    PurchasedDate = DateTime.Now,
+                    TotalUses = PunchCardForm.TotalUses,
+                    UsesLeft = PunchCardForm.TotalUses,
+                    PunchCardUses = new List<PunchCardUseEntity>()
+                };
+
+            UserPunchCards = await DbContext.PunchCards
+    .Where(pc => pc.UserProfileId == userId.ToString())
+    .Include(pc => pc.PunchCardUses)
+    .ToListAsync();
+
+
+                DbContext.PunchCards.Add(punchCard);
+                await DbContext.SaveChangesAsync();
+
+                StatusMessage = "Punch card created successfully!";
+                await LoadUserPunchCardsAsync();
+            }
+            catch (Exception ex)
+            {
+                StatusMessage = "An error occurred while creating the punch card.";
+                Logger.LogError($"Error creating punch card: {ex.Message}");
+            }
+        }
+
+    private async Task UsePunchCardAsync(int punchCardId)
     {
         try
         {
-            var currentUser = await DbContext.Users
-                .Include(u => u.UserProfile)
-                .Include(u => u.UserAddress)
-                .FirstOrDefaultAsync(u => u.Id == userId.ToString());
+            var punchCard = await DbContext.PunchCards
+                .Include(pc => pc.PunchCardUses)
+                .FirstOrDefaultAsync(pc => pc.Id == punchCardId);
 
-            if (currentUser != null)
+            if (punchCard != null && punchCard.UsesLeft > 0)
             {
-                if (currentUser.UserProfile != null)
+                using (var transaction = await DbContext.Database.BeginTransactionAsync())
                 {
-                    currentUser.UserProfile.FirstName = EditProfileForm.FirstName;
-                    currentUser.UserProfile.LastName = EditProfileForm.LastName;
-                    currentUser.UserProfile.Biography = EditProfileForm.Biography;
-                }
-                else
-                {
-                    currentUser.UserProfile = new UserProfile
+                    punchCard.UsesLeft--;
+                    punchCard.PunchCardUses.Add(new PunchCardUseEntity
                         {
-                            FirstName = EditProfileForm.FirstName,
-                            LastName = EditProfileForm.LastName,
-                            Biography = EditProfileForm.Biography
-                        };
-                }
+                            PunchCardId = punchCard.Id,
+                            UsedDate = DateTime.Now
+                        });
 
-                currentUser.PhoneNumber = EditProfileForm.PhoneNumber;
-                currentUser.Email = EditProfileForm.Email;
+                    try
+                    {
+                        await DbContext.SaveChangesAsync();  
 
-                var result = await UserManager.UpdateAsync(currentUser);
-
-                if (result.Succeeded)
-                {
-                    StatusMessage = "Profile updated successfully!";
+                        await transaction.CommitAsync();  
+                        StatusMessage = "Punch card used successfully!";
+                    }
+                    catch (DbUpdateConcurrencyException ex)
+                    {
+                        await transaction.RollbackAsync(); 
+                        StatusMessage = "A concurrency issue occurred. Please try again.";
+                        Logger.LogError($"Concurrency issue: {ex.Message}");
+                    }
                 }
-                else
-                {
-                    StatusMessage = "Error updating profile.";
-                }
+                await LoadUserPunchCardsAsync(); 
+            }
+            else
+            {
+                StatusMessage = "No uses left on this punch card.";
             }
         }
         catch (Exception ex)
         {
-            StatusMessage = "An error occurred while updating profile.";
-            Logger.LogError($"Error updating profile: {ex.Message}");
+            StatusMessage = "An error occurred while using the punch card.";
+            Logger.LogError($"Error using punch card: {ex.Message}");
         }
     }
 
-    public async Task OnValidSubmitAddressAsync()
-    {
-        try
+
+        private async Task DeletePunchCardAsync(int punchCardId)
         {
-            var currentUser = await DbContext.Users
-                .Include(u => u.UserAddress)
-                .FirstOrDefaultAsync(u => u.Id == userId.ToString());
-
-            if (currentUser != null)
+            try
             {
-                if (currentUser.UserAddress != null)
+                var punchCard = await DbContext.PunchCards.FindAsync(punchCardId);
+                if (punchCard != null)
                 {
-                    currentUser.UserAddress.AddressLine_1 = AddressInfoForm.AddressLine_1;
-                    currentUser.UserAddress.AddressLine_2 = AddressInfoForm.AddressLine_2;
-                    currentUser.UserAddress.PostalCode = AddressInfoForm.PostalCode;
-                    currentUser.UserAddress.City = AddressInfoForm.City;
-                }
-                else
-                {
-                    currentUser.UserAddress = new UserAddress
-                        {
-                            AddressLine_1 = AddressInfoForm.AddressLine_1,
-                            AddressLine_2 = AddressInfoForm.AddressLine_2,
-                            PostalCode = AddressInfoForm.PostalCode,
-                            City = AddressInfoForm.City
-                        };
-                }
-
-                var result = await UserManager.UpdateAsync(currentUser);
-
-                if (result.Succeeded)
-                {
-                    StatusMessage = "Address updated successfully!";
-                }
-                else
-                {
-                    StatusMessage = "Error updating address.";
+                    DbContext.PunchCards.Remove(punchCard);
+                    await DbContext.SaveChangesAsync();
+                    StatusMessage = "Punch card deleted successfully!";
+                    await LoadUserPunchCardsAsync();
                 }
             }
+            catch (Exception ex)
+            {
+                StatusMessage = "An error occurred while deleting the punch card.";
+                Logger.LogError($"Error deleting punch card: {ex.Message}");
+            }
         }
-        catch (Exception ex)
-        {
-            StatusMessage = "An error occurred while updating address.";
-            Logger.LogError($"Error updating address: {ex.Message}");
-        }
-    }
+   
 
-    public class EditProfileFormModel
-    {
-        [Display(Name = "First Name")]
-        [Required(ErrorMessage = "First name is required")]
-        public string FirstName { get; set; } = "";
-
-        [Display(Name = "Last Name")]
-        [Required(ErrorMessage = "Last name is required")]
-        public string LastName { get; set; } = "";
-
-        [Display(Name = "Phone Number")]
-        public string PhoneNumber { get; set; } = "";
-
-        [Display(Name = "Email")]
-        [Required(ErrorMessage = "Email address is required")]
-        [EmailAddress(ErrorMessage = "Invalid email address")]
-        public string Email { get; set; } = "";
-
-        [Display(Name = "Biography")]
-        public string Biography { get; set; } = "";
-    }
-
-    public class AddressInfoFormModel
-    {
-        [Display(Name = "Address Line 1")]
-        [Required(ErrorMessage = "Address line 1 is required")]
-        public string AddressLine_1 { get; set; } = "";
-
-        [Display(Name = "Address Line 2")]
-        public string? AddressLine_2 { get; set; }
-
-        [Display(Name = "Postal Code")]
-        [Required(ErrorMessage = "Postal code is required")]
-        public string PostalCode { get; set; } = "";
-
-        [Display(Name = "City")]
-        [Required(ErrorMessage = "City is required")]
-        public string City { get; set; } = "";
-    }
 }

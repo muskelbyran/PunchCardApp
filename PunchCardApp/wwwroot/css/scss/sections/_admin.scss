@@ -65,8 +65,11 @@ button.btn-primary {
 .owlbear {
 
     .main-content {
-        /*  background-color: #582F1E;*/
         background-color: #E8FAF4;
+        width: 100vw;   /*Figure out how to make it fill all the width*/
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
 
         .content-card {
             /*background-color: #E7881F;*/

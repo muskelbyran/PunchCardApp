@@ -33,7 +33,7 @@
     }
 }
 
-.content-card {   
+.content-card {
     border-radius: 15px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     padding: 2rem;
@@ -45,7 +45,7 @@
     .nav-tabs {
         border-bottom: 1px solid #dee2e6;
         display: flex;
-        justify-content: space-around; 
+        justify-content: space-around;
 
         .nav-item {
             margin-bottom: -1px;
@@ -58,6 +58,7 @@
                 position: relative;
                 background-color: transparent;
                 border: none;
+                cursor: pointer; 
 
                 &.profil {
                     &.active {
@@ -68,6 +69,7 @@
                     &:hover::after {
                         width: 100%;
                         background-color: rgba(0, 0, 0, 0.2);
+                        cursor: pointer;
                     }
                 }
 

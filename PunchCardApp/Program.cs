@@ -15,7 +15,6 @@ if (builder.Environment.IsDevelopment())
     builder.Configuration.AddUserSecrets<Program>();
 }
 
-// Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents()
     .AddInteractiveWebAssemblyComponents();
@@ -34,7 +33,6 @@ builder.Services.AddAuthentication(options =>
 })
     .AddIdentityCookies();
 
-// Load external secrets file based on the environment
 var secretsFilePath = builder.Environment.IsDevelopment()
         ? "secrets.Development.json"
         : Path.Combine(builder.Environment.ContentRootPath, "../secrets.Production.json");

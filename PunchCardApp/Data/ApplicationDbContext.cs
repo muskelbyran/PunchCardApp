@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using PunchCardApp.Components.Admin.Pages;
 using PunchCardApp.Entities;
 
 namespace PunchCardApp.Data;
@@ -30,4 +31,5 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
             .WithMany()
             .HasForeignKey(p => p.UserProfileId);
     }
+
 }

@@ -295,31 +295,33 @@ h6 {
   background-color: white;
   border-radius: 10px;
   padding: 1rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 .overlay .dialog .dialog-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 2rem;
+  border-bottom: 1px solid #eee;
 }
 .overlay .dialog .dialog-body {
   padding: 2rem;
 }
 .overlay .dialog .dialog-footer {
   padding: 2rem;
+  text-align: right;
 }
-.overlay .close {
+.overlay .btn-close {
   height: 40px;
   width: 40px;
-  background-color: black;
-  transition: 0.25s ease;
+  transition: background-color 0.25s ease;
   border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
 }
-.overlay .close:hover {
+.overlay .btn-close:hover {
   background-color: #ddd;
 }
 
@@ -1164,6 +1166,7 @@ main {
   position: relative;
   background-color: transparent;
   border: none;
+  cursor: pointer;
 }
 .content-card .nav-tabs .nav-item .nav-link.profil.active {
   color: #000;
@@ -1172,6 +1175,7 @@ main {
 .content-card .nav-tabs .nav-item .nav-link.profil:hover::after {
   width: 100%;
   background-color: rgba(0, 0, 0, 0.2);
+  cursor: pointer;
 }
 .content-card .nav-tabs .nav-item .nav-link.klippkort.active {
   color: #000;
@@ -1274,8 +1278,11 @@ button.btn-primary:hover {
 }
 
 .owlbear .main-content {
-  /*  background-color: #582F1E;*/
   background-color: #E8FAF4;
+  width: 100vw; /*Figure out how to make it fill all the width*/
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 .owlbear .main-content .content-card {
   /*background-color: #E7881F;*/
