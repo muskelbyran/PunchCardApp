@@ -1,11 +1,21 @@
 /*@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&display=swap');
 */
-$font-roboto: 'Roboto', sans-serif;
+/*$font-roboto: 'Roboto', sans-serif;
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@200;300;400;500;600;700;800&display=swap');
 
 @mixin standard-text {
     line-height: 160%;
     font-family: "Roboto", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+}
+*/
+
+@charset "utf-8";
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+@mixin standard-text {
+    line-height: 160%;
     font-weight: 400;
     font-style: normal;
 }
@@ -17,7 +27,6 @@ $font-roboto: 'Roboto', sans-serif;
 }
 
 @mixin text-nav { @include standard-text; font-size: 16px; color: var(--color-gray-800); font-weight: 600 !important; }
-
 @mixin text-xs { @include standard-text; font-size: 12px !important;}
 @mixin text-s { @include standard-text; font-size: 14px !important; }
 @mixin text-m { @include standard-text; font-size: 16px !important; }
@@ -39,74 +48,23 @@ $font-roboto: 'Roboto', sans-serif;
 @mixin h5 { @include standard-heading; font-size: 20px !important; }
 @mixin h6 { @include standard-heading; font-size: 16px !important; }
 
-.text-xs {
-    @include text-xs;
-}
+.text-xs   { @include text-xs; }
+.text-s    { @include text-s; }
+.text-m    { @include text-m; }
+.text-lg   { @include text-lg; }
+.text-xl   { @include text-xl; }
+.text-lead { @include text-lead; }
 
-.text-s {
-    @include text-s;
-}
+.d1 { @include d1; }
+.d2 { @include d2; }
+.d3 { @include d3; }
+.d4 { @include d4; }
+.d5 { @include d5; }
+.d6 { @include d6; }
 
-.text-m {
-    @include text-m;
-}
-
-.text-lg {
-    @include text-lg;
-}
-
-.text-xl {
-    @include text-xl;
-}
-
-.text-lead {
-    @include text-lead;
-}
-
-.d1 {
-    @include d1;
-}
-
-.d2 {
-    @include d2;
-}
-
-.d3 {
-    @include d3;
-}
-
-.d4 {
-    @include d4;
-}
-
-.d5 {
-    @include d5;
-}
-
-.d6 {
-    @include d6;
-}
-
-h1, .h1 {
-    @include h1;
-}
-
-h2, .h2 {
-    @include h2;
-}
-
-h3, .h3 {
-    @include h3;
-}
-
-h4, .h4 {
-    @include h4;
-}
-
-h5, .h5 {
-    @include h5;
-}
-
-h6, .h6 {
-    @include h6;
-}
+h1, .h1 { @include h1; }
+h2, .h2 { @include h2; }
+h3, .h3 { @include h3; }
+h4, .h4 { @include h4; }
+h5, .h5 { @include h5; }
+h6, .h6 { @include h6; }

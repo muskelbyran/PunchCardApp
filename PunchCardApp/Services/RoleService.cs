@@ -2,14 +2,9 @@
 
 namespace PunchCardApp.Services;
 
-public class RoleService
+public class RoleService(AuthenticationStateProvider authenticationStateProvider)
 {
-    private readonly AuthenticationStateProvider _authenticationStateProvider;
-
-    public RoleService(AuthenticationStateProvider authenticationStateProvider)
-    {
-        _authenticationStateProvider = authenticationStateProvider;
-    }
+    private readonly AuthenticationStateProvider _authenticationStateProvider = authenticationStateProvider;
 
     public async Task<bool> IsUserAsync()
     {

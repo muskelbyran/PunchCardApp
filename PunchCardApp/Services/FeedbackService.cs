@@ -3,26 +3,19 @@ using PunchCardApp.Factories;
 using PunchCardApp.Models;
 using PunchCardApp.Repositories;
 
-public class FeedbackService
+public class FeedbackService(FeedbackRepository feedbackRepository)
 {
-    private readonly FeedbackRepository _feedbackRepository;
-
-    public FeedbackService(FeedbackRepository feedbackRepository)
-    {
-        _feedbackRepository = feedbackRepository;
-    }
+    private readonly FeedbackRepository _feedbackRepository = feedbackRepository;
 
     public async Task<ResponseResult> CreateFeedbackAsync(FeedbackModel feedback)
     {
         try
         {
-            // Validate that the Message is not null or empty
             if (string.IsNullOrWhiteSpace(feedback.Message))
             {
                 return ResponseFactory.Error("Message cannot be empty.");
             }
 
-            // Map the FeedbackModel to FeedbackEntity
             var feedbackEntity = new FeedbackEntity
             {
                 Message = feedback.Message,
@@ -34,7 +27,6 @@ public class FeedbackService
                 IsPraise = feedback.IsPraise
             };
 
-            // Insert the feedback into the repository
             return await _feedbackRepository.CreateOneAsync(feedbackEntity);
         }
         catch (Exception ex)

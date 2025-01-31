@@ -1,6 +1,4 @@
-﻿using PunchCardApp.Components.Admin.Pages;
-
-namespace PunchCardApp.Entities;
+﻿namespace PunchCardApp.Entities;
 
 public class PunchCardUseEntity
 {
@@ -8,4 +6,5 @@ public class PunchCardUseEntity
     public int PunchCardId { get; set; }
     public PunchCardEntity PunchCard { get; set; } = null!;
     public DateTime UsedDate { get; set; }
+    public string UsedBy { get; set; } = null!;
 }

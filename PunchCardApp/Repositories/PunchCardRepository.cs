@@ -8,12 +8,27 @@ public class PunchCardRepository(ApplicationDbContext context)
 
     public async Task<List<PunchCardEntity>> GetPunchCardsByUserProfileIdAsync(string userProfileId)
     {
-        return await _context.PunchCards
-            .Where(pc => pc.UserProfileId == userProfileId)
-            .Include(pc => pc.PunchCardUses)
-            .ToListAsync();
-    }
+        //return await _context.PunchCards
+        //    .Where(pc => pc.UserProfileId == userProfileId)
+        //    .Include(pc => pc.PunchCardUses)
+        //    .ToListAsync();
 
+        var punchCards = await _context.PunchCards
+                               .Where(pc => pc.UserProfileId == userProfileId)
+                               .Include(pc => pc.PunchCardUses)
+                               .ToListAsync();
+
+        Console.WriteLine($"Fetched {punchCards.Count} punch cards for UserProfileId: {userProfileId}");
+
+        foreach (var pc in punchCards)
+        {
+             Console.WriteLine($"PunchCard {pc.Id}: Type={pc.Type}, TotalUses={pc.TotalUses}, UsesLeft={pc.UsesLeft}");
+             Console.WriteLine($"Usage count: {pc.PunchCardUses.Count}");
+        }
+
+        return punchCards;
+    }
+   
     public async Task<PunchCardEntity?> GetPunchCardByIdAsync(int punchCardId)
     {
         return await _context.PunchCards

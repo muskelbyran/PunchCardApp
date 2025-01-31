@@ -8,6 +8,11 @@
     background-color: #fff6f2;
     overflow: auto;
     box-sizing: border-box;
+
+    @media (max-width: 767px) {
+        padding: 0.5rem; 
+        height: 100vh; 
+    }
 }
 
 .mobile-nav {
@@ -37,6 +42,7 @@
     border-radius: 15px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     padding: 2rem;
+    margin: 0;
     max-width: 800px;
     width: 100%;
     text-align: center;
@@ -58,7 +64,7 @@
                 position: relative;
                 background-color: transparent;
                 border: none;
-                cursor: pointer; 
+                cursor: pointer;
 
                 &.profil {
                     &.active {
@@ -139,5 +145,16 @@
                 }
             }
         }
+    }
+
+    @media (max-width: 767px) {
+        width: calc(100% - 1rem); 
+        max-width: 100%;
+        height: 100vh; 
+        margin: auto;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
     }
 }

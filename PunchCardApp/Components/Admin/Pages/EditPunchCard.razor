@@ -9,6 +9,7 @@
 @using Microsoft.EntityFrameworkCore
 @using PunchCardApp.Data
 @using PunchCardApp.Entities
+@using PunchCardApp.Models
 
 @rendermode InteractiveServer
 
@@ -72,6 +73,43 @@
         {
             <p>No punch cards found.</p>
         }
+
+        <h3>Historik över klippkort</h3>
+        @if (UserPunchCards != null && UserPunchCards.Any())
+        {
+            Console.WriteLine($"Fetched {UserPunchCards.Count} punch cards for UserProfileId: [userProfileId]");
+
+            @foreach (var card in UserPunchCards)
+            {
+                <div class="punch-card-history">
+                    <h4>Klippkort: @card.Type</h4>
+                    <p>Köpt: @card.PurchasedDate.ToShortDateString()</p>
+                    <p>Totalt antal användningar: @card.TotalUses</p>
+                    <p>Kvarvarande användningar: @card.UsesLeft</p>
+
+                    <h5>Användarhistorik:</h5>
+                    @if (card.PunchCardUses.Any())
+                    {
+                        <ul>
+                            @foreach (var use in card.PunchCardUses)
+                            {
+                                <li>@use.UsedDate.ToShortDateString() av @use.UsedBy</li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <p>Ingen användarhistorik tillgänglig.</p>
+                    }
+                </div>
+            }
+        }
+        else
+        {
+            Console.WriteLine("No punch cards found for the current user.");
+            <p>Ingen historik att visa.</p>
+        }
+
     </section>
 </div>
 
@@ -84,10 +122,13 @@ public string? StatusMessage { get; set; } = "";
 
 public PunchCardFormModel PunchCardForm { get; set; } = new();
 public List<PunchCardEntity> UserPunchCards { get; set; } = new();
+private List<PunchCardHistoryModel> PunchCardHistory { get; set; } = new();
+public List<PunchCardHistoryModel> UserPunchCardHistory { get; set; } = new();
 
 protected override async Task OnInitializedAsync()
 {
     await LoadUserPunchCardsAsync();
+    PunchCardHistory = await PunchCardService.GetPunchCardHistoryAsync(userId.ToString());
 }
 
 private async Task OnValidSubmitPunchCardAsync()
@@ -126,12 +167,17 @@ private async Task LoadUserPunchCardsAsync()
     try
     {
         var currentUser = await DbContext.Users
-            .Include(u => u.UserProfile)
-            .FirstOrDefaultAsync(u => u.Id == userId.ToString());
+                          .Include(u => u.UserProfile)
+                          .FirstOrDefaultAsync(u => u.Id == userId.ToString());
 
         if (currentUser != null && !string.IsNullOrEmpty(currentUser.UserProfileId))
         {
-            UserPunchCards = await PunchCardService.GetPunchCardsForUserAsync(currentUser.UserProfileId);
+            UserPunchCards = await DbContext.PunchCards
+                            .Where(pc => pc.UserProfileId == currentUser.UserProfileId)
+                            .Include(pc => pc.PunchCardUses)
+                            .ToListAsync();            
+
+           PunchCardHistory = await PunchCardService.GetPunchCardHistoryAsync(currentUser.UserProfileId);
         }
         else
         {
@@ -140,8 +186,8 @@ private async Task LoadUserPunchCardsAsync()
     }
     catch (Exception ex)
     {
-    Logger.LogError($"Error loading punch cards: {ex.Message}");
-    StatusMessage = "An error occurred while loading punch cards.";
+        Logger.LogError($"Error loading punch cards: {ex.Message}");
+        StatusMessage = "An error occurred while loading punch cards.";
     }
 }
 
