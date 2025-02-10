@@ -41,17 +41,7 @@
     }
 }
 
-// a {
-//     @include btn;
-//     @include buttons-colors(var(--color-primary), var(--color-secondary), var(--color-accent), var(--color-primary), )
-// }
-
-// button {
-//     @include btn;
-//     @include buttons-colors(var(--color-primary), var(--color-secondary), var(--color-accent), var(--color-primary))
-// }
-
-// .btn-primary {
-//     @include btn;
-//     @include buttons-colors(var(--color-primary), var(--color-secondary), var(--color-accent), var(--color-primary))
-// }
+@mixin button-hover($bg-color, $border-color) {
+    background: $bg-color !important;
+    border: 3px solid $border-color !important;
+}

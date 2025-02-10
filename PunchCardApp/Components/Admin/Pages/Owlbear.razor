@@ -50,7 +50,7 @@
                     <td>@(user.UserProfile?.FirstName ?? "N/A") @(user.UserProfile?.LastName ?? "N/A")</td>
                     <td>@user.Email</td>
                     <td>
-                        <button class="button btn-theme"
+                        <button class="btn btn-primary"
                             @onclick="() => EditUser(user.Id)">
                             Edit
                         </button>

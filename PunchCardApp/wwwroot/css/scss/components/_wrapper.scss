@@ -10,11 +10,13 @@
         grid-template-rows: auto auto 1fr auto; // grön rad längst upp, header, main, footer
     }
 
+
     main {
-        flex: 1; 
+
+        flex: 1;
     }
 
     footer {
-        flex: 0; 
+        flex: 0;
     }
 }

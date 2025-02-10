@@ -8,3 +8,6 @@ REFERENSER
 
 3) The Complete Tutorial [ASP.NET Core - G-kraven] - Hans Mattin-Lassei (2024-04-04)
    https://youtu.be/qFW0YNYy6wg?si=oOBdNwrFWY-oY9pL	
+
+4) Bootstrap Gradient Button - Akshayannadate (2025-02-02)
+   https://bootsnipp.com/snippets/Gl29g

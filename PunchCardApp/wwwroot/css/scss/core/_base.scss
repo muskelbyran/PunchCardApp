@@ -13,13 +13,21 @@
 
 html, body, section, div, header, footer, main, aside, nav, blockquote, p, a, span {
     margin: 0;
-    padding: 0; 
+    padding: 0;
     text-decoration: none;
+    max-width: 100%;
+    overflow-x: hidden;
+    overflow: hidden;
 }
 
 img, svg {
     vertical-align: middle;
 }
+
+img {
+    max-width: 100%;
+    height: auto;
+    }
 
 body {
     @include text;
@@ -27,9 +35,10 @@ body {
     color: var(--color-default); 
     background-color: #fff6f2;
     overflow-x: hidden;  /*Nödvändig?*/
+
 }
 
-@media (max-width: 768px) {
+@media (max-width: 64rem) {
     .layout {
         flex-direction: column;
     }
@@ -39,8 +48,14 @@ body {
         width: 0;
     }
 
+    .content-card {
+        display: none !important;
+        width: 0;
+    }
+
     main {
         margin-left: 0 !important; // Tack ChatGPT
+
     }
 
     .mobile-nav {

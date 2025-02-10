@@ -28,3 +28,110 @@
     width: 55px;
     font-size: 1.6rem;
 }
+
+.btn-rounded {
+    border-radius: 35px;
+    transition: background 0.3s ease, border 0.3s ease;
+
+    &:hover {
+        //      background: var(--color-primary) !important;
+        border: 3px solid var(--color-primary) !important;
+    }
+}
+
+.btn-fab {
+    height: 50px;
+    width: 53px;
+    border-radius: 50%;
+    transition: background 0.3s ease, border 0.3s ease;
+
+    &:hover {
+        //   background: var(--color-primary) !important;
+        border: 3px solid var(--color-primary) !important;
+    }
+}
+
+// The following buttons are based on reference (4) Bootstrap Gradient Button - (Akshayannadate, 2025)
+.btn-purple-moon {
+    background: #4e54c8; // Fallback for old browsers
+    background: -webkit-linear-gradient(to right, #8f94fb, #4e54c8); // Chrome 10-25, Safari 5.1-6
+    background: linear-gradient(to right, #8f94fb, #4e54c8); // W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+
+    color: #fff;
+    border: 3px solid #eee;
+}
+
+.btn-ultra-voilet {
+    background: #654ea3; // Fallback for old browsers
+    background: -webkit-linear-gradient(to right, #eaafc8, #654ea3); // Chrome 10-25, Safari 5.1-6
+    background: linear-gradient(to right, #eaafc8, #654ea3); // W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+
+    color: #fff;
+    border: 3px solid #eee;
+
+   // &:hover {
+        
+   // }
+}
+
+.btn-pink-moon {
+    background: #ec008c; // Fallback for old browsers
+    background: -webkit-linear-gradient(to right, #fc6767, #ec008c); // Chrome 10-25, Safari 5.1-6
+    background: linear-gradient(to right, #fc6767, #ec008c); // W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+
+    color: #fff;
+    border: 3px solid #eee;
+}
+
+.btn-cool-blues {
+    background: #2193b0; // Fallback for old browsers
+    background: -webkit-linear-gradient(to right, #6dd5ed, #2193b0); // Chrome 10-25, Safari 5.1-6
+    background: linear-gradient(to right, #6dd5ed, #2193b0); // W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+
+    color: #fff;
+    border: 3px solid #eee;
+}
+
+.btn-dark-blue {
+    background: #7474BF; // Fallback for old browsers
+    background: -webkit-linear-gradient(to right, #348AC7, #7474BF); // Chrome 10-25, Safari 5.1-6
+    background: linear-gradient(to right, #348AC7, #7474BF); // W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+
+    color: #fff;
+    border: 3px solid #eee;
+}
+
+.btn-green-moon {
+    background: #56ab2f; // Fallback for old browsers
+    background: -webkit-linear-gradient(to right, #a8e063, #56ab2f); // Chrome 10-25, Safari 5.1-6
+    background: linear-gradient(to right, #a8e063, #56ab2f); // W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+
+    color: #fff;
+    border: 3px solid #eee;
+}
+
+.btn-orange-moon {
+    background: #fc4a1a; // Fallback for old browsers
+    background: -webkit-linear-gradient(to right, #f7b733, #fc4a1a); // Chrome 10-25, Safari 5.1-6
+    background: linear-gradient(to right, #f7b733, #fc4a1a); // W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+
+    color: #fff;
+    border: 3px solid #eee;
+}
+
+.btn-dark-moon {
+    background: #141E30; // Fallback for old browsers
+    background: -webkit-linear-gradient(to right, #243B55, #141E30); // Chrome 10-25, Safari 5.1-6
+    background: linear-gradient(to right, #243B55, #141E30); // W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+
+    color: #fff;
+    border: 3px solid #eee;
+}
+
+.btn-light-moon {
+    background: #FFEFBA; // Fallback for old browsers
+    background: -webkit-linear-gradient(to right, #FFFFFF, #FFEFBA); // Chrome 10-25, Safari 5.1-6
+    background: linear-gradient(to right, #FFFFFF, #FFEFBA); // W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+
+    color: #000;
+    border: 3px solid #eee;
+}
+
+.btn-funky-moon {
+    background: #A770EF; // Fallback for old browsers
+    background: -webkit-linear-gradient(145deg, #FDB99B, #CF8BF3, #A770EF); // Chrome 10-25, Safari 5.1-6
+    background: linear-gradient(145deg, #FDB99B, #CF8BF3, #A770EF); // W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+
+    color: #fff;
+    border: 3px solid #eee;
+}
