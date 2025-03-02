@@ -11,3 +11,6 @@ REFERENSER
 
 4) Bootstrap Gradient Button - Akshayannadate (2025-02-02)
    https://bootsnipp.com/snippets/Gl29g
+
+5) Css Confetti on Click - RewKun (2025-02-13)
+   https://codepen.io/rewkun/pen/ExMeeBV

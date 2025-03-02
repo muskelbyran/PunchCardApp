@@ -8,85 +8,65 @@
 @inject NavigationManager NavigationManager
 @inject RoleService RoleService
 @rendermode InteractiveServer﻿
+<AuthorizeView>
+    <Authorized>
 
 <aside class="auto-hiding-nav-menu"
      @onmouseover="ExpandNavMenu"
      @onmouseout="CollapseNavMenu">
 
-    <AuthorizeView>
-    <Authorized>
+
     <nav class="nav-menu @(collapseNavMenu ? "collapsed" : "expand")">
         <div class="sidebar-logo @(collapseNavMenu ? "collapsed" : "")">
             <img src="/images/small-logo.png" alt="Muskelbyrån Logo" />
         </div>
         <div class="nav-menu-inner">
-            <NavLink class="nav-link" href="Account/Deets" Match="NavLinkMatch.All">
-                <span>
-                    <i class="fa-regular fa-user"></i>
-                    <span class="nav-item-text">Profil</span>
-                </span>
-            </NavLink>
-            @if (IsManager || IsAdmin)
-            {
-                <NavLink class="nav-link btn-transparent" href="Admin/PunchCard">
-                    <span>
-                        <i class="fa-solid fa-gauge-high"></i>
-                        <span class="nav-item-text">Klippkort</span>
-                    </span>
-                </NavLink>
-            }
-            @if (IsManager || IsAdmin)
-            {
-            <NavLink class="nav-link btn-transparent" href="Admin/Aardvark">
-                <span>
-                    <i class="fa-solid fa-gauge-high"></i>
-                    <span class="nav-item-text">Backoffice</span>
-                </span>
-            </NavLink>
-            }
-            @if (IsAdmin)
-            {
-            <NavLink class="nav-link btn-transparent" href="Admin/Owlbear">
-                <span>
-                    <i class="fa-solid fa-gauge-high"></i>
-                    <span class="nav-item-text">Backroom</span>
-                </span>
-            </NavLink>
-            }
-
-            <NavLink class="nav-link btn-transparent" href="Account/Feedback">
-                <span>
-                    <i class="fa-regular fa-message"></i>
-                    <span class="nav-item-text">Feedback</span>
-                </span>
-            </NavLink>
-            <NavLink class="nav-link btn-transparent" href="/">
-                <span>
-                    <i class="fa-regular fa-circle-question"></i>
-                    <span class="nav-item-text">Support</span>
-                </span>
-            </NavLink>
-            <NavLink class="nav-link btn-transparent" href="Admin/Landing">
-                <span>
-                    <i class="fa-regular fa-rectangle-list"></i>
-                    <span class="nav-item-text">Changelog</span>
-                </span>
-            </NavLink>
-            <NavLink class="nav-link" href="/">
-                <form action="Account/Logout" method="post">
-                    <AntiforgeryToken />
-                    <input type="hidden" name="ReturnUrl" value="@currentUrl" />
-                    <button type="submit" class="nav-link">
-                        <i class="fa-solid fa-right-from-bracket"></i>
-                        <span class="nav-item-text">Logga ut</span>
-                    </button>
-                </form>
-            </NavLink>            
-        </div>
+                    <NavLink class="nav-item" href="/account/">
+                        <i class="fa-solid fa-house"></i>
+                        <span>Hem</span>
+                    </NavLink>
+                    <NavLink class="nav-item" href="/mob/history">
+                        <i class="fa-regular fa-file"></i>
+                        <span>Historik</span>
+                    </NavLink>
+                    <NavLink class="nav-item" href="/account/deets">
+                        <i class="fa-regular fa-user"></i>
+                        <span>Profil</span>
+                    </NavLink>
+                    <NavLink class="nav-item" href="/mob/security">
+                        <i class="fa-solid fa-shield-halved"></i>
+                        <span>Konto</span>
+                    </NavLink>
+                </div>
     </nav>
-    </Authorized>
-    </AuthorizeView>
+
 </aside>
+
+<aside id="mobile-navbar">
+    <NavLink class="nav-item" href="/mob/account">
+        <i class="fa-solid fa-house"></i>
+        <span>Hem</span>
+    </NavLink>
+    <NavLink class="nav-item" href="/mob/history">
+        <i class="fa-regular fa-file"></i>
+        <span>Historik</span>
+    </NavLink>
+    <NavLink class="nav-item" href="/mob/profile">
+        <i class="fa-regular fa-user"></i>
+        <span>Profil</span>
+    </NavLink>
+    <NavLink class="nav-item" href="/mob/security">
+        <i class="fa-solid fa-shield-halved"></i>
+        <span>Konto</span>
+    </NavLink>
+
+    @*     <div class="copyright">
+    <p>©@DateTime.Now.Year Muskelbyrån.</p>
+    </div> *@
+</aside>
+
+    </Authorized>
+</AuthorizeView>
 
 @code {
     private bool IsUser { get; set; }

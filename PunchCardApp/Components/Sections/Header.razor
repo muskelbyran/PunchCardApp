@@ -1,54 +1,7 @@
-﻿﻿@using Microsoft.AspNetCore.Components.Authorization
-@inject AuthenticationStateProvider AuthenticationStateProvider
+﻿<header>
 
-<header>
-    <div class="container">
-        <a id="logo" href="/">
-            <img src="/images/header.jpg" alt="Muskelbyrån Logo" />
-        </a>
-       @*  <div id="menu">
-            <nav>
-                <AuthorizeView>
-                    <Authorized>
-                        <NavLink class="menu-link" href="/courses">Klippkort</NavLink>
-                        <NavLink class="menu-link" href="/Account/Deets">Konto</NavLink>
-
-                        @if (IsAdmin)
-                        {
-                            <NavLink class="menu-link" href="/Admin/Landing">Admin</NavLink>
-                        }
-                    </Authorized>
-                </AuthorizeView>            
-            </nav>
-        </div> *@
-@*         <div id="account-buttons">
-            <AuthorizeView>
-                <Authorized>
-                    <div class="profile">
-                        <div class="profile-image">
-                            <a href="/account/deets">
-                                <img src="~/images/uploads/profiles/" />
-                            </a>
-                        </div>
-                    </div>
-                    <a href="/signout" class="btn-theme"><i class="fa-regular fa-right-from-bracket"></i><span>Logga ut</span></a>
-                </Authorized>
-            </AuthorizeView>
-        </div>       *@
-    </div>
 </header>
 
 @code {
-    private bool IsAdmin { get; set; }
-
-    protected override async Task OnInitializedAsync()
-    {
-        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-        var user = authState.User;
-
-        if (user.Identity != null && user.Identity.IsAuthenticated)
-        {
-            IsAdmin = user.IsInRole("Admin");
-        }
-    }
+  
 }

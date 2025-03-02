@@ -1,15 +1,26 @@
 ﻿<section id="mobile-footer">
-		<button class="btn-social"><i class="fa-brands fa-facebook"></i>Hem</button>
-	<button class="btn-social"><i class="fa-brands fa-facebook"></i>Historik</button>
-	<button class="btn-social"><i class="fa-brands fa-facebook"></i>Profil</button>
-	<button class="btn-social"><i class="fa-brands fa-facebook"></i>Konto</button>
-	
-	<div class="copyright">
-		<p>©@DateTime.Now.Year Muskelbyrån.</p>
-	</div>
+    <NavLink class="nav-item" href="/mob/account">
+        <i class="fa-solid fa-house"></i>
+        <span>Hem</span>
+    </NavLink>
+    <NavLink class="nav-item" href="/mob/history">
+        <i class="fa-regular fa-file"></i>
+        <span>Historik</span>
+    </NavLink>
+    <NavLink class="nav-item" href="/mob/profile">
+        <i class="fa-regular fa-user"></i>
+        <span>Profil</span>
+    </NavLink>
+    <NavLink class="nav-item" href="/mob/security">
+        <i class="fa-solid fa-shield-halved"></i>
+        <span>Konto</span>
+    </NavLink>
 
-	
+@*     <div class="copyright">
+        <p>©@DateTime.Now.Year Muskelbyrån.</p>
+    </div> *@
 </section>
+
 
 @code {
 

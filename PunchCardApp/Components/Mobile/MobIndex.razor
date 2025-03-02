@@ -17,98 +17,58 @@
 @inject PunchCardService PunchCardService
 
 <section id="mobile-body">
-    Klippkort
+ 
     <div class="mobile-container">
-        <h2>Punch Card Management</h2>
-        <h3>Existing Punch Cards</h3>
 
-        @if (UserPunchCards != null && UserPunchCards.Any())
-        {
-            <table>
-                <thead>
-                    <tr>
-                        <th>Type</th>
-                        <th>Purchased Date</th>
-                        <th>Uses Left</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var card in UserPunchCards)
-                    {
-                        <tr>
-                            <td>@card.Type</td>
-                            <td>@card.PurchasedDate.ToShortDateString()</td>
-                            <td>@card.UsesLeft</td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        }
-        else
-        {
-            <p>No punch cards found.</p>
-        }
-
-        <h3>Historik över klippkort</h3>
         @if (UserPunchCards != null && UserPunchCards.Any())
         {
             @foreach (var card in UserPunchCards)
             {
                 <div class="punch-card">
-                    <h4>@card.Type</h4>
-                    <p><strong>Köpt:</strong> @card.PurchasedDate.ToShortDateString()</p>
-                    <p><strong>Totalt antal användningar:</strong> @card.TotalUses</p>
-                    <p><strong>Kvarvarande användningar:</strong> @card.UsesLeft</p>
-
-                    <!-- Display heart icons for each use -->
-                    <div>
+                    <h4>@card.Type</h4>                  
+                    @*     <button @onclick="TriggerConfetti" class="btn btn-pink-moon" id="confettiButton">
+                        Använd!
+                    </button> *@
+                    <button class="btn btn-copper">Färdigknådad</button>
+                    <div class="punches">
                         @for (int i = 0; i < card.TotalUses; i++)
                         {
-                            <i class="fa-solid fa-heart" style="color: @(i < card.TotalUses - card.UsesLeft ? "red" : "black");"></i>
+                            var circleColor = i < (card.TotalUses - card.UsesLeft) ? "pink" : "black";
+                            <i class="fa-solid fa-circle" style="color: @circleColor;"></i>
                         }
                     </div>
 
-                    <h5>Användarhistorik:</h5>
-                    @if (card.PunchCardUses.Any())
-                    {
-                        <ul>
-                            @foreach (var use in card.PunchCardUses)
-                            {
-                                <li>@use.UsedDate.ToShortDateString() av @use.UsedBy</li>
-                            }
-                        </ul>
-                    }
-                    else
-                    {
-                        <p>Ingen användarhistorik tillgänglig.</p>
-                    }
                 </div>
             }
         }
         else
         {
             <p>Ingen historik att visa.</p>
-        }
-
-        <button>Använd klippkort</button>
+        }       
     </div>
 
-    <div class="mobile-container">
-        <button>Se nyheter</button>
+    <div class="punch-card">
+        <div id="form-button">
+            <button class="w-100 btn btn-lg btn-copper">Nyheter</button>
+        </div>
     </div>
-    <div class="mobile-container">
-        <button>Feedback</button>
+
+    <div class="punch-card">
+        <div id="form-button">
+            <button class="w-100 btn btn-lg btn-copper">Feedback</button>
+        </div>
     </div>
-    <div class="mobile-container">
-        <button>Kontakt</button>
+    <div class="punch-card">
+        <div id="form-button">
+            <button class="w-100 btn btn-lg btn-copper">Kontakt</button>
+        </div>
     </div>
-    <div class="mobile-container">
-        <button>Backoffice</button>
+    <div class="punch-card">
+        <div id="form-button">
+            <button class="w-100 btn btn-lg btn-copper">Backoffice</button>
+        </div>
     </div>
 </section>
-
-
 
 @code {
     [SupplyParameterFromQuery]
@@ -186,6 +146,11 @@
         [Range(1, int.MaxValue, ErrorMessage = "Antal klipp måste vara minst 1.")]
         public int TotalUses { get; set; }
     }
+
+    // private async Task TriggerConfetti()
+    // {
+    //     await JS.InvokeVoidAsync("confettiEffect", "#confettiButton");
+    // }
 }
 
 

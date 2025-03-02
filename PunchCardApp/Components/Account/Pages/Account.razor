@@ -1,21 +1,182 @@
-﻿@page "/Account"
-@using PunchCardApp.Components.Assets
+﻿@*
+    Baserad på referens (3) The Complete Tutorial [ASP.NET Core - G-kraven] - Hans Mattin-Lassei (2024-04-04)
+    Även tagit hjälp av ChatGPT med concurrency.
+ *@
+@page "/Account"
+@using System.ComponentModel.DataAnnotations
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.EntityFrameworkCore
+@using PunchCardApp.Data
+@using PunchCardApp.Entities
 @using PunchCardApp.Models
+@using PunchCardApp.Components.Assets
 @using PunchCardApp.Components.Layout
+
 @layout AccountLayout
+
+@inject UserManager<ApplicationUser> UserManager
+@inject NavigationManager NavigationManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject ApplicationDbContext DbContext
+@inject PunchCardService PunchCardService
 
 @rendermode InteractiveServer
 
 <PageTitle>Home</PageTitle>
-<PunchCardApp.Components.Mobile.MobHeader />
-<main class="main-content">
-    <PunchCardApp.Components.Mobile.MobIndex />
-    <div class="content-card">
-      <h1>Welcome!</h1>
-      <p>This is your main content area with a nice card-like appearance.</p>
+<main class="main-content-container">
+    <div class="main-content one">
+        <div class="content-card">
+            @if (UserPunchCards != null && UserPunchCards.Any())
+            {
+                @foreach (var card in UserPunchCards)
+                {
+                    <div class="punch-card">
+                        <h4>@card.Type</h4>
+
+                        <button class="btn btn-copper">Färdigknådad</button>
+                        <div class="punches">
+                            @for (int i = 0; i < card.TotalUses; i++)
+                            {
+                                <i class="fa-solid fa-heart" style="color: @(i < card.TotalUses - card.UsesLeft ? "red" : "black");"></i>
+                            }
+                        </div>
+
+                    </div>
+                }
+            }
+            else
+            {
+                <p>Ingen historik att visa.</p>
+            }
+
+           
+        </div>
+        <div class="punch-card">
+            <div id="form-button">
+                <button class="w-100 btn btn-lg btn-copper" onclick="toggleRightContent()">Nyheter</button>
+            </div>
+        </div>
+
+        <div class="punch-card">
+            <div id="form-button">
+                <button class="w-100 btn btn-lg btn-copper">Feedback</button>
+            </div>
+        </div>
+        <div class="punch-card">
+            <div id="form-button">
+                <button class="w-100 btn btn-lg btn-copper">Kontakt</button>
+            </div>
+        </div>
+        <div class="punch-card">
+            <div id="form-button">
+                <button class="w-100 btn btn-lg btn-copper">Backoffice</button>
+            </div>
+        </div>
+       
     </div>
-  </main>
+
+    <aside class="right-content two @( _isRightContentVisible ? "show" : "")">
+        <i class="fa-solid fa-x close-icon" @onclick="ToggleRightContent"></i>
+        testtest
+    </aside>
+</main>
+
+<script>
+    function toggleRightContent() {
+        let rightContent = document.querySelector('.right-content');
+        rightContent.classList.toggle('show');
+    }
+</script>
 
 
-<PunchCardApp.Components.Mobile.MobFooter />
+@code {
+    [SupplyParameterFromQuery]
+    public string? StatusMessage { get; set; } = "";
+
+    private bool _isRightContentVisible = false;
+
+    public PunchCardFormModel PunchCardForm { get; set; } = new();
+    public List<PunchCardEntity> UserPunchCards { get; set; } = new();
+    private List<PunchCardHistoryModel> PunchCardHistory { get; set; } = new();
+    public List<PunchCardHistoryModel> UserPunchCardHistory { get; set; } = new();
+
+    private string? userId;
+
+    private void ToggleRightContent()
+    {
+        _isRightContentVisible = !_isRightContentVisible;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity?.IsAuthenticated ?? false)
+        {
+            var currentUser = await UserManager.GetUserAsync(user);
+            if (currentUser != null)
+            {
+                userId = currentUser.Id;
+                await LoadUserPunchCardsAsync();
+                PunchCardHistory = await PunchCardService.GetPunchCardHistoryAsync(userId);
+            }
+            else
+            {
+                Console.WriteLine("Hittar inte användare!");
+            }
+        }
+    }
+
+    private async Task LoadUserPunchCardsAsync()
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(userId))
+            {
+                Console.WriteLine("Användare är null!");
+                return;
+            }
+
+            var userProfileId = await DbContext.Users
+                .Where(u => u.Id == userId)
+                .Select(u => u.UserProfileId)
+                .FirstOrDefaultAsync();
+
+            if (string.IsNullOrEmpty(userProfileId))
+            {
+                Console.WriteLine("UserProfileId är null eller ej satt för användare: " + userId);
+                return;
+            }
+
+            UserPunchCards = await DbContext.PunchCards
+                .Where(pc => pc.UserProfileId == userProfileId)
+                .Include(pc => pc.PunchCardUses)
+                .ToListAsync();
+
+            Console.WriteLine($"Hittade {UserPunchCards.Count} klippkort.");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Gick ej att ladda klippkort: {ex.Message}");
+            StatusMessage = "Fel uppstod när klippkort skulle laddas.";
+        }
+    }
+
+    public class PunchCardFormModel
+    {
+        [Required]
+        public string Type { get; set; } = "";
+
+        [Required]
+        [Range(1, int.MaxValue, ErrorMessage = "Antal klipp måste vara minst 1.")]
+        public int TotalUses { get; set; }
+    }
+
+    // private async Task TriggerConfetti()
+    // {
+    //     await JS.InvokeVoidAsync("confettiEffect", "#confettiButton");
+    // }
+}
 

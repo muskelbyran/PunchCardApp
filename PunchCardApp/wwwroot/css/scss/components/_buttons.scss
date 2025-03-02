@@ -135,3 +135,22 @@
     color: #fff;
     border: 3px solid #eee;
 }
+
+.btn-copper2 {
+    background: #B79891; 
+    background: -webkit-linear-gradient(to right, #B79891, #94716B); /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, #B79891, #94716B); /* Modern browsers */
+    color: #fff;
+    border: 3px solid #eee;
+}
+
+.btn-copper {
+    --angle: 45deg;
+    background: linear-gradient(var(--angle), hsl(27, 100%, 20%), hsl(34, 100%, 41.6%));
+    border: 3px solid #eee;
+}
+
+
+
+
+
