@@ -1,4 +1,8 @@
-﻿@page "/Account"
+﻿@*
+    Baserad på referens (3) The Complete Tutorial [ASP.NET Core - G-kraven] - Hans Mattin-Lassei (2024-04-04)
+    Även tagit hjälp av ChatGPT med concurrency.
+ *@
+@page "/account/history"
 @using System.ComponentModel.DataAnnotations
 @using Microsoft.AspNetCore.Identity
 @using Microsoft.AspNetCore.Components.Authorization
@@ -6,10 +10,8 @@
 @using PunchCardApp.Data
 @using PunchCardApp.Entities
 @using PunchCardApp.Models
-@using PunchCardApp.Components.Assets
-@using PunchCardApp.Components.Layout
 
-@layout AccountLayout
+@rendermode InteractiveServer
 
 @inject UserManager<ApplicationUser> UserManager
 @inject NavigationManager NavigationManager
@@ -17,66 +19,101 @@
 @inject ApplicationDbContext DbContext
 @inject PunchCardService PunchCardService
 
-@rendermode InteractiveServer
+<PageTitle>Klippkortshistorik</PageTitle>
 
-<PageTitle>Home</PageTitle>
 <main class="main-content-container">
     <div class="main-content one">
-        <div class="content-card">
-            @if (UserPunchCards != null && UserPunchCards.Any())
-            {
-                @foreach (var card in UserPunchCards)
-                {
-                    <div class="punch-card">
-                        <h4>@card.Type</h4>
 
-                        <button class="btn btn-copper">Färdigknådad</button>
-                        <div class="punches">
-                            @for (int i = 0; i < card.TotalUses; i++)
+        <h2>Punch Card Management</h2>
+        <h3>Existing Punch Cards</h3>
+        @if (UserPunchCards != null && UserPunchCards.Any())
+        {
+            <table>
+                <thead>
+                    <tr>
+                        <th>Type</th>
+                        <th>Purchased Date</th>
+                        <th>Uses Left</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var card in UserPunchCards)
+                    {
+                        <tr>
+                            <td>@card.Type</td>
+                            <td>@card.PurchasedDate.ToShortDateString()</td>
+                            <td>@card.UsesLeft</td>
+
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <p>No punch cards found.</p>
+        }
+
+        <h3>Historik över klippkort</h3>
+        @if (UserPunchCards != null && UserPunchCards.Any())
+        {
+            Console.WriteLine($"Fetched {UserPunchCards.Count} punch cards for UserProfileId: [userProfileId]");
+
+            @foreach (var card in UserPunchCards)
+            {
+                <div class="punch-card-history">
+                    <h4>Klippkort: @card.Type</h4>
+                    <p>Köpt: @card.PurchasedDate.ToShortDateString()</p>
+                    <p>Totalt antal användningar: @card.TotalUses</p>
+                    <p>Kvarvarande användningar: @card.UsesLeft</p>
+
+                    <h5>Användarhistorik:</h5>
+                    @if (card.PunchCardUses.Any())
+                    {
+                        <ul>
+                            @foreach (var use in card.PunchCardUses)
                             {
-                                <i class="fa-solid fa-heart" style="color: @(i < card.TotalUses - card.UsesLeft ? "red" : "black");"></i>
+                                <li>@use.UsedDate.ToShortDateString() av @use.UsedBy</li>
                             }
-                        </div>
-                    </div>
-                }
+                        </ul>
+                    }
+                    else
+                    {
+                        <p>Ingen användarhistorik tillgänglig.</p>
+                    }
+                </div>
             }
-            else
-            {
-                <p>Ingen historik att visa.</p>
-            }
-        </div>
-
-        <div class="button-card">
-            <button class="btn btn-pink" @onclick="ShowNewsContent">Nyheter</button>
-            <button class="btn btn-pink" @onclick="ShowFeedbackContent">Feedback</button>
-            <button class="btn btn-pink" @onclick="ShowContactContent">Kontakt</button>
-            <NavLink class="btn btn-pink" href="/Admin/Aardvark">Backoffice</NavLink>
-        </div>
+        }
+        else
+        {
+            Console.WriteLine("No punch cards found for the current user.");
+            <p>Ingen historik att visa.</p>
+        }
     </div>
 
-    <aside class="right-content @( _isRightContentVisible ? "show" : "")">
+
+     <aside class="right-content two @( _isRightContentVisible ? "show" : "")">
         <i class="fa-solid fa-x close-icon" @onclick="ToggleRightContent"></i>
-        <img src="/images/test.jpeg" />
+    
     </aside>
 
-    <aside class="right-content2 @( _isRightContentVisible2 ? "show" : "")">
-        <i class="fa-solid fa-x close-icon" @onclick="ToggleRightContent2"></i>
-       <PunchCardApp.Components.Account.Sections.Feedback />
-    </aside>
 
-    <aside class="right-content3 @( _isRightContentVisible3 ? "show" : "")">
-        <i class="fa-solid fa-x close-icon" @onclick="ToggleRightContent3"></i>
-       <PunchCardApp.Components.Account.Sections.Contact />
-    </aside>
-</main>
+    </main>
+
+<script>
+    function toggleRightContent() {
+        let rightContent = document.querySelector('.right-content');
+        rightContent.classList.toggle('show');
+    }
+</script>
+
 
 @code {
     [SupplyParameterFromQuery]
     public string? StatusMessage { get; set; } = "";
 
-    private bool _isRightContentVisible = false;
-    private bool _isRightContentVisible2 = false;
-    private bool _isRightContentVisible3 = false;
+     private bool _isRightContentVisible = false;
 
     public PunchCardFormModel PunchCardForm { get; set; } = new();
     public List<PunchCardEntity> UserPunchCards { get; set; } = new();
@@ -85,40 +122,9 @@
 
     private string? userId;
 
-    private void ShowNewsContent()
-    {
-        _isRightContentVisible = true;
-        _isRightContentVisible2 = false;
-        _isRightContentVisible3 = false;
-    }
-
-    private void ShowFeedbackContent()
-    {
-        _isRightContentVisible = false;
-        _isRightContentVisible2 = true;
-        _isRightContentVisible3 = false;
-    }
-
-    private void ShowContactContent()
-    {
-        _isRightContentVisible = false;
-        _isRightContentVisible2 = false;
-        _isRightContentVisible3 = true;
-    }
-
-    private void ToggleRightContent()
+        private void ToggleRightContent()
     {
         _isRightContentVisible = !_isRightContentVisible;
-    }
-
-    private void ToggleRightContent2()
-    {
-        _isRightContentVisible2 = !_isRightContentVisible2;
-    }
-
-    private void ToggleRightContent3()
-    {
-        _isRightContentVisible3 = !_isRightContentVisible3;
     }
 
     protected override async Task OnInitializedAsync()

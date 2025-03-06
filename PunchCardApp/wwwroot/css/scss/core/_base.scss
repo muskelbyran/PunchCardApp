@@ -30,6 +30,7 @@ span {
     max-width: 100%;
     overflow-x: hidden;
     overflow: hidden;
+    overflow-y: auto;
 }
 
 img, svg {
@@ -44,8 +45,8 @@ img {
 body {
     @include text;
     font-size: 16px;
-    background-color: #ffadad;
-    /*  background-color: var( --color-background);*/
+    /*background-color: #ffadad;*/
+      background-color: var( --color-background);
 }
 
 @media (max-width: 64rem) {
@@ -58,43 +59,13 @@ body {
         width: 0;
     }
 
-    .content-card {
+/*    .content-card {
         display: none !important;
         width: 0;
-    }
+    }*/
 
     main {
         margin-left: 0 !important; // Tack ChatGPT
 
     }
-
-    //.mobile-nav {
-    //    display: flex; 
-    //    justify-content: center;
-    //    flex-wrap: wrap;
-    //}
 }
-
-/*.right-content {
-    display: none; 
-    background-color: lightcoral;
-    padding: 20px;
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 300px; 
-    height: 100%;
-    z-index: 10;
-    transform: translateX(100%);
-    transition: transform 0.3s ease;
-}
-
-@media (max-width: 767px) {
-    .right-content {
-        display: block;
-    }
-
-    .right-content.show {
-        transform: translateX(0); 
-    }
-}*/

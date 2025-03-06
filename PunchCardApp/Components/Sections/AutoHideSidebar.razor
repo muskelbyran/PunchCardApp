@@ -15,17 +15,17 @@
      @onmouseover="ExpandNavMenu"
      @onmouseout="CollapseNavMenu">
 
-
     <nav class="nav-menu @(collapseNavMenu ? "collapsed" : "expand")">
         <div class="sidebar-logo @(collapseNavMenu ? "collapsed" : "")">
             <img src="/images/small-logo.png" alt="Muskelbyrån Logo" />
         </div>
+              
         <div class="nav-menu-inner">
                     <NavLink class="nav-item" href="/account/">
                         <i class="fa-solid fa-house"></i>
                         <span>Hem</span>
                     </NavLink>
-                    <NavLink class="nav-item" href="/mob/history">
+                    <NavLink class="nav-item" href="/account/history">
                         <i class="fa-regular fa-file"></i>
                         <span>Historik</span>
                     </NavLink>
@@ -33,7 +33,7 @@
                         <i class="fa-regular fa-user"></i>
                         <span>Profil</span>
                     </NavLink>
-                    <NavLink class="nav-item" href="/mob/security">
+                    <NavLink class="nav-item" href="/account/settings">
                         <i class="fa-solid fa-shield-halved"></i>
                         <span>Konto</span>
                     </NavLink>
@@ -43,19 +43,19 @@
 </aside>
 
 <aside id="mobile-navbar">
-    <NavLink class="nav-item" href="/mob/account">
+    <NavLink class="nav-item" href="/account">
         <i class="fa-solid fa-house"></i>
         <span>Hem</span>
     </NavLink>
-    <NavLink class="nav-item" href="/mob/history">
+    <NavLink class="nav-item" href="/account/history">
         <i class="fa-regular fa-file"></i>
         <span>Historik</span>
     </NavLink>
-    <NavLink class="nav-item" href="/mob/profile">
+            <NavLink class="nav-item" href="/account/deets">
         <i class="fa-regular fa-user"></i>
         <span>Profil</span>
     </NavLink>
-    <NavLink class="nav-item" href="/mob/security">
+    <NavLink class="nav-item" href="/account/settings">
         <i class="fa-solid fa-shield-halved"></i>
         <span>Konto</span>
     </NavLink>

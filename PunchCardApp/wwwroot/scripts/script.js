@@ -46,4 +46,3 @@ window.confettiEffect = (selector) => {
 
     button.appendChild(fragment);
 };
-

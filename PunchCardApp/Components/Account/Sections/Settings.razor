@@ -1,0 +1,71 @@
+﻿@*
+    Baserad på referens (3) The Complete Tutorial [ASP.NET Core - G-kraven] - Hans Mattin-Lassei (2024-04-04)
+    Även tagit hjälp av ChatGPT med concurrency.
+ *@
+@page "/account/settings"
+@using System.ComponentModel.DataAnnotations
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.EntityFrameworkCore
+@using PunchCardApp.Components.Account.Shared
+@using PunchCardApp.Data
+@using PunchCardApp.Entities
+@using PunchCardApp.Models
+@using PunchCardApp.Components.Assets
+@using PunchCardApp.Components.Layout
+
+@layout AccountLayout
+
+@inject UserManager<ApplicationUser> UserManager
+@inject NavigationManager NavigationManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject ApplicationDbContext DbContext
+@inject PunchCardService PunchCardService
+
+@rendermode InteractiveServer
+
+<PageTitle>Home</PageTitle>
+<main class="main-content-container">
+	<div class="main-content one">
+
+		<div class="darkmode-toggle">
+			<p>Dark Mode</p>
+			<label class="toggle">
+				<input type="checkbox" id="darkmode-switch">
+				<span class="slider"></span>
+			</label>
+		</div>
+
+		<NavLink class="btn btn-pink" href="#">Byt lösenord</NavLink>
+		<NavLink class="btn btn-pink" href="#">Byt e-post</NavLink>
+		<NavLink class="btn btn-pink" href="#">Avsluta konto</NavLink>
+		<NavLink class="btn btn-pink" href="#">Logga ut</NavLink>
+
+	</div>
+
+	<aside class="right-content two @( _isRightContentVisible ? "show" : "")">
+		<i class="fa-solid fa-x close-icon" @onclick="ToggleRightContent"></i>
+		testtest
+	</aside>
+</main>
+<script src="/scripts/darkmode.js" defer></script>
+<script>
+	function toggleRightContent() {
+		let rightContent = document.querySelector('.right-content');
+		rightContent.classList.toggle('show');
+	}
+</script>
+
+
+@code {
+	[SupplyParameterFromQuery]
+	public string? StatusMessage { get; set; } = "";
+
+	private bool _isRightContentVisible = false;
+
+	private void ToggleRightContent()
+	{
+		_isRightContentVisible = !_isRightContentVisible;
+	}
+}
+
