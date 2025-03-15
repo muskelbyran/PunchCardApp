@@ -3,6 +3,7 @@
 @using Microsoft.AspNetCore.Identity
 @using Microsoft.AspNetCore.Components.Authorization
 @using Microsoft.EntityFrameworkCore
+@using Microsoft.Extensions.Logging
 @using PunchCardApp.Data
 @using PunchCardApp.Entities
 @using PunchCardApp.Models
@@ -30,12 +31,17 @@
                     <div class="punch-card">
                         <h4>@card.Type</h4>
 
-                        <button class="btn btn-copper">Färdigknådad</button>
+                        <PunchButton PunchCardId="@card.Id" CssClass="btn btn-copper" ButtonText="Färdigknådad!" OnPunchUsed="LoadUserPunchCardsAsync" />
+
+
                         <div class="punches">
-                            @for (int i = 0; i < card.TotalUses; i++)
+                            <h3>@card.TotalUses klippkort</h3>
+@*                             @for (int i = 0; i < card.TotalUses; i++)
                             {
                                 <i class="fa-solid fa-heart" style="color: @(i < card.TotalUses - card.UsesLeft ? "red" : "black");"></i>
-                            }
+                            } *@
+                            <progress class="punch-progress" value="@(card.TotalUses - card.UsesLeft)" max="@card.TotalUses"></progress>
+                            <p>@card.UsesLeft klipp kvar.</p>
                         </div>
                     </div>
                 }
@@ -53,6 +59,8 @@
             <NavLink class="btn btn-pink" href="/Admin/Aardvark">Backoffice</NavLink>
         </div>
     </div>
+
+    <aside class="right-content-placeholder">Testing 123...</aside>
 
     <aside class="right-content @( _isRightContentVisible ? "show" : "")">
         <i class="fa-solid fa-x close-icon" @onclick="ToggleRightContent"></i>
@@ -78,10 +86,13 @@
     private bool _isRightContentVisible2 = false;
     private bool _isRightContentVisible3 = false;
 
+    private string? userName;
+
     public PunchCardFormModel PunchCardForm { get; set; } = new();
     public List<PunchCardEntity> UserPunchCards { get; set; } = new();
     private List<PunchCardHistoryModel> PunchCardHistory { get; set; } = new();
     public List<PunchCardHistoryModel> UserPunchCardHistory { get; set; } = new();
+
 
     private string? userId;
 
@@ -125,7 +136,7 @@
     {
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         var user = authState.User;
-
+        
         if (user.Identity?.IsAuthenticated ?? false)
         {
             var currentUser = await UserManager.GetUserAsync(user);
@@ -139,7 +150,8 @@
             {
                 Console.WriteLine("Hittar inte användare!");
             }
-        }
+
+        }      
     }
 
     private async Task LoadUserPunchCardsAsync()
@@ -174,6 +186,28 @@
         {
             Console.WriteLine($"Gick ej att ladda klippkort: {ex.Message}");
             StatusMessage = "Fel uppstod när klippkort skulle laddas.";
+        }
+    }
+
+    private async Task UsePunchCardAsync(int punchCardId, string usedBy)
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        try
+        {
+            if (userName != null)
+            {
+
+                await PunchCardService.UsePunchCardAsync(punchCardId, userName);
+
+                StatusMessage = "Punch card used successfully!";
+                await LoadUserPunchCardsAsync();
+            }
+        }
+        catch (Exception ex)
+        { 
+            StatusMessage = ex.Message;
         }
     }
 

@@ -57,4 +57,18 @@ public class PunchCardRepository(ApplicationDbContext context)
             await _context.SaveChangesAsync();
         }
     }
+
+    public async Task<string> GetUserFullNameByIdAsync(Guid userId)
+    {  
+        var userProfile = await _context.UserProfiles
+            .Where(up => up.Id == userId.ToString()) 
+            .FirstOrDefaultAsync();
+
+        if (userProfile == null)
+        {
+            throw new InvalidOperationException("User profile not found.");
+        }
+        
+        return $"{userProfile.FirstName} {userProfile.LastName}";
+    }
 }

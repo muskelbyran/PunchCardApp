@@ -2,9 +2,23 @@
     display: flex;
     justify-content: space-between;
     width: 100%;
-    height: 100vh; 
+    height: 100vh;
     padding: 0 10px;
     background-color: var(--color-background);
+
+    .right-content-placeholder {
+        width: 50%; 
+        height: 100vh;
+        background-color: transparent;
+    }
+  
+    @media (max-width: 767px) {
+        .right-content-placeholder {
+            display: none;
+        }
+    }
+
+
 
     .darkmode-toggle {
         position: absolute;
@@ -90,6 +104,8 @@
     overflow-y: auto;
     background: var(--color-background);
     border-radius: 20px;
+
+
 }
 
 
@@ -121,6 +137,60 @@
         border-radius: 10px;
         box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
         width: 300px;
+
+        $h: 1em;
+        $r: .5*$h;
+        $b: .15em;
+
+        @mixin val() {
+            border-radius: 1em - .15em;
+            box-shadow: inset 0 .05em .05em rgba(#fff, .35);
+            background: var(--fill)
+        }
+
+
+        @mixin val() {
+            border-radius: 1em; 
+            box-shadow: inset 0 .05em .05em rgba(#fff, .35);
+            background: var(--fill);
+        }
+
+        .punch-progress {
+            box-sizing: border-box;
+            border: solid 0.1em #242b35;
+            width: 3em; 
+            height: 0.5em; 
+            border-radius: calc(0.5 * 1em); 
+            background: linear-gradient(#191c23, #2d3341);
+            font: clamp(0.625em, 7.5vw, 5em) monospace;
+
+            &::-webkit-progress-bar {
+                background: transparent;
+            }
+
+            &::-webkit-progress-value {
+                @include val();
+            }
+
+            &::-moz-progress-bar {
+                @include val();
+            }
+        }
+        // WebKit (Chrome, Safari)
+        .punch-progress::-webkit-progress-bar {
+            background: #ddd;
+            border-radius: 5px;
+        }
+
+        .punch-progress::-webkit-progress-value {
+            background: linear-gradient(#d0a9e2, transparent 85%), linear-gradient(90deg, #433485, #dd3c6e);
+            border-radius: 5px;
+        }
+        // Firefox
+        .punch-progress::-moz-progress-bar {
+            background: linear-gradient(#d0a9e2, transparent 85%), linear-gradient(90deg, #433485, #dd3c6e);
+            border-radius: 5px;
+        }
     }
 
     i {
@@ -260,6 +330,7 @@
     }
 }
 
+
 .button-card {
     display: flex;
     flex-direction: column;
@@ -385,4 +456,7 @@ display: none;
     .right-content3.show {
         right: 0;
     }
+
+
+
 }

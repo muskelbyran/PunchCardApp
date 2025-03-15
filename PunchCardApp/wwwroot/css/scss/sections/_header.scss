@@ -1,4 +1,13 @@
 header {
-    padding: 4em;
+    /*padding: 4em;*/
     background: var(--color-background);
-}
+
+    img {
+        width: auto;
+        margin-top: -240px;
+        }
+
+        @media(min-width: 768px) {
+            display: none;
+        }
+    }

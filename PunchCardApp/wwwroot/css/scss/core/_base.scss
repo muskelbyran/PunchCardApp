@@ -11,6 +11,62 @@
     -webkit-tap-highlight-color: rgba(0,0,0,0);
 }
 
+$h: 1em;
+$r: .5*$h;
+$b: .15em;
+
+@mixin val() {
+    border-radius: $r - $b;
+    box-shadow: inset 0 .05em .05em rgba(#fff, .35);
+    background: var(--fill)
+}
+
+progress {
+    box-sizing: border-box;
+    border: solid $b #242b35;
+    width: 12.5em;
+    height: $h;
+    border-radius: $r;
+    background: linear-gradient(#191c23, #2d3341);
+    font: clamp(.625em, 7.5vw, 5em) monospace;
+
+    &::-webkit-progress-bar {
+        background: transparent
+    }
+
+    &::-webkit-progress-value {
+        @include val()
+    }
+
+    &::-moz-progress-bar {
+        @include val()
+    }  
+}
+
+progress.yellow-orange {
+    --fill: repeating-linear-gradient(90deg, transparent 0 #{$b}, #f1c00c 0 #{$r}) #{.5*$r}, linear-gradient(#f3c402, #ed7401);
+}
+
+progress.red-orange {
+    --fill: linear-gradient(#ffec9d, transparent 85%), linear-gradient(90deg, #ffe94b, #f94745);
+}
+
+progress.red {
+    --fill: linear-gradient(#{rgba(#e2664c, .65)}, transparent), repeating-linear-gradient(135deg, #a22215 0 #{.5*$r}, #be2a20 0 #{$r});
+}
+
+progress.purple {
+    --fill: linear-gradient(#{rgba(#d783e3, .5)}, transparent), conic-gradient(from -30deg at 25%, transparent 240deg, #8b42ab 0%) 0/ #{$h - 2*$b}, conic-gradient(from -30deg at 75%, #8b42ab 240deg, #9956b3 0%) 0/ #{$h - 2*$b};
+}
+
+progress.pink {
+    --fill: linear-gradient(#d0a9e2, transparent 85%), linear-gradient(90deg, #433485, #dd3c6e);
+}
+
+progress.blue {
+    --fill: linear-gradient(#{rgba(#5af0ff, .85)}, transparent), repeating-linear-gradient(90deg, #123c92 0 #{.125*$r}, #1b5ec6 0 #{$h});
+}
+
 html,
 body,
 section,

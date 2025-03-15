@@ -41,7 +41,7 @@ public class PunchCardService(PunchCardRepository repository)
         }).ToList();
     }
 
-    public async Task UsePunchCardAsync(int punchCardId)
+    public async Task UsePunchCardAsync(int punchCardId, string usedBy)
     {
         var punchCard = await _repository.GetPunchCardByIdAsync(punchCardId);
 
@@ -54,7 +54,8 @@ public class PunchCardService(PunchCardRepository repository)
         punchCard.PunchCardUses.Add(new PunchCardUseEntity
         {
             PunchCardId = punchCard.Id,
-            UsedDate = DateTime.UtcNow
+            UsedDate = DateTime.UtcNow,
+            UsedBy = usedBy
         });
 
         await _repository.UpdatePunchCardAsync(punchCard);

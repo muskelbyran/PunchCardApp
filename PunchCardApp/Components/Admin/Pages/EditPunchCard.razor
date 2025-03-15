@@ -17,6 +17,7 @@
 @inject NavigationManager NavigationManager
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject ApplicationDbContext DbContext
+@inject AuthenticationStateProvider AuthStateProvider
 @inject ILogger<EditUser> Logger
 @inject PunchCardService PunchCardService
 
@@ -61,7 +62,7 @@
                             <td>@card.PurchasedDate.ToShortDateString()</td>
                             <td>@card.UsesLeft</td>
                             <td>
-                                <button @onclick="() => UsePunchCardAsync(card.Id)">Use</button>
+                                <button @onclick="() => UsePunchCardAsync(card.Id, card.UserProfileId)">Use</button>
                                 <button @onclick="() => DeletePunchCardAsync(card.Id)">Delete</button>
                             </td>
                         </tr>
@@ -114,94 +115,134 @@
 </div>
 
 @code {
-[Parameter]
-public Guid userId { get; set; }
+    [Parameter]
+    public Guid userId { get; set; }
 
-[SupplyParameterFromQuery]
-public string? StatusMessage { get; set; } = "";
+    [SupplyParameterFromQuery]
+    public string? StatusMessage { get; set; } = "";
 
-public PunchCardFormModel PunchCardForm { get; set; } = new();
-public List<PunchCardEntity> UserPunchCards { get; set; } = new();
-private List<PunchCardHistoryModel> PunchCardHistory { get; set; } = new();
-public List<PunchCardHistoryModel> UserPunchCardHistory { get; set; } = new();
+    public PunchCardFormModel PunchCardForm { get; set; } = new();
+    public List<PunchCardEntity> UserPunchCards { get; set; } = new();
+    private List<PunchCardHistoryModel> PunchCardHistory { get; set; } = new();
+    public List<PunchCardHistoryModel> UserPunchCardHistory { get; set; } = new();
 
-protected override async Task OnInitializedAsync()
-{
-    await LoadUserPunchCardsAsync();
-    PunchCardHistory = await PunchCardService.GetPunchCardHistoryAsync(userId.ToString());
-}
+    private string? userName;
+    private ApplicationUser? selectedUser;
 
-private async Task OnValidSubmitPunchCardAsync()
-{
-    try
+    protected override async Task OnInitializedAsync()
     {
-        var currentUser = await DbContext.Users
-            .Include(u => u.UserProfile)
-            .FirstOrDefaultAsync(u => u.Id == userId.ToString());
+        await LoadUserPunchCardsAsync();
+        PunchCardHistory = await PunchCardService.GetPunchCardHistoryAsync(userId.ToString());
 
-        if (currentUser != null && !string.IsNullOrEmpty(currentUser.UserProfileId))
+        try
         {
-            await PunchCardService.CreatePunchCardAsync(
-                  currentUser.UserProfileId,
-                  PunchCardForm.Type,
-                  PunchCardForm.TotalUses
-                );
+            var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+            var user = authState.User;
 
-             StatusMessage = "Punch card created successfully!";
-             await LoadUserPunchCardsAsync();
+            if (user.Identity?.IsAuthenticated ?? false)
+            {
+                var userId = user.FindFirst(c => c.Type == System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+
+                if (userId != null)
+                {
+                    selectedUser = await DbContext.Users
+                        .AsNoTracking() 
+                        .Include(u => u.UserProfile) 
+                        .FirstOrDefaultAsync(u => u.Id == userId);
+
+                    if (selectedUser != null)
+                    {
+                        var firstName = selectedUser.UserProfile?.FirstName ?? "No First Name";
+                        var lastName = selectedUser.UserProfile?.LastName ?? "No Last Name";
+
+                        userName = $"{firstName} {lastName}";
+                        Console.WriteLine($"User's Name: {userName}");
+
+                    }
+                    else
+                    {
+                        Console.WriteLine("User not found.");
+                    }
+                }
+            }
         }
-        else
+        catch (Exception ex)
         {
-            StatusMessage = "User or profile not found.";
-        }
-    }
-    catch (Exception ex)
-    {
-        Logger.LogError($"Error creating punch card: {ex.Message}");
-        StatusMessage = "An error occurred while creating the punch card.";
-    }
-}
-
-private async Task LoadUserPunchCardsAsync()
-{
-    try
-    {
-        var currentUser = await DbContext.Users
-                          .Include(u => u.UserProfile)
-                          .FirstOrDefaultAsync(u => u.Id == userId.ToString());
-
-        if (currentUser != null && !string.IsNullOrEmpty(currentUser.UserProfileId))
-        {
-            UserPunchCards = await DbContext.PunchCards
-                            .Where(pc => pc.UserProfileId == currentUser.UserProfileId)
-                            .Include(pc => pc.PunchCardUses)
-                            .ToListAsync();            
-
-           PunchCardHistory = await PunchCardService.GetPunchCardHistoryAsync(currentUser.UserProfileId);
-        }
-        else
-        {
-            StatusMessage = "User or profile not found.";
+            Console.WriteLine($"Error loading user details: {ex.Message}");
         }
     }
-    catch (Exception ex)
-    {
-        Logger.LogError($"Error loading punch cards: {ex.Message}");
-        StatusMessage = "An error occurred while loading punch cards.";
-    }
-}
 
-private async Task CreateOrUpdatePunchCardAsync()
-{
-    try
+    private async Task OnValidSubmitPunchCardAsync()
     {
-        PunchCardForm = new PunchCardFormModel
+        try
+        {
+            var currentUser = await DbContext.Users
+                .Include(u => u.UserProfile)
+                .FirstOrDefaultAsync(u => u.Id == userId.ToString());
+
+            if (currentUser != null && !string.IsNullOrEmpty(currentUser.UserProfileId))
+            {
+                await PunchCardService.CreatePunchCardAsync(
+                      currentUser.UserProfileId,
+                      PunchCardForm.Type,
+                      PunchCardForm.TotalUses
+                    );
+
+                StatusMessage = "Punch card created successfully!";
+                await LoadUserPunchCardsAsync();
+            }
+            else
+            {
+                StatusMessage = "User or profile not found.";
+            }
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError($"Error creating punch card: {ex.Message}");
+            StatusMessage = "An error occurred while creating the punch card.";
+        }
+    }
+
+    private async Task LoadUserPunchCardsAsync()
+    {
+        try
+        {
+            var currentUser = await DbContext.Users
+                              .Include(u => u.UserProfile)
+                              .FirstOrDefaultAsync(u => u.Id == userId.ToString());
+
+            if (currentUser != null && !string.IsNullOrEmpty(currentUser.UserProfileId))
+            {
+                UserPunchCards = await DbContext.PunchCards
+                                .Where(pc => pc.UserProfileId == currentUser.UserProfileId)
+                                .Include(pc => pc.PunchCardUses)
+                                .ToListAsync();            
+
+                PunchCardHistory = await PunchCardService.GetPunchCardHistoryAsync(currentUser.UserProfileId);
+            }
+            else
+            {
+                StatusMessage = "User or profile not found.";
+            }
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError($"Error loading punch cards: {ex.Message}");
+            StatusMessage = "An error occurred while loading punch cards.";
+        }
+    }
+
+    private async Task CreateOrUpdatePunchCardAsync()
+    {
+        try
+        {
+            PunchCardForm = new PunchCardFormModel
         {
             Type = "",
             TotalUses = 0
         };
 
-        var punchCard = new PunchCardEntity
+            var punchCard = new PunchCardEntity
         {
             UserProfileId = userId.ToString(),
             Type = PunchCardForm.Type,
@@ -211,38 +252,46 @@ private async Task CreateOrUpdatePunchCardAsync()
             PunchCardUses = new List<PunchCardUseEntity>()
         };
 
-    UserPunchCards = await DbContext.PunchCards
-                           .Where(pc => pc.UserProfileId == userId.ToString())
-                           .Include(pc => pc.PunchCardUses)
-                           .ToListAsync();
+            UserPunchCards = await DbContext.PunchCards
+                                   .Where(pc => pc.UserProfileId == userId.ToString())
+                                   .Include(pc => pc.PunchCardUses)
+                                   .ToListAsync();
 
-    DbContext.PunchCards.Add(punchCard);
-    await DbContext.SaveChangesAsync();
+            DbContext.PunchCards.Add(punchCard);
+            await DbContext.SaveChangesAsync();
 
-    StatusMessage = "Punch card created successfully!";
-    await LoadUserPunchCardsAsync();
+            StatusMessage = "Punch card created successfully!";
+            await LoadUserPunchCardsAsync();
+        }
+        catch (Exception ex)
+        {
+            StatusMessage = "An error occurred while creating the punch card.";
+            Logger.LogError($"Error creating punch card: {ex.Message}");
+        }
     }
-    catch (Exception ex)
-    {
-        StatusMessage = "An error occurred while creating the punch card.";
-        Logger.LogError($"Error creating punch card: {ex.Message}");
-    }
-}
 
-private async Task UsePunchCardAsync(int punchCardId)
-{
-    try
-    {
-        await PunchCardService.UsePunchCardAsync(punchCardId);
-        StatusMessage = "Punch card used successfully!";
-        await LoadUserPunchCardsAsync();
-    }
-    catch (Exception ex)
-    {
-        Logger.LogError($"Error using punch card: {ex.Message}");
-        StatusMessage = ex.Message;
-    }
-}
+	private async Task UsePunchCardAsync(int punchCardId, string usedBy)
+	{
+		var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+		var user = authState.User;
+
+		try
+		{
+			if (userName != null)
+			{
+
+				await PunchCardService.UsePunchCardAsync(punchCardId, userName);
+
+				StatusMessage = "Punch card used successfully!";
+				await LoadUserPunchCardsAsync();
+			}
+		}
+		catch (Exception ex)
+		{
+			Logger.LogError($"Error using punch card: {ex.Message}");
+			StatusMessage = ex.Message;
+		}
+	}
 
 private async Task DeletePunchCardAsync(int punchCardId)
 {

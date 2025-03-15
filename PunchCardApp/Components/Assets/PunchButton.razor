@@ -1,0 +1,71 @@
+﻿<ConfirmDialog @ref="confirmDialog" />
+
+<button @onclick="HandleClick" class="@CssClass" disabled="@IsProcessing">
+    @(IsProcessing ? "Processing..." : ButtonText)
+</button>
+
+@code {
+    [Parameter, EditorRequired] public int PunchCardId { get; set; }
+    [Parameter] public EventCallback OnPunchUsed { get; set; }
+    [Parameter] public string ButtonText { get; set; } = "Use";
+    [Parameter] public string CssClass { get; set; } = "btn btn-primary";
+
+    [Inject] private AuthenticationStateProvider AuthStateProvider { get; set; } = default!;
+    [Inject] private PunchCardService PunchCardService { get; set; } = default!;
+    [Inject] private ApplicationDbContext DbContext { get; set; } = default!;
+
+    private ConfirmDialog confirmDialog;
+    private bool IsProcessing = false;
+
+    private async Task HandleClick()
+    {
+        var confirmed = await confirmDialog.ShowAsync("Bekräfta", "Vill du använda detta klippkort?");
+
+        if (confirmed)
+        {
+            await UsePunchCard();
+        }
+    }
+
+    private async Task UsePunchCard()
+    {
+        IsProcessing = true;
+
+        try
+        {
+            var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+            var user = authState.User;
+
+            if (user.Identity?.IsAuthenticated ?? false)
+            {
+                var userId = user.FindFirst(c => c.Type == System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+
+                if (!string.IsNullOrEmpty(userId))
+                {
+                    var currentUser = await DbContext.Users
+                        .Include(u => u.UserProfile)
+                        .FirstOrDefaultAsync(u => u.Id == userId);
+
+                    if (currentUser?.UserProfile != null)
+                    {
+                        string usedBy = $"{currentUser.UserProfile.FirstName} {currentUser.UserProfile.LastName}";
+                        await PunchCardService.UsePunchCardAsync(PunchCardId, usedBy);
+
+                        if (OnPunchUsed.HasDelegate)
+                        {
+                            await OnPunchUsed.InvokeAsync();
+                        }
+                    }
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error using punch card: {ex.Message}");
+        }
+        finally
+        {
+            IsProcessing = false;
+        }
+    }
+}
