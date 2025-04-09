@@ -8,174 +8,229 @@
 
 <PageTitle>Klippkort</PageTitle>
 <AuthorizeView>
-    <Authorized>
-        <main class="main-content">
-            <div class="content-card">
-                <h3>Sök kund:</h3>
-                <input class="form-control" type="text" placeholder="Search by First Name" @bind="searchString" />
-                <button class="btn btn-primary mt-2" @onclick="SearchUsers">Search</button>
-                @if (filteredUsers != null && filteredUsers.Count > 0)
-                {
-                    <table class="table mt-3">
-                        <thead>
-                            <tr>
-                                <th>Id</th>
-                                <th>User Name</th>
-                                <th>Email</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var user in filteredUsers)
-                            {
-                                <tr>
-                                    <td>@user.Id</td>
-                                    <td>@(user.UserProfile?.FirstName ?? "N/A") @(user.UserProfile?.LastName ?? "N/A")</td>
-                                    <td>@user.Email</td>
-                                    <td>
-                                        <button class="btn btn-theme"
-                                                @onclick="() => EditUser(user)">
-                                            Edit
-                                        </button>
-                                    </td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                }
-                else if (filteredUsers != null)
-                {
-                    <p>No users found with the given first name.</p>
-                }
+	<Authorized>
+		<section class="aardvark">
+			<main class="main-content">
+				@* <div class="content-card"> *@
+				<div class="user-actions">
+					<div class="search-create-container">
+						<div class="search-box">
+							<h3>Sök kund:</h3>
+							<input class="form-control" type="text" placeholder="Sök kund" @bind="searchString" />
+							<button class="btn btn-primary mt-2" @onclick="SearchUsers">Sök</button>
+						</div>
+						<div class="create-user-box">
+							<h3>Skapa kund:</h3>
+							<button class="btn btn-success mt-2" @* @onclick="CreateUser" *@>Skapa ny användare</button>
+						</div>
+						<div class="create-user-box">
+							<h3>Events:</h3>
+							<button class="btn btn-success mt-2" @onclick="ToggleEvents">Events</button>
+						</div>
 
-                @if (areTabsVisible)
-                {
-                    <div>
-                        <ul class="nav nav-tabs">
-                            <li class="nav-item">
-                                <a class="nav-link @(selectedTab == Tab.Kund ? "active" : "")" @onclick="() => SelectTab(Tab.Kund)">
-                                    Kund
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link @(selectedTab == Tab.Klippkort ? "active" : "")" @onclick="() => SelectTab(Tab.Klippkort)">
-                                    Klippkort
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link @(selectedTab == Tab.Uppgifter ? "active" : "")" @onclick="() => SelectTab(Tab.Uppgifter)">
-                                    Kontaktuppgifter
-                                </a>
-                            </li>
-                        </ul>
+						<div class="create-user-box">
+							<h3>Statistik:</h3>
+							<button class="btn btn-success mt-2" @onclick="ToggleStats">Stats</button>
+						</div>
+					</div>
+					@if (filteredUsers != null && filteredUsers.Count > 0)
+					{
+						<table class="table mt-3">
+							<thead>
+								<tr>
+									<th>Id</th>
+									<th>User Name</th>
+									<th>Email</th>
+								</tr>
+							</thead>
+							<tbody>
+								@foreach (var user in filteredUsers)
+								{
+									<tr>
+										<td>@user.Id</td>
+										<td>@(user.UserProfile?.FirstName ?? "N/A") @(user.UserProfile?.LastName ?? "N/A")</td>
+										<td>@user.Email</td>
+										<td>
+											<button class="btn btn-theme"
+													@onclick="() => EditUser(user)">
+												Edit
+											</button>
+										</td>
+									</tr>
+								}
+							</tbody>
+						</table>
+					}
+					else if (filteredUsers != null)
+					{
+						<p>No users found with the given first name.</p>
+					}
+					@if (areTabsVisible)
+					{
+						<div>
+							<ul class="nav nav-tabs">
+								<li class="nav-item">
+									<a class="nav-link @(selectedTab == Tab.Kund ? "active" : "")" @onclick="() => SelectTab(Tab.Kund)">
+										Kund
+									</a>
+								</li>
+								<li class="nav-item">
+									<a class="nav-link @(selectedTab == Tab.Klippkort ? "active" : "")" @onclick="() => SelectTab(Tab.Klippkort)">
+										Klippkort
+									</a>
+								</li>
+								<li class="nav-item">
+									<a class="nav-link @(selectedTab == Tab.Uppgifter ? "active" : "")" @onclick="() => SelectTab(Tab.Uppgifter)">
+										Kontaktuppgifter
+									</a>
+								</li>
+							</ul>
+							<div class="tab-content mt-3">
+								@if (selectedTab == Tab.Kund)
+								{
+									<div class="tab-pane active">
+										@if (selectedUser != null)
+										{
+											<div>
+												<h5>@(selectedUser.UserProfile?.FirstName ?? "N/A") @(selectedUser.UserProfile?.LastName ?? "N/A")</h5>
+												<p>Email: @selectedUser.Email</p>
+												<p>Adress: @selectedUser.UserAddress?.AddressLine_1, @selectedUser.UserAddress?.PostalCode @selectedUser.UserAddress?.City</p>
+												<!-- Add more user details as needed -->
+											</div>
+										}
+									</div>
+								}
+								else if (selectedTab == Tab.Klippkort)
+								{
+									<div class="tab-pane active">
+										I denna fliken så kan man skapa ett nytt klippkort för användaren.
+									</div>
+								}
+								else if (selectedTab == Tab.Uppgifter)
+								{
+									<div class="tab-pane active">
+										@if (selectedUser != null)
+										{
+											<div>
+												<h5>@(selectedUser.UserProfile?.FirstName ?? "N/A") @(selectedUser.UserProfile?.LastName ?? "N/A")</h5>
+												<p>Email: @selectedUser.Email</p>
+												<!-- Add more user details as needed -->
+											</div>
+										}
+										else
+										{
+											<p>No user selected for editing.</p>
+										}
+									</div>
+								}
+							</div>
+						</div>
+					}
+				</div>
+				@* </div> *@
 
-                        <div class="tab-content mt-3">
-                            @if (selectedTab == Tab.Kund)
-                            {
-                                <div class="tab-pane active">
-                                    @if (selectedUser != null)
-                                    {
-                                        <div>
-                                            <h5>@(selectedUser.UserProfile?.FirstName ?? "N/A") @(selectedUser.UserProfile?.LastName ?? "N/A")</h5>
-                                            <p>Email: @selectedUser.Email</p>
-                                            <p>Adress: @selectedUser.UserAddress?.AddressLine_1, @selectedUser.UserAddress?.PostalCode @selectedUser.UserAddress?.City</p>
-                                            <!-- Add more user details as needed -->
-                                        </div>
-                                    }
-                                </div>
-                            }
-                            else if (selectedTab == Tab.Klippkort)
-                            {
-                                <div class="tab-pane active">
-                                    I denna fliken så kan man skapa ett nytt klippkort för användaren.
-                                </div>
-                            }
-                            else if (selectedTab == Tab.Uppgifter)
-                            {
-                                <div class="tab-pane active">
-                                    @if (selectedUser != null)
-                                    {
-                                        <div>
-                                            <h5>@(selectedUser.UserProfile?.FirstName ?? "N/A") @(selectedUser.UserProfile?.LastName ?? "N/A")</h5>
-                                            <p>Email: @selectedUser.Email</p>
-                                            <!-- Add more user details as needed -->
-                                        </div>
-                                    }
-                                    else
-                                    {
-                                        <p>No user selected for editing.</p>
-                                    }
-                                </div>
-                            }
-                        </div>
-                    </div>
-                }
-            </div>
-        </main>
-        
-    </Authorized>
+				@if (showEvents)
+				{
+					<div class="event-info mt-3">
+						<h4>Event Information</h4>
+						<p>Här kan du se information om alla evenemang...</p>
+					</div>
+				}
+
+				@if (showStats)
+				{
+					<div class="stats-info mt-3">
+						<h4>Statistik</h4>
+						<p>Antal registrerade användare: @userCount</p>
+					</div>
+				}
+			</main>
+		</section>
+	</Authorized>
 </AuthorizeView>
 
 @code {
-    private List<ApplicationUser>? filteredUsers;
-    private ApplicationUser selectedUser;
-    private string? searchString;
-    private Tab selectedTab = Tab.Kund;
-    private bool areTabsVisible = false;
+	private List<ApplicationUser>? filteredUsers;
+	private ApplicationUser selectedUser;
+	private string? searchString;
+	private Tab selectedTab = Tab.Kund;
+	private bool areTabsVisible = false;
+	private int userCount;
 
-    private void SelectTab(Tab tab)
-    {
-        selectedTab = tab;
-    }
+	protected override async Task OnInitializedAsync()
+	{
+		userCount = await DbContext.Users.CountAsync();
+	}
 
-    private string GetActiveClass(Tab tab)
-    {
-        return selectedTab == tab ? "active" : "";
-    }
+	private void SelectTab(Tab tab)
+	{
+		selectedTab = tab;
+	}
 
-    private enum Tab
-    {
-        Kund,
-        Klippkort,
-        Uppgifter
-    }
+	private string GetActiveClass(Tab tab)
+	{
+		return selectedTab == tab ? "active" : "";
+	}
 
-    private async Task SearchUsers()
-    {
-        if (!string.IsNullOrWhiteSpace(searchString))
-        {
-            string normalizedSearchString = searchString.ToLower();
+	private enum Tab
+	{
+		Kund,
+		Klippkort,
+		Uppgifter
+	}
 
-            filteredUsers = await DbContext.Users
-                .Include(u => u.UserProfile)
-                .Where(u => u.UserProfile != null && EF.Functions.Like(u.UserProfile.FirstName.ToLower(), $"%{normalizedSearchString}%"))
-                .ToListAsync();
-        }
-        else
-        {
-            filteredUsers = new List<ApplicationUser>();
-        }
-    }
+	private async Task SearchUsers()
+	{
+		if (!string.IsNullOrWhiteSpace(searchString))
+		{
+			string normalizedSearchString = searchString.ToLower();
 
-    private void EditUser(ApplicationUser user)
-    {
-        selectedUser = user;
-        SelectTab(Tab.Kund);
-        areTabsVisible = true;
-    }
+			filteredUsers = await DbContext.Users
+				.Include(u => u.UserProfile)
+				.Where(u => u.UserProfile != null && EF.Functions.Like(u.UserProfile.FirstName.ToLower(), $"%{normalizedSearchString}%"))
+				.ToListAsync();
+		}
+		else
+		{
+			filteredUsers = new List<ApplicationUser>();
+		}
+	}
 
-    private async Task ConfirmUserEmail(ApplicationUser user)
-    {
-        var token = await UserManager.GenerateEmailConfirmationTokenAsync(user);
-        var result = await UserManager.ConfirmEmailAsync(user, token);
-        if (result.Succeeded)
-        {
-            filteredUsers = await DbContext.Users.Include(u => u.UserProfile)
-                                                 .Where(u => u.UserProfile != null && u.UserProfile.FirstName.Contains(searchString, StringComparison.OrdinalIgnoreCase))
-                                                 .ToListAsync();
-        }
-        else
-        {
-            Console.WriteLine("Error confirming email");
-        }
-    }
+	private void EditUser(ApplicationUser user)
+	{
+		selectedUser = user;
+		SelectTab(Tab.Kund);
+		areTabsVisible = true;
+	}
+
+	private async Task ConfirmUserEmail(ApplicationUser user)
+	{
+		var token = await UserManager.GenerateEmailConfirmationTokenAsync(user);
+		var result = await UserManager.ConfirmEmailAsync(user, token);
+		if (result.Succeeded)
+		{
+			filteredUsers = await DbContext.Users.Include(u => u.UserProfile)
+													.Where(u => u.UserProfile != null && u.UserProfile.FirstName.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+													.ToListAsync();
+		}
+		else
+		{
+			Console.WriteLine("Error confirming email");
+		}
+	}
+
+	private bool showEvents = false;
+	private bool showStats = false;
+
+	private void ToggleEvents()
+	{
+		showEvents = !showEvents; // Toggle visibility
+		showStats = false; // Hide stats when showing events
+	}
+
+	private void ToggleStats()
+	{
+		showStats = !showStats; // Toggle visibility
+		showEvents = false; // Hide events when showing stats
+	}
 }

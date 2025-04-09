@@ -1,0 +1,54 @@
+﻿@*
+    Baserad på referens (6). Bygg en hemsida med HTML och CSS - Lindh, J (2024-09-23)
+ *@
+<nav class="main-nav" aria-label="main navigation">
+    <a href="#main" class="skip-link">Skip to main content</a>
+
+    <div class="container">
+        <a href="/">
+            <img class="show-light" src="/images/small-logo.png" alt="Muskelbyrån logo">
+        </a>
+        <button class="menu-btn" aria-controls="main-menu" aria-expanded="false" aria-label="toggle navigation">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+        <ul id="main-menu" class="main-menu hide">
+            <li>
+                <a href="/Acount/" class="nav-link">Hem</a>
+            </li>
+            <li>
+                <a href="/account/history" class="nav-link">Historik</a>
+            </li>
+            <li>
+                <a href="/account/deets" class="nav-link">Profil</a>
+            </li>
+                        <li>
+                <a href="/account/settings" class="nav-link">Inställningar</a>
+            </li> 
+            <li>
+                <a href="#" class="btn2 btn-primary">
+                    <i class="fa-solid fa-left-to-bracket"></i>
+                    <span>Logga ut</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<aside id="mobile-navbar">
+    <NavLink class="nav-item" href="/account">
+        <i class="fa-solid fa-house"></i>
+        <span>Hem</span>
+    </NavLink>
+    <NavLink class="nav-item" href="/account/history">
+        <i class="fa-regular fa-file"></i>
+        <span>Historik</span>
+    </NavLink>
+    <NavLink class="nav-item" href="/account/deets">
+        <i class="fa-regular fa-user"></i>
+        <span>Profil</span>
+    </NavLink>
+    <NavLink class="nav-item" href="/account/settings">
+        <i class="fa-solid fa-shield-halved"></i>
+        <span>Inställningar</span>
+    </NavLink>
+</aside>

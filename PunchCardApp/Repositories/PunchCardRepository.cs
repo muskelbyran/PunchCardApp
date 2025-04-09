@@ -8,11 +8,6 @@ public class PunchCardRepository(ApplicationDbContext context)
 
     public async Task<List<PunchCardEntity>> GetPunchCardsByUserProfileIdAsync(string userProfileId)
     {
-        //return await _context.PunchCards
-        //    .Where(pc => pc.UserProfileId == userProfileId)
-        //    .Include(pc => pc.PunchCardUses)
-        //    .ToListAsync();
-
         var punchCards = await _context.PunchCards
                                .Where(pc => pc.UserProfileId == userProfileId)
                                .Include(pc => pc.PunchCardUses)

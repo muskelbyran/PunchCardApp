@@ -14,7 +14,7 @@
 <AuthorizeView Context="authContext">
     <Authorized>
         <main class="main-content">
-            <div class="content-card">
+            @* <div class="content-card"> *@
             @if (!string.IsNullOrEmpty(@StatusMessage))
             {
                 <div class="alert alert-info">@StatusMessage</div>
@@ -158,7 +158,7 @@
         {
             <p>Loading user details...</p>
         }
-            </div>
+            @* </div> *@
         </main>
     </Authorized>
 </AuthorizeView>

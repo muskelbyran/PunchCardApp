@@ -1,5 +1,5 @@
 ﻿@page "/Account"
-@using System.ComponentModel.DataAnnotations
+@* @using System.ComponentModel.DataAnnotations
 @using Microsoft.AspNetCore.Identity
 @using Microsoft.AspNetCore.Components.Authorization
 @using Microsoft.EntityFrameworkCore
@@ -10,7 +10,7 @@
 @using PunchCardApp.Components.Assets
 @using PunchCardApp.Components.Layout
 
-@layout AccountLayout
+@layout AccountLayout *@
 
 @inject UserManager<ApplicationUser> UserManager
 @inject NavigationManager NavigationManager
@@ -22,7 +22,84 @@
 
 <PageTitle>Home</PageTitle>
 <main class="main-content-container">
-    <div class="main-content one">
+    <div class="main-section">
+        @if (UserPunchCards != null && UserPunchCards.Any())
+        {
+            <table class="punch-table">
+                <thead>
+                    <tr>
+                        <th>Typ</th>
+                        <th>Åtgärd</th>
+                        <th>Progress</th>
+                        <th>Totalt klippkort</th>
+                        <th>Klipp kvar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var card in UserPunchCards)
+                    {
+                        <tr>
+                            <td>@card.Type</td>
+                            <td>
+                                <PunchButton PunchCardId="@card.Id" CssClass="btn btn-copper" ButtonText="Färdigknådad!" OnPunchUsed="LoadUserPunchCardsAsync" />
+                            </td>
+                            <td>
+                                <progress class="punch-progress" value="@(card.TotalUses - card.UsesLeft)" max="@card.TotalUses"></progress>
+                            </td>
+                            <td>@card.TotalUses</td>
+                            <td>@card.UsesLeft klipp kvar</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <p>Ingen historik att visa.</p>
+        }
+    </div>
+  
+    <div class="main-content">
+
+        @* <div class="main-content one"> *@
+     @*    <div class="content-table">
+            @if (UserPunchCards != null && UserPunchCards.Any())
+            {
+                <table class="punch-table">
+                    <thead>
+                        <tr>
+                            <th>Typ</th>
+                            <th>Åtgärd</th>
+                            <th>Progress</th>
+                            <th>Totalt klippkort</th>
+                            <th>Klipp kvar</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var card in UserPunchCards)
+                        {
+                            <tr>
+                                <td>@card.Type</td>
+                                <td>
+                                    <PunchButton PunchCardId="@card.Id" CssClass="btn btn-copper" ButtonText="Färdigknådad!" OnPunchUsed="LoadUserPunchCardsAsync" />
+                                </td>
+                                <td>
+                                    <progress class="punch-progress" value="@(card.TotalUses - card.UsesLeft)" max="@card.TotalUses"></progress>
+                                </td>
+                                <td>@card.TotalUses</td>
+                                <td>@card.UsesLeft klipp kvar</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <p>Ingen historik att visa.</p>
+            }
+        </div> *@
+
+
         <div class="content-card">
             @if (UserPunchCards != null && UserPunchCards.Any())
             {
@@ -51,7 +128,6 @@
                 <p>Ingen historik att visa.</p>
             }
         </div>
-
         <div class="button-card">
             <button class="btn btn-pink" @onclick="ShowNewsContent">Nyheter</button>
             <button class="btn btn-pink" @onclick="ShowFeedbackContent">Feedback</button>
@@ -59,19 +135,15 @@
             <NavLink class="btn btn-pink" href="/Admin/Aardvark">Backoffice</NavLink>
         </div>
     </div>
-
     <aside class="right-content-placeholder">Testing 123...</aside>
-
     <aside class="right-content @( _isRightContentVisible ? "show" : "")">
         <i class="fa-solid fa-x close-icon" @onclick="ToggleRightContent"></i>
         <img src="/images/test.jpeg" />
     </aside>
-
     <aside class="right-content2 @( _isRightContentVisible2 ? "show" : "")">
         <i class="fa-solid fa-x close-icon" @onclick="ToggleRightContent2"></i>
        <PunchCardApp.Components.Account.Sections.Feedback />
     </aside>
-
     <aside class="right-content3 @( _isRightContentVisible3 ? "show" : "")">
         <i class="fa-solid fa-x close-icon" @onclick="ToggleRightContent3"></i>
        <PunchCardApp.Components.Account.Sections.Contact />

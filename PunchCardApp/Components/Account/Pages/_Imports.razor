@@ -1,3 +1,15 @@
-﻿@using PunchCardApp.Components.Account.Shared
+﻿@using System.ComponentModel.DataAnnotations
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.EntityFrameworkCore
+@using Microsoft.Extensions.Logging
+@using PunchCardApp.Data
+@using PunchCardApp.Entities
+@using PunchCardApp.Models
+@using PunchCardApp.Components.Assets
+@using PunchCardApp.Components.Layout
+@using PunchCardApp.Components.Account.Shared
+
 @layout AccountLayout
+
 @attribute [Microsoft.AspNetCore.Authorization.Authorize]

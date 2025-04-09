@@ -22,6 +22,25 @@
     }
 }
 
+@mixin btn2  {
+    font-size: .9rem;
+    padding: .6em 1.8em;
+    display: flex;
+    gap: .5rem;
+    text-wrap: nowrap;
+    border-radius: var(--border-medium);
+    text-decoration: none;
+    background-color: transparent;
+    border: 0;
+    cursor: pointer;
+
+    i {
+        display: flex;
+        align-items: center;
+        height: 1.5em;
+    }
+}
+
 @mixin btn-circle {
     justify-content: center;
     align-items: center;

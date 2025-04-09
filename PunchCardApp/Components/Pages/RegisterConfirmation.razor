@@ -1,9 +1,11 @@
-﻿@page "/Account/RegisterConfirmation"
+﻿@page "/confirmation"
 @rendermode InteractiveServer
 
 @using System.Text
 @using Microsoft.AspNetCore.Identity
 @using Microsoft.AspNetCore.WebUtilities
+@using Microsoft.Data.SqlClient
+@using PunchCardApp.Components.Account
 @using PunchCardApp.Data
 @using Azure.Messaging.ServiceBus
 @using Newtonsoft.Json
@@ -17,38 +19,27 @@
 @inject HttpClient Http
 @inject IConfiguration Configuration
 
-@* <SiliconWebApp.Components.Pages.Shared.Header /> *@
-
 <PageTitle>Register confirmation</PageTitle>
-
 <section id="signup">
     <div class="container">
-
         <EditForm Model="VerifyCodeForm" OnValidSubmit="OnValidSubmit" asp-route-returnUrl="@ReturnUrl" FormName="verifycode" method="post" novalidate>
             <DataAnnotationsValidator />
             <h1>Verify Your Account</h1>
-
             <div class="content">
-
                 <div id="form-firstname" class="input-group">
                     <label>Code</label>
                     <InputText @bind-Value="VerifyCodeForm.Code" />
                     <ValidationMessage For="() => VerifyCodeForm.Code" />
                     <p>@statusMessage</p>
                 </div>
-
                 <div id="form-button">
                     <button class="btn btn-theme" type="submit">Verify Code</button>
                 </div>
             </div>
         </EditForm>
-
         <p>Didn't receive an email? <button @onclick="ResendCode">Resend email</button></p>
-
     </div>
 </section>
-
-@* <SiliconWebApp.Components.Pages.Shared.Footer /> *@
 
 @code {
     private string? statusMessage;
@@ -67,19 +58,68 @@
 
     public async Task OnValidSubmit()
     {
-        var result = await Http.PostAsJsonAsync("https://verificationprovider-silicon-js.azurewebsites.net/api/validate?code=7mBkjGNtJrEiC-mvT-jIf-Ga8hBDbCHbsh_qlLZ-DlvYAzFugDSiZQ%3D%3D", new { Email = Email, Code = VerifyCodeForm.Code });
-
-        if (result.IsSuccessStatusCode)
+        if (string.IsNullOrWhiteSpace(Email))
         {
-            var user = await UserManager.FindByEmailAsync(Email!);
-            user!.EmailConfirmed = true;
-            await UserManager.UpdateAsync(user);
-            await UserManager.AddToRoleAsync(user, "User");
-            RedirectManager.RedirectTo("account/login");
+            statusMessage = "Missing email.";
+            return;
         }
-        else
+
+        try
         {
-            statusMessage = "No such code";
+            var query = @"
+            SELECT *
+            FROM [dbo].[VerificationRequests]
+            WHERE [Email] = @Email AND [Code] = @Code";
+
+            using (var connection = new SqlConnection(Configuration.GetConnectionString("DefaultConnection")))
+            {
+                await connection.OpenAsync();
+
+                using (var command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@Email", Email);
+                    command.Parameters.AddWithValue("@Code", VerifyCodeForm.Code);
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        if (reader.HasRows)
+                        {
+                            while (await reader.ReadAsync())
+                            {
+                                var recordExpiryDate = reader.GetDateTime(reader.GetOrdinal("ExpiryDate"));
+
+                                if (recordExpiryDate < DateTime.UtcNow)
+                                {
+                                    statusMessage = "Code has expired.";
+                                    return;
+                                }
+
+                                var user = await UserManager.FindByEmailAsync(Email!);
+                                if (user != null)
+                                {
+                                    user.EmailConfirmed = true;
+                                    await UserManager.UpdateAsync(user);
+                                    await UserManager.AddToRoleAsync(user, "User");
+
+                                    RedirectManager.RedirectTo("account/login");
+                                }
+                                else
+                                {
+                                    statusMessage = "User not found.";
+                                }
+                            }
+                        }
+                        else
+                        {
+                            statusMessage = "Invalid verification code.";
+                        }
+                    }
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            statusMessage = "An error occurred: " + ex.Message;
         }
     }
 
@@ -114,6 +154,13 @@
         {
             statusMessage = "Failed to resend code: " + ex.Message;
         }
+    }
+
+    public class ValidateRequest
+    {
+        public string Email { get; set; } = null!;
+        public string Code { get; set; } = null!;
+        public DateTime ExpiryDate { get; set; }
     }
 
     protected override async Task OnInitializedAsync()

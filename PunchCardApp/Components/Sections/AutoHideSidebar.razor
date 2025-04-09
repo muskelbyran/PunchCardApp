@@ -8,120 +8,127 @@
 @inject NavigationManager NavigationManager
 @inject RoleService RoleService
 @rendermode InteractiveServer﻿
+
 <AuthorizeView>
-    <Authorized>
-
-<aside class="auto-hiding-nav-menu"
-     @onmouseover="ExpandNavMenu"
-     @onmouseout="CollapseNavMenu">
-
-    <nav class="nav-menu @(collapseNavMenu ? "collapsed" : "expand")">
-        <div class="sidebar-logo @(collapseNavMenu ? "collapsed" : "")">
-            <img src="/images/small-logo.png" alt="Muskelbyrån Logo" />
-        </div>
-              
-        <div class="nav-menu-inner">
-                    <NavLink class="nav-item" href="/account/">
-                        <i class="fa-solid fa-house"></i>
-                        <span>Hem</span>
-                    </NavLink>
-                    <NavLink class="nav-item" href="/account/history">
-                        <i class="fa-regular fa-file"></i>
-                        <span>Historik</span>
-                    </NavLink>
-                    <NavLink class="nav-item" href="/account/deets">
-                        <i class="fa-regular fa-user"></i>
-                        <span>Profil</span>
-                    </NavLink>
-                    <NavLink class="nav-item" href="/account/settings">
-                        <i class="fa-solid fa-shield-halved"></i>
-                        <span>Konto</span>
-                    </NavLink>
-                </div>
-    </nav>
-
-</aside>
-
-<aside id="mobile-navbar">
-    <NavLink class="nav-item" href="/account">
-        <i class="fa-solid fa-house"></i>
-        <span>Hem</span>
-    </NavLink>
-    <NavLink class="nav-item" href="/account/history">
-        <i class="fa-regular fa-file"></i>
-        <span>Historik</span>
-    </NavLink>
-            <NavLink class="nav-item" href="/account/deets">
-        <i class="fa-regular fa-user"></i>
-        <span>Profil</span>
-    </NavLink>
-    <NavLink class="nav-item" href="/account/settings">
-        <i class="fa-solid fa-shield-halved"></i>
-        <span>Konto</span>
-    </NavLink>
-
-    @*     <div class="copyright">
-    <p>©@DateTime.Now.Year Muskelbyrån.</p>
-    </div> *@
-</aside>
-
-    </Authorized>
+	<Authorized>
+		<aside class="auto-hiding-nav-menu"
+			   @onmouseover="ExpandNavMenu"
+			   @onmouseout="CollapseNavMenu">
+			<nav class="nav-menu @(collapseNavMenu ? "collapsed" : "expand")">
+				<div class="sidebar-logo @(collapseNavMenu ? "collapsed" : "")">
+					<img src="/images/small-logo.png" alt="Muskelbyrån Logo" />
+				</div>
+				<div class="nav-menu-inner">
+					<NavLink class="nav-item" href="/account/">
+						<i class="fa-solid fa-house"></i>
+						<span>Hem</span>
+					</NavLink>
+					<NavLink class="nav-item" href="/account/history">
+						<i class="fa-regular fa-file"></i>
+						<span>Historik</span>
+					</NavLink>
+					<NavLink class="nav-item" href="/account/deets">
+						<i class="fa-regular fa-user"></i>
+						<span>Profil</span>
+					</NavLink>
+					<NavLink class="nav-item" href="/account/settings">
+						<i class="fa-solid fa-shield-halved"></i>
+						<span>Konto</span>
+					</NavLink>
+					<NavLink class="nav-item" href="/Acount/News">
+						<i class="fa-solid fa-shield-halved"></i>
+						<span>Nyheter</span>
+					</NavLink>
+					<NavLink class="nav-item" href="/Account/Feedback">
+						<i class="fa-solid fa-shield-halved"></i>
+						<span>Feedback</span>
+					</NavLink>
+					<NavLink class="nav-item" href="/Account/Contact">
+						<i class="fa-solid fa-shield-halved"></i>
+						<span>Kontakt</span>
+					</NavLink>
+					<NavLink class="nav-item" href="/Admin/Aardvark">
+						<i class="fa-solid fa-shield-halved"></i>
+						<span>Backoffice</span>
+					</NavLink>
+				</div>
+			</nav>
+		</aside>
+		<aside id="mobile-navbar">
+			<NavLink class="nav-item" href="/account">
+				<i class="fa-solid fa-house"></i>
+				<span>Hem</span>
+			</NavLink>
+			<NavLink class="nav-item" href="/account/history">
+				<i class="fa-regular fa-file"></i>
+				<span>Historik</span>
+			</NavLink>
+			<NavLink class="nav-item" href="/account/deets">
+				<i class="fa-regular fa-user"></i>
+				<span>Profil</span>
+			</NavLink>
+			<NavLink class="nav-item" href="/account/settings">
+				<i class="fa-solid fa-shield-halved"></i>
+				<span>Konto</span>
+			</NavLink>
+		</aside>
+	</Authorized>
 </AuthorizeView>
 
 @code {
-    private bool IsUser { get; set; }
-    private bool IsManager { get; set; }
-    private bool IsAdmin { get; set; }
-    private bool isHovered;
-    private bool collapseNavMenu = true;
-    private Timer? collapseTimer;
-    private string? currentUrl;
+	private bool IsUser { get; set; }
+	private bool IsManager { get; set; }
+	private bool IsAdmin { get; set; }
+	private bool isHovered;
+	private bool collapseNavMenu = true;
+	private Timer? collapseTimer;
+	private string? currentUrl;
 
-    protected override async Task OnInitializedAsync()
-    {
-        IsUser = await RoleService.IsUserAsync();
-        IsManager = await RoleService.IsManagerAsync();
-        IsAdmin = await RoleService.IsAdminAsync();
-        currentUrl = NavigationManager.ToBaseRelativePath(NavigationManager.Uri);
-        NavigationManager.LocationChanged += OnLocationChanged;
-    }
+	protected override async Task OnInitializedAsync()
+	{
+		IsUser = await RoleService.IsUserAsync();
+		IsManager = await RoleService.IsManagerAsync();
+		IsAdmin = await RoleService.IsAdminAsync();
+		currentUrl = NavigationManager.ToBaseRelativePath(NavigationManager.Uri);
+		NavigationManager.LocationChanged += OnLocationChanged;
+	}
 
-    private void ExpandNavMenu()
-    {
-        isHovered = true;
-              
-        collapseTimer?.Stop();
-        collapseNavMenu = false;  
-    }
+	private void ExpandNavMenu()
+	{
+		isHovered = true;
 
-    private void CollapseNavMenu()
-    {
-        isHovered = false;
-                
-        collapseTimer = new Timer(300); 
-        collapseTimer.Elapsed += (s, e) =>
-        {            
-            if (!isHovered)
-            {
-                collapseNavMenu = true;
-                InvokeAsync(StateHasChanged); 
-            }
+		collapseTimer?.Stop();
+		collapseNavMenu = false;
+	}
 
-            collapseTimer?.Stop();
-            collapseTimer?.Dispose();
-            collapseTimer = null;
-        };
-        collapseTimer.Start();
-    }
+	private void CollapseNavMenu()
+	{
+		isHovered = false;
 
-    private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
-    {
-        currentUrl = NavigationManager.ToBaseRelativePath(e.Location);
-        StateHasChanged();
-    }
+		collapseTimer = new Timer(300);
+		collapseTimer.Elapsed += (s, e) =>
+		{
+			if (!isHovered)
+			{
+				collapseNavMenu = true;
+				InvokeAsync(StateHasChanged);
+			}
 
-    public void Dispose()
-    {
-        NavigationManager.LocationChanged -= OnLocationChanged;
-    }
+			collapseTimer?.Stop();
+			collapseTimer?.Dispose();
+			collapseTimer = null;
+		};
+		collapseTimer.Start();
+	}
+
+	private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
+	{
+		currentUrl = NavigationManager.ToBaseRelativePath(e.Location);
+		StateHasChanged();
+	}
+
+	public void Dispose()
+	{
+		NavigationManager.LocationChanged -= OnLocationChanged;
+	}
 } 

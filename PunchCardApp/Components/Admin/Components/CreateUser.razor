@@ -1,0 +1,136 @@
+﻿@page "/admin/createuser"
+@rendermode InteractiveServer
+
+@using System.ComponentModel.DataAnnotations
+@using System.Security.Cryptography
+@using Microsoft.AspNetCore.Identity
+@using Newtonsoft.Json
+@using Azure.Messaging.ServiceBus
+@using PunchCardApp.Data
+
+@inject UserManager<ApplicationUser> UserManager
+@inject IConfiguration Configuration
+
+<div class="container">
+    <h5>Skapa en användare</h5>
+
+    @if (!string.IsNullOrEmpty(StatusMessage))
+    {
+        <div class="alerter">@StatusMessage</div>
+    }
+
+    <EditForm Model="AdminCreateForm" OnValidSubmit="OnValidSubmit">
+        <DataAnnotationsValidator />
+        <div class="form">
+
+            <div class="form-floating mb-3">
+                <InputText @bind-Value="AdminCreateForm.FirstName" placeholder="Förnamn" />
+                <ValidationMessage For="() => AdminCreateForm.FirstName" />
+            </div>
+
+            <div class="form-floating mb-3">
+                <InputText @bind-Value="AdminCreateForm.LastName" placeholder="Efternamn" />
+                <ValidationMessage For="() => AdminCreateForm.LastName" />
+            </div>
+
+            <div class="form-floating mb-3">
+                <InputText @bind-Value="AdminCreateForm.Email" placeholder="E-post" />
+                <ValidationMessage For="() => AdminCreateForm.Email" />
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100">Skapa användare</button>
+        </div>
+    </EditForm>
+</div>
+
+@code {
+    private string? StatusMessage;
+
+    public AdminCreateUserModel AdminCreateForm { get; set; } = new();
+
+    public class AdminCreateUserModel
+    {
+        [Required]
+        public string FirstName { get; set; } = string.Empty;
+
+        [Required]
+        public string LastName { get; set; } = string.Empty;
+
+        [Required]
+        [EmailAddress]
+        public string Email { get; set; } = string.Empty;
+    }
+
+    private async Task OnValidSubmit()
+    {
+        var existing = await UserManager.FindByEmailAsync(AdminCreateForm.Email);
+        if (existing != null)
+        {
+            StatusMessage = "En användare med den här e-postadressen finns redan.";
+            return;
+        }
+
+        var password = GenerateSecurePassword();
+
+        var user = new ApplicationUser
+            {
+                UserName = AdminCreateForm.Email,
+                Email = AdminCreateForm.Email,
+                CreatedByAdmin = true,
+                MustChangePassword = true,
+                EmailConfirmed = false,
+                UserProfile = new UserProfile
+                {
+                    FirstName = AdminCreateForm.FirstName,
+                    LastName = AdminCreateForm.LastName
+                }
+            };
+
+        var result = await UserManager.CreateAsync(user, password);
+
+        if (!result.Succeeded)
+        {
+            StatusMessage = $"Fel: {string.Join(", ", result.Errors.Select(e => e.Description))}";
+            return;
+        }
+
+        try
+        {
+            var serviceBusConnectionString = Configuration["AzureServiceBus:ConnectionString"];
+            var serviceBusQueueName = Configuration["AzureServiceBus:QueueName"];
+
+            if (string.IsNullOrEmpty(serviceBusConnectionString) || string.IsNullOrEmpty(serviceBusQueueName))
+            {
+                StatusMessage = "Service Bus konfiguration saknas.";
+                return;
+            }
+
+            var serviceBusClient = new ServiceBusClient(serviceBusConnectionString);
+            var serviceBusSender = serviceBusClient.CreateSender(serviceBusQueueName);
+
+            var messageBody = JsonConvert.SerializeObject(new { Email = AdminCreateForm.Email });
+            var serviceBusMessage = new ServiceBusMessage(messageBody);
+
+            await serviceBusSender.SendMessageAsync(serviceBusMessage);
+        }
+        catch (Exception ex)
+        {
+            StatusMessage = "Kunde inte skicka verifieringsmail: " + ex.Message;
+            return;
+        }
+
+        StatusMessage = $"Användare skapad! Tillfälligt lösenord: <strong>{password}</strong>. Verifieringsmail skickat.";
+    }
+
+    private string GenerateSecurePassword()
+    {
+        const int length = 12;
+        const string valid = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%^&*()-_=+";
+
+        using var rng = RandomNumberGenerator.Create();
+        var bytes = new byte[length];
+        rng.GetBytes(bytes);
+
+        return new string(bytes.Select(b => valid[b % valid.Length]).ToArray());
+    }
+}

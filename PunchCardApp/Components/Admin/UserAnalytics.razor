@@ -1,0 +1,59 @@
+﻿@using PunchCardApp.Services
+@inject IUserAnalyticsService UserAnalyticsService
+
+<div id="user-analytics">
+    <h3>Användarstatistik</h3>
+
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-header">Dagliga Aktiva Användare</div>
+                <div class="card-body">
+                    <p>@dailyActiveUsers</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-header">Månatliga Aktiva Användare</div>
+                <div class="card-body">
+                    <p>@monthlyActiveUsers</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-header">Nya Användare Denna Månad</div>
+                <div class="card-body">
+                    <p>@newUsersThisMonth</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-header">Användare Som Har Slutat</div>
+                <div class="card-body">
+                    <p>@string.Join(", ", churnedUsers)</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private int dailyActiveUsers;
+    private int monthlyActiveUsers;
+    private int newUsersThisMonth;
+    private List<string> churnedUsers = new List<string>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        dailyActiveUsers = await UserAnalyticsService.GetDailyActiveUsersAsync();
+        monthlyActiveUsers = await UserAnalyticsService.GetMonthlyActiveUsersAsync();
+        newUsersThisMonth = await UserAnalyticsService.GetNewUsersThisMonthAsync();
+        churnedUsers = await UserAnalyticsService.GetChurnedUsersAsync();
+    }
+}

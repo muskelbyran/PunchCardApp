@@ -1,0 +1,121 @@
+$primary-color: #007bff;
+$secondary-color: #6c757d;
+$background-color: #f8f9fa;
+$text-color: #212529;
+$border-radius: 8px;
+$transition-speed: 0.3s;
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.main-content {
+    background: white;
+    padding: 1rem;
+    border-radius: $border-radius;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+
+    th, td {
+        border: 1px solid #ddd;
+        padding: 0.5rem;
+        text-align: left;
+    }
+
+    th {
+        background: $primary-color;
+        color: white;
+    }
+}
+
+.punch-card-history-container {
+    display: flex;
+    flex-wrap: wrap; 
+    gap: 1rem; 
+}
+
+.punch-card-history {
+    background: #f9f9f9;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border: 1px solid #007bff;
+    flex: 1 1 calc(50% - 1rem); 
+    max-width: 100%; 
+
+    h4, p, details {
+        margin: 0.5rem 0;
+    }
+
+    details {
+        background: #fff;
+        padding: 0.5rem;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        margin-top: 0.5rem;
+        width: 100%;
+
+        summary {
+            cursor: pointer;
+            font-weight: bold;
+            padding: 0.5rem;
+            background: #e0e0e0;
+            border-radius: 5px;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+    }
+}
+
+.punch-card-history ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    overflow-x: auto;
+    max-width: 100%;
+    white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+
+    .punch-card-history-container {
+        flex-direction: column; 
+    }
+
+    .punch-card-history {
+        flex: 1 1 100%; 
+    }
+}
+
+@media (min-width: 768px) {
+    .main-content {
+        display: flex;
+        gap: 1rem;
+    }
+
+    .punch-card-history details {
+        display: block;
+    }
+
+    .punch-card-history {
+        min-height: 250px;
+        padding: 1.5rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }  
+}

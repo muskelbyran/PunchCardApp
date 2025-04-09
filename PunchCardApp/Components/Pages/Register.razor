@@ -165,7 +165,6 @@
             return;
         }
 
-        // Access Azure Service Bus configuration from injected Configuration
         var serviceBusConnectionString = Configuration["AzureServiceBus:ConnectionString"]
             ?? throw new InvalidOperationException("Azure Service Bus connection string not found.");
 

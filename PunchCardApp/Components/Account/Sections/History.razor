@@ -13,6 +13,7 @@
 
 @rendermode InteractiveServer
 
+
 @inject UserManager<ApplicationUser> UserManager
 @inject NavigationManager NavigationManager
 @inject AuthenticationStateProvider AuthenticationStateProvider
@@ -21,175 +22,156 @@
 
 <PageTitle>Klippkortshistorik</PageTitle>
 
-<main class="main-content-container">
-    <div class="main-content one">
+<div class="main-content">
 
-        <h2>Punch Card Management</h2>
-        <h3>Existing Punch Cards</h3>
-        @if (UserPunchCards != null && UserPunchCards.Any())
-        {
-            <table>
-                <thead>
-                    <tr>
-                        <th>Type</th>
-                        <th>Purchased Date</th>
-                        <th>Uses Left</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var card in UserPunchCards)
-                    {
-                        <tr>
-                            <td>@card.Type</td>
-                            <td>@card.PurchasedDate.ToShortDateString()</td>
-                            <td>@card.UsesLeft</td>
+	<h2>Punch Card Management</h2>
+	<h3>Existing Punch Cards</h3>
+	@if (UserPunchCards != null && UserPunchCards.Any())
+	{
+		<table>
+			<thead>
+				<tr>
+					<th>Type</th>
+					<th>Purchased Date</th>
+					<th>Uses Left</th>
+					<th>Actions</th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach (var card in UserPunchCards)
+				{
+					<tr>
+						<td>@card.Type</td>
+						<td>@card.PurchasedDate.ToShortDateString()</td>
+						<td>@card.UsesLeft</td>
 
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        }
-        else
-        {
-            <p>No punch cards found.</p>
-        }
+					</tr>
+				}
+			</tbody>
+		</table>
+	}
+	else
+	{
+		<p>No punch cards found.</p>
+	}
 
-        <h3>Historik över klippkort</h3>
-        @if (UserPunchCards != null && UserPunchCards.Any())
-        {
-            Console.WriteLine($"Fetched {UserPunchCards.Count} punch cards for UserProfileId: [userProfileId]");
+	<h3>Historik över klippkort</h3>
+	@if (UserPunchCards != null && UserPunchCards.Any())
+	{
+		Console.WriteLine($"Fetched {UserPunchCards.Count} punch cards for UserProfileId: [userProfileId]");
 
-            @foreach (var card in UserPunchCards)
-            {
-                <div class="punch-card-history">
-                    <h4>Klippkort: @card.Type</h4>
-                    <p>Köpt: @card.PurchasedDate.ToShortDateString()</p>
-                    <p>Totalt antal användningar: @card.TotalUses</p>
-                    <p>Kvarvarande användningar: @card.UsesLeft</p>
+		<div class="punch-card-history-container">
+			@foreach (var card in UserPunchCards)
+			{
+				<div class="punch-card-history">
+					<h4>Klippkort: @card.Type</h4>
+					<p>Köpt: @card.PurchasedDate.ToShortDateString()</p>
+					<p>Totalt antal användningar: @card.TotalUses</p>
+					<p>Kvarvarande användningar: @card.UsesLeft</p>
+					<details>
+						<summary><h5>Användarhistorik:</h5></summary>
 
-                    <h5>Användarhistorik:</h5>
-                    @if (card.PunchCardUses.Any())
-                    {
-                        <ul>
-                            @foreach (var use in card.PunchCardUses)
-                            {
-                                <li>@use.UsedDate.ToShortDateString() av @use.UsedBy</li>
-                            }
-                        </ul>
-                    }
-                    else
-                    {
-                        <p>Ingen användarhistorik tillgänglig.</p>
-                    }
-                </div>
-            }
-        }
-        else
-        {
-            Console.WriteLine("No punch cards found for the current user.");
-            <p>Ingen historik att visa.</p>
-        }
-    </div>
-
-
-     <aside class="right-content two @( _isRightContentVisible ? "show" : "")">
-        <i class="fa-solid fa-x close-icon" @onclick="ToggleRightContent"></i>
-    
-    </aside>
-
-
-    </main>
-
-<script>
-    function toggleRightContent() {
-        let rightContent = document.querySelector('.right-content');
-        rightContent.classList.toggle('show');
-    }
-</script>
-
+						@if (card.PunchCardUses.Any())
+						{
+							<ul>
+								@foreach (var use in card.PunchCardUses)
+								{
+									<li>@use.UsedDate.ToShortDateString() av @use.UsedBy</li>
+								}
+							</ul>
+						}
+						else
+						{
+							<p>Ingen användarhistorik tillgänglig.</p>
+						}
+					</details>
+				</div>
+			}
+		</div>
+	}
+	else
+	{
+		Console.WriteLine("No punch cards found for the current user.");
+		<p>Ingen historik att visa.</p>
+	}
+</div>
 
 @code {
-    [SupplyParameterFromQuery]
-    public string? StatusMessage { get; set; } = "";
 
-     private bool _isRightContentVisible = false;
+	[SupplyParameterFromQuery]
+	public string? StatusMessage { get; set; } = "";
 
-    public PunchCardFormModel PunchCardForm { get; set; } = new();
-    public List<PunchCardEntity> UserPunchCards { get; set; } = new();
-    private List<PunchCardHistoryModel> PunchCardHistory { get; set; } = new();
-    public List<PunchCardHistoryModel> UserPunchCardHistory { get; set; } = new();
+	public PunchCardFormModel PunchCardForm { get; set; } = new();
+	public List<PunchCardEntity> UserPunchCards { get; set; } = new();
+	private List<PunchCardHistoryModel> PunchCardHistory { get; set; } = new();
+	public List<PunchCardHistoryModel> UserPunchCardHistory { get; set; } = new();
 
-    private string? userId;
+	private string? userId;
 
-        private void ToggleRightContent()
-    {
-        _isRightContentVisible = !_isRightContentVisible;
-    }
 
-    protected override async Task OnInitializedAsync()
-    {
-        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-        var user = authState.User;
+	protected override async Task OnInitializedAsync()
+	{
+		var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+		var user = authState.User;
 
-        if (user.Identity?.IsAuthenticated ?? false)
-        {
-            var currentUser = await UserManager.GetUserAsync(user);
-            if (currentUser != null)
-            {
-                userId = currentUser.Id;
-                await LoadUserPunchCardsAsync();
-                PunchCardHistory = await PunchCardService.GetPunchCardHistoryAsync(userId);
-            }
-            else
-            {
-                Console.WriteLine("Hittar inte användare!");
-            }
-        }
-    }
+		if (user.Identity?.IsAuthenticated ?? false)
+		{
+			var currentUser = await UserManager.GetUserAsync(user);
+			if (currentUser != null)
+			{
+				userId = currentUser.Id;
+				await LoadUserPunchCardsAsync();
+				PunchCardHistory = await PunchCardService.GetPunchCardHistoryAsync(userId);
+			}
+			else
+			{
+				Console.WriteLine("Hittar inte användare!");
+			}
+		}
+	}
 
-    private async Task LoadUserPunchCardsAsync()
-    {
-        try
-        {
-            if (string.IsNullOrEmpty(userId))
-            {
-                Console.WriteLine("Användare är null!");
-                return;
-            }
+	private async Task LoadUserPunchCardsAsync()
+	{
+		try
+		{
+			if (string.IsNullOrEmpty(userId))
+			{
+				Console.WriteLine("Användare är null!");
+				return;
+			}
 
-            var userProfileId = await DbContext.Users
-                .Where(u => u.Id == userId)
-                .Select(u => u.UserProfileId)
-                .FirstOrDefaultAsync();
+			var userProfileId = await DbContext.Users
+				.Where(u => u.Id == userId)
+				.Select(u => u.UserProfileId)
+				.FirstOrDefaultAsync();
 
-            if (string.IsNullOrEmpty(userProfileId))
-            {
-                Console.WriteLine("UserProfileId är null eller ej satt för användare: " + userId);
-                return;
-            }
+			if (string.IsNullOrEmpty(userProfileId))
+			{
+				Console.WriteLine("UserProfileId är null eller ej satt för användare: " + userId);
+				return;
+			}
 
-            UserPunchCards = await DbContext.PunchCards
-                .Where(pc => pc.UserProfileId == userProfileId)
-                .Include(pc => pc.PunchCardUses)
-                .ToListAsync();
+			UserPunchCards = await DbContext.PunchCards
+				.Where(pc => pc.UserProfileId == userProfileId)
+				.Include(pc => pc.PunchCardUses)
+				.ToListAsync();
 
-            Console.WriteLine($"Hittade {UserPunchCards.Count} klippkort.");
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Gick ej att ladda klippkort: {ex.Message}");
-            StatusMessage = "Fel uppstod när klippkort skulle laddas.";
-        }
-    }
+			Console.WriteLine($"Hittade {UserPunchCards.Count} klippkort.");
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine($"Gick ej att ladda klippkort: {ex.Message}");
+			StatusMessage = "Fel uppstod när klippkort skulle laddas.";
+		}
+	}
 
-    public class PunchCardFormModel
-    {
-        [Required]
-        public string Type { get; set; } = "";
+	public class PunchCardFormModel
+	{
+		[Required]
+		public string Type { get; set; } = "";
 
-        [Required]
-        [Range(1, int.MaxValue, ErrorMessage = "Antal klipp måste vara minst 1.")]
-        public int TotalUses { get; set; }
-    }
+		[Required]
+		[Range(1, int.MaxValue, ErrorMessage = "Antal klipp måste vara minst 1.")]
+		public int TotalUses { get; set; }
+	}
 }

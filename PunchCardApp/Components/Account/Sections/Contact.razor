@@ -1,5 +1,20 @@
-﻿<h3>Contact</h3>
+﻿@page "/contact"
+@using Microsoft.AspNetCore.Components.Server.Circuits
+@using PunchCardApp.Services
 
-@code {
+@inject IDbContextFactory<ApplicationDbContext> DbFactory
+@inject AuthenticationStateProvider AuthStateProvider
+@inject ICircuitUserService UserService
+@inject CircuitHandler BlazorCircuitHandler
 
-}
+
+<h3>Welcome to the Contact Page!</h3>
+
+<div>
+    <span>Your Circuit ID: @MyCircuitMessage</span>
+    <br />
+    <span>Current User: @MyUserId</span>
+    <span>There are @UserService.Circuits.Count Users Connected</span>
+</div>
+
+<PunchCardApp.Components.Admin.UserAnalytics />

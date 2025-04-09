@@ -6,6 +6,7 @@
 @using PunchCardApp.Components.Account
 @using PunchCardApp.Components.Account.Shared
 @using PunchCardApp.Data
+@using PunchCardApp.Models
 
 @layout EmptyLayout
 
@@ -13,13 +14,12 @@
 @inject ILogger<Login> Logger
 @inject NavigationManager NavigationManager
 @inject IdentityRedirectManager RedirectManager
+@inject ApplicationDbContext _context
 
 <PageTitle>Muskelbyrån - Inloggning</PageTitle>
 
 <section id="signin">
     <div class="container">
-
-
 
         <div class="logo">
             <a href="/">
@@ -114,21 +114,37 @@
 
     public async Task LoginUser()
     {
-        // This doesn't count login failures towards account lockout
-        // To enable password failures to trigger account lockout, set lockoutOnFailure: true
         var result = await SignInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
+
         if (result.Succeeded)
         {
             Logger.LogInformation("User logged in.");
-            RedirectManager.RedirectTo(string.IsNullOrEmpty(ReturnUrl) ? "/account" : ReturnUrl);
 
-            // RedirectManager.RedirectTo(ReturnUrl);
+            // Hämta användaren och kontrollera om detta är deras första inloggning
+            var user = await SignInManager.UserManager.FindByEmailAsync(Input.Email);
+
+            if (user != null)
+            {
+                bool isFirstLogin = await IsFirstLoginAsync(user);
+
+                // Sparar i samma scope
+                var engagementLog = new UserEngagementLog
+                    {
+                        UserId = user.Id,
+                        Timestamp = DateTime.UtcNow,
+                        Type = EngagementType.Login,
+                        IsFirstLogin = isFirstLogin,
+                    };
+
+                _context.UserEngagementLogs.Add(engagementLog);
+                await _context.SaveChangesAsync(); 
+            }
+
+            RedirectManager.RedirectTo(string.IsNullOrEmpty(ReturnUrl) ? "/account" : ReturnUrl);
         }
         else if (result.RequiresTwoFactor)
         {
-            RedirectManager.RedirectTo(
-                "Account/LoginWith2fa",
-                new() { ["returnUrl"] = ReturnUrl, ["rememberMe"] = Input.RememberMe });
+            RedirectManager.RedirectTo("Account/LoginWith2fa", new() { ["returnUrl"] = ReturnUrl, ["rememberMe"] = Input.RememberMe });
         }
         else if (result.IsLockedOut)
         {
@@ -139,6 +155,16 @@
         {
             errorMessage = "Error: Invalid login attempt.";
         }
+    }
+
+
+        private async Task<bool> IsFirstLoginAsync(ApplicationUser user)
+    {
+        var engagementLogs = await _context.UserEngagementLogs
+            .Where(log => log.UserId == user.Id && log.Type == EngagementType.Login)
+            .ToListAsync();
+
+        return engagementLogs.Count == 0;
     }
 
     private sealed class InputModel

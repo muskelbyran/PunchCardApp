@@ -8,4 +8,6 @@ public class ApplicationUser : IdentityUser
     public UserProfile? UserProfile { get; set; }
     public string? UserAddressId { get; set; }
     public UserAddress? UserAddress { get; set; }
+    public bool CreatedByAdmin { get; set; } = false;
+    public bool MustChangePassword { get; set; } = false;
 }

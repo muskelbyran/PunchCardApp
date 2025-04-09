@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using PunchCardApp.Components.Admin.Pages;
 using PunchCardApp.Entities;
+using PunchCardApp.Models;
 
 namespace PunchCardApp.Data;
 
@@ -14,6 +15,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<FeatureEntity> Features { get; set; }
     public DbSet<FeatureItemEntity> FeaturesItems { get; set; }
     public DbSet<FeedbackEntity> Feedbacks { get; set; }
+    public DbSet<UserEngagementLog> UserEngagementLogs { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

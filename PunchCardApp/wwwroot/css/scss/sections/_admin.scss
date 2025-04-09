@@ -62,19 +62,77 @@ button.btn-primary {
     }
 }
 
-.owlbear {
 
+
+    /*.owlbear {
+
+        .main-content {
+            background-color: #E8FAF4;
+            width: 100vw;*/ /*Figure out how to make it fill all the width*/
+            /*flex-direction: column;
+            justify-content: center;
+            align-items: center;
+
+            .content-card {*/
+                /*background-color: #E7881F;*/
+                /*background-color: #254F3A;
+            }
+        }
+    }*/
+
+.aardvark {
     .main-content {
         background-color: #E8FAF4;
-        width: 100vw;   /*Figure out how to make it fill all the width*/
+        width: 100vw; 
+        display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
+        padding: 20px;
+        border-radius: 8px;
+        max-width: 1200px; 
 
-        .content-card {
-            /*background-color: #E7881F;*/
-            background-color: #254F3A;
+            .search-create-container {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                gap: 20px; 
+                margin-bottom: 20px;
+              
+                .search-box,
+                .create-user-box,
+                .stats-box {
+                    flex: 1;
+                    padding: 15px;
+                    border: 1px solid #ddd;
+                    border-radius: 8px;
+                    background-color: #f8f9fa;
+                }
+                
+                .search-box input,
+                .search-box button,
+                .create-user-box button,
+                .stats-box button {
+                    width: 100%;
+                }
+             
+                @media (max-width: 768px) {
+                    flex-direction: column; 
+                    gap: 10px; 
+
+                    .search-box,
+                    .create-user-box,
+                    .stats-box {
+                        width: 100%; 
+                    }
+                }
+            }
         }
     }
-}    
+
+
+
+
+
+
 

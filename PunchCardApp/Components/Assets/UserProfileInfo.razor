@@ -1,0 +1,46 @@
+﻿@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.EntityFrameworkCore
+@using PunchCardApp.Data
+
+@inject AuthenticationStateProvider AuthStateProvider
+@inject UserManager<ApplicationUser> UserManager
+@inject IDbContextFactory<ApplicationDbContext> DbContextFactory
+
+@if (!string.IsNullOrEmpty(FullName))
+{
+    <span>@FullName</span>
+}
+else
+{
+    <span>Guest</span>
+}
+
+@code {
+    private string? FullName;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity?.IsAuthenticated ?? false)
+        {
+            var userId = user.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+
+            if (!string.IsNullOrEmpty(userId))
+            {
+                await using var dbContext = DbContextFactory.CreateDbContext();
+
+                var appUser = await dbContext.Users
+                    .Include(u => u.UserProfile)
+                    .FirstOrDefaultAsync(u => u.Id == userId);
+
+                if (appUser?.UserProfile != null)
+                {
+                    FullName = $"{appUser.UserProfile.FirstName} {appUser.UserProfile.LastName}";
+                }
+            }
+        }
+    }
+}

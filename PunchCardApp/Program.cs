@@ -1,12 +1,15 @@
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using PunchCardApp.Client.Pages;
+using Microsoft.AspNetCore.Components.Server.Circuits;
+using System.Collections.Concurrent;
+using Microsoft.AspNetCore.Components;
 using PunchCardApp.Components;
 using PunchCardApp.Components.Account;
 using PunchCardApp.Data;
 using PunchCardApp.Repositories;
 using PunchCardApp.Services;
+using PunchCardApp;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -54,9 +57,15 @@ var serviceBusConnectionString = builder.Configuration["AzureServiceBus:Connecti
 var serviceBusQueueName = builder.Configuration["AzureServiceBus:QueueName"]
     ?? throw new InvalidOperationException("Azure Service Bus queue name not found.");
 
-
+// For Identity / background jobs / MVC controllers
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
+
+// For Blazor Server components
+builder.Services.AddDbContextFactory<ApplicationDbContext>(
+    options => options.UseSqlServer(connectionString),
+    ServiceLifetime.Scoped);
+
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddIdentityCore<ApplicationUser>(options =>
@@ -101,6 +110,15 @@ builder.Services.AddScoped<FeatureService>();
 builder.Services.AddScoped<RoleService>();
 builder.Services.AddScoped<FeedbackService>();
 builder.Services.AddScoped<PunchCardService>();
+
+// Logged on users
+builder.Services.AddSingleton<ICircuitUserService, CircuitUserService>();
+builder.Services.AddScoped<CircuitHandler>((sp) =>
+    new CircuitHandlerService(sp.GetRequiredService<ICircuitUserService>()));
+
+// User engagement
+builder.Services.AddScoped<IUserAnalyticsService, UserAnalyticsService>();
+builder.Services.AddScoped<IUserEngagementService, UserEngagementService>();
 
 var app = builder.Build();
 
