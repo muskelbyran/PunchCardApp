@@ -1,6 +1,10 @@
 ﻿@*
     Baserad på referens (6). Bygg en hemsida med HTML och CSS - Lindh, J (2024-09-23)
  *@
+
+@using PunchCardApp.Services
+@inject RoleService RoleService
+
 <nav class="main-nav" aria-label="main navigation">
     <a href="#main" class="skip-link">Skip to main content</a>
 
@@ -13,7 +17,7 @@
         </button>
         <ul id="main-menu" class="main-menu hide">
             <li>
-                <a href="/Acount/" class="nav-link">Hem</a>
+                <a href="/Account/" class="nav-link">Hem</a>
             </li>
             <li>
                 <a href="/account/history" class="nav-link">Historik</a>
@@ -21,9 +25,18 @@
             <li>
                 <a href="/account/deets" class="nav-link">Profil</a>
             </li>
-                        <li>
+            <li>
                 <a href="/account/settings" class="nav-link">Inställningar</a>
-            </li> 
+            </li>
+            <li>
+                <a href="/account/feedback" class="nav-link">Kontakt</a>
+            </li>
+            @if (IsManager)
+            {
+                <li>
+                    <a href="/admin/aardvark" class="nav-link">Backoffice</a>
+                </li>
+            }
             <li>
                 <a href="#" class="btn2 btn-primary">
                     <i class="fa-solid fa-left-to-bracket"></i>
@@ -52,3 +65,12 @@
         <span>Inställningar</span>
     </NavLink>
 </aside>
+
+@code {
+	private bool IsManager { get; set; }
+
+	protected override async Task OnInitializedAsync()
+	{
+		IsManager = await RoleService.IsManagerAsync();
+	}
+}

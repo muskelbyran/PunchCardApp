@@ -101,7 +101,12 @@
                                     await UserManager.UpdateAsync(user);
                                     await UserManager.AddToRoleAsync(user, "User");
 
-                                    RedirectManager.RedirectTo("account/login");
+                                    // Tex om user är skapad av admin
+                                    if (user.MustChangePassword)
+                                    {
+                                        NavigationManager.NavigateTo($"/changepassword?email={Email}");
+                                        return;
+                                    }
                                 }
                                 else
                                 {

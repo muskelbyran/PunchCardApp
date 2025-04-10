@@ -111,8 +111,6 @@
             </p>
         </div>
     </div>
-
-
 </section>
 
 @code {
@@ -189,10 +187,10 @@
 
         if (UserManager.Options.SignIn.RequireConfirmedAccount)
         {
-            RedirectManager.RedirectTo("Account/RegisterConfirmation", new() { ["email"] = user.Email, ["returnUrl"] = ReturnUrl });
+            RedirectManager.RedirectTo("confirmation", new() { ["email"] = user.Email, ["returnUrl"] = ReturnUrl });
         }
 
-        RedirectManager.RedirectTo("Account/RegisterConfirmation", new() { ["email"] = user.Email, ["returnUrl"] = ReturnUrl });
+        RedirectManager.RedirectTo("confirmation", new() { ["email"] = user.Email, ["returnUrl"] = ReturnUrl });
 
         await SignInManager.SignInAsync(user, isPersistent: false);
 

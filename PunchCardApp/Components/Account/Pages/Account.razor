@@ -1,16 +1,4 @@
 ﻿@page "/Account"
-@* @using System.ComponentModel.DataAnnotations
-@using Microsoft.AspNetCore.Identity
-@using Microsoft.AspNetCore.Components.Authorization
-@using Microsoft.EntityFrameworkCore
-@using Microsoft.Extensions.Logging
-@using PunchCardApp.Data
-@using PunchCardApp.Entities
-@using PunchCardApp.Models
-@using PunchCardApp.Components.Assets
-@using PunchCardApp.Components.Layout
-
-@layout AccountLayout *@
 
 @inject UserManager<ApplicationUser> UserManager
 @inject NavigationManager NavigationManager
@@ -60,47 +48,7 @@
     </div>
   
     <div class="main-content">
-
-        @* <div class="main-content one"> *@
-     @*    <div class="content-table">
-            @if (UserPunchCards != null && UserPunchCards.Any())
-            {
-                <table class="punch-table">
-                    <thead>
-                        <tr>
-                            <th>Typ</th>
-                            <th>Åtgärd</th>
-                            <th>Progress</th>
-                            <th>Totalt klippkort</th>
-                            <th>Klipp kvar</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var card in UserPunchCards)
-                        {
-                            <tr>
-                                <td>@card.Type</td>
-                                <td>
-                                    <PunchButton PunchCardId="@card.Id" CssClass="btn btn-copper" ButtonText="Färdigknådad!" OnPunchUsed="LoadUserPunchCardsAsync" />
-                                </td>
-                                <td>
-                                    <progress class="punch-progress" value="@(card.TotalUses - card.UsesLeft)" max="@card.TotalUses"></progress>
-                                </td>
-                                <td>@card.TotalUses</td>
-                                <td>@card.UsesLeft klipp kvar</td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            }
-            else
-            {
-                <p>Ingen historik att visa.</p>
-            }
-        </div> *@
-
-
-        <div class="content-card">
+      <div class="content-card">
             @if (UserPunchCards != null && UserPunchCards.Any())
             {
                 @foreach (var card in UserPunchCards)
