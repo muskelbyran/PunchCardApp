@@ -1,13 +1,16 @@
 ﻿@*
     Baserad på referens (6). Bygg en hemsida med HTML och CSS - Lindh, J (2024-09-23)
  *@
-
+@using Microsoft.AspNetCore.Authentication.Cookies
 @using PunchCardApp.Services
+
+@using Microsoft.AspNetCore.Authentication
+@inject NavigationManager NavigationManager
+@inject IHttpContextAccessor HttpContextAccessor
 @inject RoleService RoleService
 
 <nav class="main-nav" aria-label="main navigation">
     <a href="#main" class="skip-link">Skip to main content</a>
-
     <div class="container">
         <a href="/">
             <img class="show-light" src="/images/small-logo.png" alt="Muskelbyrån logo">
@@ -17,32 +20,34 @@
         </button>
         <ul id="main-menu" class="main-menu hide">
             <li>
-                <a href="/Account/" class="nav-link">Hem</a>
+                <NavLink class="nav-link" href="/Account">Hem</NavLink>
             </li>
             <li>
-                <a href="/account/history" class="nav-link">Historik</a>
+                <NavLink class="nav-link" href="/account/history">Historik</NavLink>
+
+                @* <a href="/account/history" class="nav-link">Historik</a> *@
             </li>
             <li>
-                <a href="/account/deets" class="nav-link">Profil</a>
+                <NavLink class="nav-link" href="/account/deets">Profil</NavLink>
             </li>
             <li>
-                <a href="/account/settings" class="nav-link">Inställningar</a>
+                <NavLink class="nav-link" href="/account/settings">Inställningar</NavLink>
             </li>
             <li>
-                <a href="/account/feedback" class="nav-link">Kontakt</a>
+                <NavLink class="nav-link" href="/account/feedback">Kontakt</NavLink>
             </li>
             @if (IsManager)
             {
                 <li>
-                    <a href="/admin/aardvark" class="nav-link">Backoffice</a>
+                    <NavLink class="nav-link" href="/admin/aardvark">Backoffice</NavLink>
                 </li>
             }
             <li>
-                <a href="#" class="btn2 btn-primary">
-                    <i class="fa-solid fa-left-to-bracket"></i>
-                    <span>Logga ut</span>
-                </a>
+                <button class="btn2 btn-primary" @onclick="HandleSignOut">
+                    <i class="fa-solid fa-arrow-right-to-bracket"></i>Logga ut
+                </button>
             </li>
+
         </ul>
     </div>
 </nav>
@@ -72,5 +77,14 @@
 	protected override async Task OnInitializedAsync()
 	{
 		IsManager = await RoleService.IsManagerAsync();
-	}
+	} 
+
+    private async Task HandleSignOut()
+    {
+        // Sign out the user
+        await HttpContextAccessor.HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
+        // Redirect to login or another page after sign out
+        NavigationManager.NavigateTo("/signin", forceLoad: true);
+    }
 }

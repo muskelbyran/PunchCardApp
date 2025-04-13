@@ -1,0 +1,18 @@
+﻿@page "/account/signout"
+@using Microsoft.AspNetCore.Authentication
+@using Microsoft.AspNetCore.Authentication.Cookies
+@inject NavigationManager NavigationManager
+@inject IHttpContextAccessor HttpContextAccessor
+
+<h3>Loggar ut...</h3>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        // SignOut användaren och ta bort cookien
+        await HttpContextAccessor.HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
+        // Omdirigera användaren till signin-sidan
+        NavigationManager.NavigateTo("/signin", true);
+    }
+}

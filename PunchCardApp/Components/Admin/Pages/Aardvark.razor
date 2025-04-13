@@ -1,18 +1,21 @@
 ﻿@*  Referens: ChatGpt created the first version of the tabs based on some really old tabs
     from a former website I made a long long time ago. *@
 @page "/admin/aardvark"
+
+@using PunchCardApp.Components.Account.Shared
 @using PunchCardApp.Components.Assets
 @using PunchCardApp.Models
+
+@layout AdminLayout
 
 @rendermode InteractiveServer
 
 <PageTitle>Klippkort</PageTitle>
 <AuthorizeView>
 	<Authorized>
-		<section class="aardvark">
-			<main class="main-content">
-				@* <div class="content-card"> *@
-				<div class="user-actions">
+			<main class="main-admin-container">
+
+				<div class="main-admin">
 					<div class="search-create-container">
 						<div class="search-box">
 							<h3>Sök kund:</h3>
@@ -145,7 +148,6 @@
 					</div>
 				}
 			</main>
-		</section>
 	</Authorized>
 </AuthorizeView>
 
