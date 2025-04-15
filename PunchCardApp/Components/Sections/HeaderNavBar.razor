@@ -3,11 +3,14 @@
  *@
 @using Microsoft.AspNetCore.Authentication.Cookies
 @using PunchCardApp.Services
-
 @using Microsoft.AspNetCore.Authentication
+
 @inject NavigationManager NavigationManager
 @inject IHttpContextAccessor HttpContextAccessor
 @inject RoleService RoleService
+@inject SignInManager<ApplicationUser> signInManager
+
+@rendermode InteractiveAuto
 
 <nav class="main-nav" aria-label="main navigation">
     <a href="#main" class="skip-link">Skip to main content</a>
@@ -72,19 +75,15 @@
 </aside>
 
 @code {
-	private bool IsManager { get; set; }
-
-	protected override async Task OnInitializedAsync()
-	{
-		IsManager = await RoleService.IsManagerAsync();
-	} 
+    private bool IsManager { get; set; }
+    
+    protected override async Task OnInitializedAsync()
+    {
+        IsManager = await RoleService.IsManagerAsync();
+    } 
 
     private async Task HandleSignOut()
-    {
-        // Sign out the user
-        await HttpContextAccessor.HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-
-        // Redirect to login or another page after sign out
-        NavigationManager.NavigateTo("/signin", forceLoad: true);
+    {        
+        NavigationManager.NavigateTo("/signout", forceLoad: true);
     }
 }
