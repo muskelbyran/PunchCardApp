@@ -2176,6 +2176,116 @@ $color-background: var(--color-background);*/
   text-decoration: underline;
 }
 
+.deets-content {
+  width: 100%;
+  max-width: 1700px;
+  padding: 0 10px;
+  padding-top: 5rem;
+  background-color: var(--color-background);
+}
+.deets-content .alert {
+  margin-bottom: 1rem;
+}
+.deets-content h1 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+.deets-content .nav-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  border-bottom: 1px solid #ccc;
+  margin-bottom: 1.5rem;
+}
+.deets-content .nav-tabs .nav-link {
+  flex: 1 1 auto;
+  text-align: center;
+  padding: 0.5rem 1rem;
+  background-color: #f5f5f5;
+  border: 1px solid transparent;
+  border-radius: 0.5rem;
+  font-size: 0.9rem;
+  color: #333;
+}
+.deets-content .nav-tabs .nav-link.active {
+  background-color: #007bff;
+  color: white;
+}
+.deets-content .tab-content .tab-pane {
+  padding: 0.5rem 0;
+}
+.deets-content .edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  width: 100%;
+}
+.deets-content .edit-form .content {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.deets-content .edit-form .input-group {
+  display: flex;
+  flex-direction: column;
+}
+.deets-content .edit-form .input-group label {
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+.deets-content .edit-form .input-group label span {
+  font-weight: normal;
+  font-size: 0.85rem;
+  color: #888;
+}
+.deets-content .edit-form .input-group input,
+.deets-content .edit-form .input-group textarea {
+  padding: 0.5rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 0.4rem;
+}
+.deets-content .edit-form .input-group .validation-message {
+  color: red;
+  font-size: 0.8rem;
+}
+.deets-content .edit-form .form-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+}
+.deets-content .edit-form .form-buttons button {
+  padding: 0.6rem 1.2rem;
+  font-size: 1rem;
+  border-radius: 0.4rem;
+  border: none;
+  cursor: pointer;
+}
+.deets-content .edit-form .form-buttons button.btn-gray {
+  background-color: #e0e0e0;
+  color: #333;
+}
+.deets-content .edit-form .form-buttons button.btn-theme {
+  background-color: #007bff;
+  color: white;
+}
+.deets-content .address-info {
+  margin-top: 2rem;
+}
+.deets-content .address-info h5 {
+  margin-bottom: 1rem;
+}
+@media (min-width: 768px) {
+  .deets-content .edit-form {
+    max-width: 600px;
+    margin-inline: auto;
+  }
+  .deets-content .nav-tabs .nav-link {
+    flex: initial;
+    font-size: 1rem;
+  }
+}
+
 .tab-pane {
   border: 1px solid #ddd;
   border-top: none;

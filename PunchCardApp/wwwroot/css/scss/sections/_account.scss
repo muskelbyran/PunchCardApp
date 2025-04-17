@@ -806,3 +806,139 @@
         }
     }
 }
+
+
+.deets-content {
+    width: 100%;
+    max-width: 1700px;
+    padding: 0 10px;
+    padding-top: 5rem;
+    background-color: var(--color-background);
+
+    .alert {
+        margin-bottom: 1rem;
+    }
+
+    h1 {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+    }
+    // --- Tabs ---
+    .nav-tabs {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        border-bottom: 1px solid #ccc;
+        margin-bottom: 1.5rem;
+
+        .nav-link {
+            flex: 1 1 auto;
+            text-align: center;
+            padding: 0.5rem 1rem;
+            background-color: #f5f5f5;
+            border: 1px solid transparent;
+            border-radius: 0.5rem;
+            font-size: 0.9rem;
+            color: #333;
+
+            &.active {
+                background-color: #007bff;
+                color: white;
+            }
+        }
+    }
+
+    .tab-content {
+        .tab-pane {
+            padding: 0.5rem 0;
+        }
+    }
+    // --- Forms ---
+    .edit-form {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+        width: 100%;
+
+        .content {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+
+            label {
+                font-weight: 600;
+                margin-bottom: 0.25rem;
+
+                span {
+                    font-weight: normal;
+                    font-size: 0.85rem;
+                    color: #888;
+                }
+            }
+
+            input,
+            textarea {
+                padding: 0.5rem;
+                font-size: 1rem;
+                border: 1px solid #ccc;
+                border-radius: 0.4rem;
+            }
+
+            .validation-message {
+                color: red;
+                font-size: 0.8rem;
+            }
+        }
+
+        .form-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+
+            button {
+                padding: 0.6rem 1.2rem;
+                font-size: 1rem;
+                border-radius: 0.4rem;
+                border: none;
+                cursor: pointer;
+
+                &.btn-gray {
+                    background-color: #e0e0e0;
+                    color: #333;
+                }
+
+                &.btn-theme {
+                    background-color: #007bff;
+                    color: white;
+                }
+            }
+        }
+    }
+
+    .address-info {
+        margin-top: 2rem;
+
+        h5 {
+            margin-bottom: 1rem;
+        }
+    }
+    // --- Responsive: tablet and up ---
+    @media (min-width: 768px) {
+        .edit-form {
+            max-width: 600px;
+            margin-inline: auto;
+        }
+
+        .nav-tabs {
+            .nav-link {
+                flex: initial;
+                font-size: 1rem;
+            }
+        }
+    }
+}

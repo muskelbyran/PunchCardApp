@@ -1,16 +1,14 @@
 ﻿@page "/signout"
+
 @inject SignInManager<ApplicationUser> SignInManager
 @inject NavigationManager NavigationManager
 
-<h3>Logging out...</h3>
+<h3>Loggar ut...</h3>
 
 @code {
     protected override async Task OnInitializedAsync()
     {
-        // Log out the user
         await SignInManager.SignOutAsync();
-
-        // Redirect to signin page
         NavigationManager.NavigateTo("/signin", forceLoad: true);
     }
 }

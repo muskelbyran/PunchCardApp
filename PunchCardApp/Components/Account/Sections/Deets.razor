@@ -1,20 +1,24 @@
 ﻿@page "/Account/Deets"
+
 @using Microsoft.Extensions.Logging
+@using PunchCardApp.Components.Account.Shared
 @using PunchCardApp.Components.Assets
 @using PunchCardApp.Models
 @using System.ComponentModel.DataAnnotations
+
 @inject UserManager<ApplicationUser> UserManager
 @inject ApplicationDbContext DbContext
 @inject AuthenticationStateProvider AuthStateProvider
 
 @rendermode InteractiveServer
 
+@layout AccountLayout
+
 <PageTitle>Profil</PageTitle>
 
 <AuthorizeView Context="authContext">
     <Authorized>
-        <main class="main-content">
-            @* <div class="content-card"> *@
+        <main class="deets-content">
             @if (!string.IsNullOrEmpty(@StatusMessage))
             {
                 <div class="alert alert-info">@StatusMessage</div>
@@ -30,25 +34,10 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link klippkort @(selectedTab == Tab.Klippkort ? "active" : "")" @onclick="() => SelectTab(Tab.Klippkort)">
-                            Klippkort
-                        </a>
-                    </li>
-                    <li class="nav-item">
                         <a class="nav-link uppgifter @(selectedTab == Tab.Uppgifter ? "active" : "")" @onclick="() => SelectTab(Tab.Uppgifter)">
                             Kontaktuppgifter
                         </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link installningar @(selectedTab == Tab.Installningar ? "active" : "")" @onclick="() => SelectTab(Tab.Historik)">
-                            Inställningar
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link historik @(selectedTab == Tab.Historik ? "active" : "")" @onclick="() => SelectTab(Tab.Historik)">
-                            Historik
-                        </a>
-                    </li>
+                    </li>                   
                 </ul>
                 <div class="tab-content mt-3">
                 @if (selectedTab == Tab.Profil)
@@ -60,13 +49,7 @@
                             <p>Adress: @selectedUser.UserAddress?.AddressLine_1, @selectedUser.UserAddress?.PostalCode @selectedUser.UserAddress?.City</p>
                         </div>
                     </div>
-                }
-                else if (selectedTab == Tab.Klippkort)
-                {
-                    <div class="tab-pane active">
-                        I denna fliken så kan man skapa ett nytt klippkort för användaren.
-                    </div>
-                }
+                }              
                 else if (selectedTab == Tab.Uppgifter)
                 {
                     <div class="tab-pane active">
@@ -138,27 +121,14 @@
                         </EditForm>
                     </section>
                 </div>
-                }
-                else if (selectedTab == Tab.Installningar)
-                {
-                    <div class="tab-pane active">
-                        I denna fliken så kan man se sina inställningar
-                    </div>
-                }
-                else if (selectedTab == Tab.Historik)
-                {
-                    <div class="tab-pane active">
-                       I denna fliken så kan man se sin historik
-                     </div>
-                }
+                }               
             </div>
         </div>
         }
         else
         {
-            <p>Loading user details...</p>
+            <p>Loading user deets...</p>
         }
-            @* </div> *@
         </main>
     </Authorized>
 </AuthorizeView>
@@ -175,10 +145,7 @@
     private enum Tab
     {
         Profil,
-        Klippkort,
         Uppgifter,
-        Installningar,
-        Historik
     }
 
     private void SelectTab(Tab tab)
@@ -279,8 +246,6 @@
         catch (Exception ex)
         {
             StatusMessage = "An error occurred while updating profile.";
-         
-
         }
     }
 
@@ -332,8 +297,7 @@
         }
         catch (Exception ex)
         {
-            StatusMessage = "An error occurred while updating address.";
-           
+            StatusMessage = "An error occurred while updating address.";           
         }
     }
 
@@ -376,20 +340,4 @@
         [Required(ErrorMessage = "City is required")]
         public string City { get; set; } = "";
     }
-    // public class EditProfileFormModel
-    // {
-    //     public string FirstName { get; set; }
-    //     public string LastName { get; set; }
-    //     public string PhoneNumber { get; set; }
-    //     public string Email { get; set; }
-    //     public string Biography { get; set; }
-    // }
-
-    // public class AddressInfoFormModel
-    // {
-    //     public string AddressLine_1 { get; set; }
-    //     public string? AddressLine_2 { get; set; }
-    //     public string PostalCode { get; set; }
-    //     public string City { get; set; }
-    // }
 }
