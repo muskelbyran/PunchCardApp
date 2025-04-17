@@ -2085,6 +2085,97 @@ $color-background: var(--color-background);*/
     display: none;
   }
 }
+#confirm {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f3f4f6, #e0e7ff);
+}
+#confirm .container {
+  background-color: #ffffff;
+  padding: 2rem 3rem;
+  border-radius: 1rem;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  width: 100%;
+  max-width: 500px;
+}
+#confirm .container h1 {
+  font-size: 1.75rem;
+  margin-bottom: 1.5rem;
+  color: #1f2937;
+  text-align: center;
+}
+#confirm .container .content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+#confirm .container .input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+#confirm .container .input-group label {
+  font-weight: 600;
+  color: #374151;
+}
+#confirm .container .input-group input {
+  padding: 0.75rem 1rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  transition: border-color 0.2s ease;
+}
+#confirm .container .input-group input:focus {
+  outline: none;
+  border-color: #6366f1;
+}
+#confirm .container .input-group .validation-message {
+  color: #dc2626;
+  font-size: 0.875rem;
+}
+#confirm .container .input-group p {
+  margin: 0;
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+#confirm .container #form-button {
+  display: flex;
+  justify-content: center;
+}
+#confirm .container #form-button .btn {
+  background-color: #6366f1;
+  color: #ffffff;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+#confirm .container #form-button .btn:hover {
+  background-color: #4f46e5;
+}
+#confirm .container p {
+  margin-top: 1.5rem;
+  text-align: center;
+  font-size: 0.875rem;
+}
+#confirm .container p button {
+  background: none;
+  color: #3b82f6;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  padding: 0;
+  margin-left: 0.25rem;
+}
+#confirm .container p button:hover {
+  text-decoration: underline;
+}
+
 .tab-pane {
   border: 1px solid #ddd;
   border-top: none;

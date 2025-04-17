@@ -16,6 +16,8 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<FeatureItemEntity> FeaturesItems { get; set; }
     public DbSet<FeedbackEntity> Feedbacks { get; set; }
     public DbSet<UserEngagementLog> UserEngagementLogs { get; set; }
+    public DbSet<VerificationRequestEntity> VerificationRequests { get; set; }
+
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

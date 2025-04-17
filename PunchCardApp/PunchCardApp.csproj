@@ -16,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Dapper" Version="2.1.66" />
     <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
     <ProjectReference Include="..\PunchCardApp.Client\PunchCardApp.Client.csproj" />
     <PackageReference Include="Azure.Messaging.ServiceBus" Version="7.18.1" />

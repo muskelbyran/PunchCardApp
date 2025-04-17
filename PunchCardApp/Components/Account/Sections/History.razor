@@ -7,12 +7,14 @@
 @using Microsoft.AspNetCore.Identity
 @using Microsoft.AspNetCore.Components.Authorization
 @using Microsoft.EntityFrameworkCore
+@using PunchCardApp.Components.Layout
 @using PunchCardApp.Data
 @using PunchCardApp.Entities
 @using PunchCardApp.Models
 
-@rendermode InteractiveServer
+@layout AdminLayout
 
+@rendermode InteractiveServer
 
 @inject UserManager<ApplicationUser> UserManager
 @inject NavigationManager NavigationManager

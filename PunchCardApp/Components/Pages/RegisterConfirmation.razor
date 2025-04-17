@@ -1,5 +1,6 @@
 ﻿@page "/confirmation"
-@rendermode InteractiveServer
+
+@rendermode InteractiveAuto
 
 @using System.Text
 @using Microsoft.AspNetCore.Identity
@@ -20,9 +21,9 @@
 @inject IConfiguration Configuration
 
 <PageTitle>Register confirmation</PageTitle>
-<section id="signup">
+<section id="confirm">
     <div class="container">
-        <EditForm Model="VerifyCodeForm" OnValidSubmit="OnValidSubmit" asp-route-returnUrl="@ReturnUrl" FormName="verifycode" method="post" novalidate>
+        <EditForm Model="VerifyCodeForm" OnValidSubmit="OnValidSubmit">
             <DataAnnotationsValidator />
             <h1>Verify Your Account</h1>
             <div class="content">
@@ -33,7 +34,9 @@
                     <p>@statusMessage</p>
                 </div>
                 <div id="form-button">
-                    <button class="btn btn-theme" type="submit">Verify Code</button>
+                    <button class="btn btn-theme" type="submit" disabled="@isSubmitting">
+                        @(isSubmitting ? "Verifying..." : "Verify Code")
+                    </button>
                 </div>
             </div>
         </EditForm>
@@ -43,6 +46,7 @@
 
 @code {
     private string? statusMessage;
+    private bool isSubmitting = false;
 
     [CascadingParameter]
     private HttpContext HttpContext { get; set; } = default!;
@@ -64,12 +68,13 @@
             return;
         }
 
+        isSubmitting = true; 
         try
         {
             var query = @"
-            SELECT *
-            FROM [dbo].[VerificationRequests]
-            WHERE [Email] = @Email AND [Code] = @Code";
+        SELECT *
+        FROM [dbo].[VerificationRequests]
+        WHERE [Email] = @Email AND [Code] = @Code";
 
             using (var connection = new SqlConnection(Configuration.GetConnectionString("DefaultConnection")))
             {
@@ -101,10 +106,14 @@
                                     await UserManager.UpdateAsync(user);
                                     await UserManager.AddToRoleAsync(user, "User");
 
-                                    // Tex om user är skapad av admin
                                     if (user.MustChangePassword)
                                     {
                                         NavigationManager.NavigateTo($"/changepassword?email={Email}");
+                                        return;
+                                    }
+                                    else
+                                    {
+                                        NavigationManager.NavigateTo(ReturnUrl ?? "/account");
                                         return;
                                     }
                                 }
@@ -126,7 +135,12 @@
         {
             statusMessage = "An error occurred: " + ex.Message;
         }
+        finally
+        {
+            isSubmitting = false; 
+        }
     }
+
 
     private async Task ResendCode()
     {
@@ -187,6 +201,5 @@
     {
         [Required]
         public string Code { get; set; } = null!;
-
     }
-}
+}   

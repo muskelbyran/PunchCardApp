@@ -57,7 +57,7 @@ var serviceBusConnectionString = builder.Configuration["AzureServiceBus:Connecti
 var serviceBusQueueName = builder.Configuration["AzureServiceBus:QueueName"]
     ?? throw new InvalidOperationException("Azure Service Bus queue name not found.");
 
-// For Identity / background jobs / MVC controllers
+// For Identity / background jobs 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 
