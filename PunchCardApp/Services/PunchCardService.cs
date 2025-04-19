@@ -15,7 +15,7 @@ public class PunchCardService(PunchCardRepository repository)
             TotalUses = totalUses,
             UsesLeft = totalUses,
             PurchasedDate = DateTime.UtcNow,
-            PunchCardUses = new List<PunchCardUseEntity>()
+            PunchCardUses = []
         };
 
         await _repository.AddPunchCardAsync(punchCard);
@@ -65,6 +65,4 @@ public class PunchCardService(PunchCardRepository repository)
     {
         await _repository.DeletePunchCardAsync(punchCardId);
     }
-
-
 }

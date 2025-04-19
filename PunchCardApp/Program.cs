@@ -104,12 +104,14 @@ builder.Services.AddScoped<FeatureRepository>();
 builder.Services.AddScoped<FeatureItemRepository>();
 builder.Services.AddScoped<FeedbackRepository>();
 builder.Services.AddScoped<PunchCardRepository>();
+builder.Services.AddScoped<CourseRepository>();
 
 // Services
 builder.Services.AddScoped<FeatureService>();
 builder.Services.AddScoped<RoleService>();
 builder.Services.AddScoped<FeedbackService>();
 builder.Services.AddScoped<PunchCardService>();
+builder.Services.AddScoped<CourseService>();
 
 // Logged on users
 builder.Services.AddSingleton<ICircuitUserService, CircuitUserService>();

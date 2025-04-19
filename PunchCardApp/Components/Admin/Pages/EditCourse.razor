@@ -1,0 +1,144 @@
+﻿@page "/courses/edit"
+@using PunchCardApp.Models
+@using PunchCardApp.Services
+@inject NavigationManager Navigation
+@inject IWebHostEnvironment Env
+@inject ILogger<EditCourse> Logger
+@inject CourseService CourseService
+
+@rendermode InteractiveServer
+
+    <style>
+        .container {
+            padding-top: 5rem;
+        }
+    </style>
+    <div class="container">
+
+    <EditForm Model="@courseModel" OnValidSubmit="OnValidSubmitAsync" FormName="CreateCourseForm">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="mb-3">
+        <label class="form-label">Title</label>
+        <InputText class="form-control" @bind-Value="courseModel.Title" />
+        <ValidationMessage For="@(() => courseModel.Title)" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Category</label>
+        <InputText class="form-control" @bind-Value="courseModel.Category" />
+        <ValidationMessage For="@(() => courseModel.Category)" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Description</label>
+        <InputTextArea class="form-control" @bind-Value="courseModel.Description" />
+        <ValidationMessage For="@(() => courseModel.Description)" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Tagline</label>
+        <InputText class="form-control" @bind-Value="courseModel.Tagline" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Price</label>
+        <InputNumber class="form-control" @bind-Value="courseModel.Price" />
+        <ValidationMessage For="@(() => courseModel.Price)" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Start Date</label>
+        <InputDate class="form-control" @bind-Value="courseModel.StartDate" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Times</label>
+        <InputText class="form-control" @bind-Value="courseModel.Times" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Location</label>
+        <InputText class="form-control" @bind-Value="courseModel.Location" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Upload Image</label>
+        <InputFile OnChange="HandleImageUpload" />
+    </div>
+
+    @if (!string.IsNullOrEmpty(uploadedImagePath))
+    {
+        <div class="mb-3">
+            <img src="@uploadedImagePath" alt="Uploaded Image" style="max-height: 200px;" />
+        </div>
+    }
+
+    <button type="submit" class="btn btn-primary">Create Course</button>
+</EditForm>
+</div>
+
+@code {
+    private CreateCourseModel courseModel = new();
+    private string? uploadedImagePath;
+
+    private async Task HandleImageUpload(InputFileChangeEventArgs e)
+    {
+        try
+        {
+            var file = e.File;
+            var fileExt = Path.GetExtension(file.Name);
+            var fileName = $"{Guid.NewGuid()}{fileExt}";
+            var filePath = Path.Combine(Env.WebRootPath, "uploads", fileName);
+
+            Directory.CreateDirectory(Path.GetDirectoryName(filePath)!);
+
+            await using var stream = File.Create(filePath);
+            await file.OpenReadStream(5 * 1024 * 1024).CopyToAsync(stream); // Save 
+
+            uploadedImagePath = $"/uploads/{fileName}";
+            courseModel.ImageUrl = uploadedImagePath;
+
+            var memoryStream = new MemoryStream();
+            await file.OpenReadStream(5 * 1024 * 1024).CopyToAsync(memoryStream);
+            memoryStream.Position = 0; // reset 
+
+            courseModel.ImageFile = new FormFile(memoryStream, 0, memoryStream.Length, "ImageFile", file.Name)
+                {
+                    Headers = new HeaderDictionary(),
+                    ContentType = file.ContentType
+                };
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Image upload failed.");
+        }
+    }
+
+    public async Task OnValidSubmitAsync()
+    {
+        try
+        {
+            Console.WriteLine("Submitting course form with the following data:");
+            Console.WriteLine($"Title: {courseModel.Title}");
+            Console.WriteLine($"Category: {courseModel.Category}");
+            Console.WriteLine($"Description: {courseModel.Description}");
+            Console.WriteLine($"Tagline: {courseModel.Tagline}");
+            Console.WriteLine($"Price: {courseModel.Price}");
+            Console.WriteLine($"StartDate: {courseModel.StartDate}");
+            Console.WriteLine($"Times: {courseModel.Times}");
+            Console.WriteLine($"Location: {courseModel.Location}");
+            Console.WriteLine($"ImageUrl: {courseModel.ImageUrl}");
+
+            await CourseService.CreateCourseAsync(courseModel); 
+            Logger.LogInformation("Course created successfully: {@Course}", courseModel);
+            Navigation.NavigateTo("/account");
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Error creating course");
+          
+        }
+    }
+}

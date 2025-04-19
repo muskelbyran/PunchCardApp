@@ -1,0 +1,77 @@
+﻿@page "/courses/course/{CourseId:int}"
+@using PunchCardApp.Entities
+@using PunchCardApp.Services
+@using PunchCardApp.Repositories
+@inject CourseService CourseService
+@inject CourseRepository CourseRepository
+
+@* @inject ILogger<CourseDetails> Logger *@
+@inject NavigationManager NavigationManager
+
+<h3 class="text-center mb-4">Course Details</h3>
+
+@if (isLoading)
+{
+    <p class="text-center">Loading...</p>
+}
+else if (course == null)
+{
+    <p class="text-danger text-center">Course not found.</p>
+}
+else
+{
+    <div class="container">
+        <div class="card shadow-sm p-3 mb-4">
+            @if (!string.IsNullOrEmpty(course.ImageUrl))
+            {
+                <img src="@course.ImageUrl" class="card-img-top img-fluid mb-3 rounded" alt="Course image" />
+            }
+
+            <div class="card-body">
+                <h4 class="card-title">@course.Title</h4>
+                @if (!string.IsNullOrWhiteSpace(course.Tagline))
+                {
+                    <h6 class="text-muted">@course.Tagline</h6>
+                }
+
+                <p><strong>Category:</strong> @course.Category</p>
+                <p><strong>Price:</strong> @course.Price.ToString("C")</p>
+                <p><strong>Start Date:</strong> @course.StartDate.ToShortDateString()</p>
+
+                @if (!string.IsNullOrEmpty(course.Times))
+                {
+                    <p><strong>Times:</strong> @course.Times</p>
+                }
+
+                @if (!string.IsNullOrEmpty(course.Location))
+                {
+                    <p><strong>Location:</strong> @course.Location</p>
+                }
+
+                <hr />
+                <p>@course.Description</p>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public int CourseId { get; set; }
+
+    private CourseEntity? course;
+    private bool isLoading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            course = await CourseRepository.GetCourseByIdAsync(CourseId);
+        }
+        catch (Exception ex)
+        {
+            // Logger.LogError(ex, "Error loading course with ID {CourseId}", CourseId);
+        }
+        isLoading = false;
+    }
+}
