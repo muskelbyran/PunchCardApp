@@ -7,6 +7,7 @@
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject ApplicationDbContext DbContext
 @inject PunchCardService PunchCardService
+@inject CourseService CourseService
 
 @rendermode InteractiveServer
 
@@ -48,6 +49,20 @@
             <p>Ingen historik att visa.</p>
         }
     </div>
+
+    @if (courses == null)
+    {
+        <p>Laddar kurser...</p>
+    }
+    else
+    {
+        <div class="course-grid">
+            @foreach (var course in courses)
+            {
+                <CourseCard Course="course" />
+            }
+        </div>
+    }
   
     <div class="main-content">
       <div class="content-card">
@@ -107,6 +122,10 @@
     private bool _isRightContentVisible = false;
     private bool _isRightContentVisible2 = false;
     private bool _isRightContentVisible3 = false;
+    
+    private List<CreateCourseModel>? courses;
+    private List<CreateCourseModel> AllCourses = new();
+    private List<CreateCourseModel> SortedCoursesList = new();
 
     private string? userName;
 
@@ -156,6 +175,14 @@
 
     protected override async Task OnInitializedAsync()
     {
+        var allCourses = await CourseService.GetAllCoursesAsync();
+        
+        // Funkar inte riktigt
+        SortedCoursesList = AllCourses.OrderBy(course => course.StartDate).ToList();
+
+        var courseEntities = await CourseService.GetAllCoursesAsync();
+        courses = MapEntitiesToModels(courseEntities);
+
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         var user = authState.User;
         
@@ -172,7 +199,6 @@
             {
                 Console.WriteLine("Hittar inte användare!");
             }
-
         }      
     }
 
@@ -241,5 +267,21 @@
         [Required]
         [Range(1, int.MaxValue, ErrorMessage = "Antal klipp måste vara minst 1.")]
         public int TotalUses { get; set; }
+    }
+
+    private List<CreateCourseModel> MapEntitiesToModels(List<CourseEntity> entities)
+    {
+        return entities.Select(entity => new CreateCourseModel
+            {
+                Title = entity.Title,
+                Tagline = entity.Tagline,
+                Category = entity.Category,
+                Price = entity.Price,
+                StartDate = entity.StartDate,
+                Description = entity.Description,
+                Times = entity.Times,
+                Location = entity.Location,
+                ImageUrl = entity.ImageUrl
+            }).ToList();
     }
 }

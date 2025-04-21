@@ -1,0 +1,31 @@
+﻿@using Microsoft.Extensions.Localization
+@using PunchCardApp.Models
+@inject IStringLocalizer<CourseCard> Localizer
+
+<div class="course-card">
+    <div class="image-container" style="background-image: url('@Course.ImageUrl')"></div>
+    <div class="title-bar">
+        <div class="overlay">
+            <h4>@Course.Title</h4>
+        </div>
+    </div>
+    <div class="info-bar">
+        <div class="info-item">
+            <i class="fa fa-clock"></i>
+            @(!string.IsNullOrWhiteSpace(Course.Times) ? Course.Times : "-")
+        </div>
+        <div class="info-item">
+            <i class="fa fa-calendar-alt"></i>
+            @Course.StartDate.ToString("ddd d MMM", new System.Globalization.CultureInfo("sv-SE"))
+        </div>
+        <div class="info-item">
+            <i class="fa fa-money-bill-wave"></i>
+            @Course.Price.ToString("C0", new System.Globalization.CultureInfo("sv-SE"))
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public CreateCourseModel Course { get; set; } = new();
+}

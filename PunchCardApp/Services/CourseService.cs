@@ -89,4 +89,65 @@ public class CourseService
             throw;
         }
     }
+
+    public async Task<CourseEntity?> GetCourseByImageAsync(string imageFileName)
+    {
+        var allCourses = await _courseRepository.GetAllCoursesAsync();
+        return allCourses.FirstOrDefault(c => c.ImageUrl != null && c.ImageUrl.Contains(imageFileName));
+    }
+
+
+    public async Task<List<CourseEntity>> GetAllCoursesAsync()
+    {
+        return await _courseRepository.GetAllCoursesAsync();
+    }
+
+    public async Task DeleteUnusedImagesAsync()
+    {
+        // Hämta alla bilder som är länkade till kurser
+        var allCourses = await _courseRepository.GetAllCoursesAsync();
+        var usedImages = allCourses
+            .Where(course => !string.IsNullOrEmpty(course.ImageUrl))
+            .Select(course => course.ImageUrl)
+            .ToList();
+
+        var imagesFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "courses");
+
+        var allImageFiles = Directory.GetFiles(imagesFolder);
+
+        foreach (var imageFile in allImageFiles)
+        {
+            var imageName = Path.GetFileName(imageFile);
+
+            // Om bilden inte längre används av någon kurs, ta bort den
+            if (!usedImages.Contains($"images/courses/{imageName}"))
+            {
+                try
+                {
+                    File.Delete(imageFile);
+                    _logger.LogInformation($"Deleted unused image: {imageName}");
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, $"Failed to delete image: {imageName}");
+                }
+            }
+        }
+    }
+
+    public async Task DeleteCourseAsync(int courseId)
+    {
+        try
+        {
+            await _courseRepository.DeleteCourseAsync(courseId);
+            _logger.LogInformation("Course with ID {CourseId} deleted successfully.", courseId);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to delete course with ID {CourseId}", courseId);
+            throw;
+        }
+    }
+
+
 }

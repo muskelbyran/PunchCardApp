@@ -122,6 +122,9 @@ builder.Services.AddScoped<CircuitHandler>((sp) =>
 builder.Services.AddScoped<IUserAnalyticsService, UserAnalyticsService>();
 builder.Services.AddScoped<IUserEngagementService, UserEngagementService>();
 
+// Dates
+builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

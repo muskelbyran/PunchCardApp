@@ -2,7 +2,6 @@
 using System.ComponentModel.DataAnnotations;
 
 namespace PunchCardApp.Models;
-
 public class CreateCourseModel
 {
     [Required]

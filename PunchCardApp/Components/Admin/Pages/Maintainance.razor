@@ -1,0 +1,173 @@
+﻿@page "/admin/maintainance"
+@using PunchCardApp.Models
+@using PunchCardApp.Services
+@inject CourseService CourseService
+@inject IWebHostEnvironment Env
+@inject ILogger<Maintainance> Logger
+@rendermode InteractiveServer
+
+<style>
+    .thumbnail {
+        max-height: 80px;
+        max-width: 80px;
+        object-fit: cover;
+        border-radius: 4px;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+    }
+
+    .image-table-container {
+        margin-top: 30px;
+        margin-bottom: 40px;
+    }
+
+    .delete-button {
+        margin-top: 20px;
+    }
+
+    h3 {
+        margin-top: 40px;
+        margin-bottom: 20px;
+    }
+</style>
+
+<h3>Admin - Hantera Bilder</h3>
+
+<div class="image-table-container">
+    @if (images?.Count > 0)
+    {
+        <table class="table table-striped table-bordered align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>Bild</th>
+                    <th>Kursnamn</th>
+                    <th>Åtgärd</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var image in images)
+                {
+                    <tr>
+                        <td>
+                            <img src="@image.Url" alt="Image" class="thumbnail" />
+                        </td>
+                        <td>
+                            @if (string.IsNullOrEmpty(image.CourseName))
+                            {
+                                <span class="text-danger">Oanvänd</span>
+                            }
+                            else
+                            {
+                                @image.CourseName
+                            }
+                        </td>
+                        <td>
+                            <button class="btn btn-danger btn-sm" @onclick="() => DeleteImage(image)">Ta bort</button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p>Inga bilder att visa.</p>
+    }
+</div>
+
+<button class="btn btn-warning delete-button" @onclick="DeleteAllUnusedImages">Rensa alla oanvända bilder</button>
+
+
+
+@code {
+    private List<ImageInfo> images;
+
+    protected override async Task OnInitializedAsync()
+    {
+        images = await GetImagesFromUploads();
+    }
+
+    private async Task<List<ImageInfo>> GetImagesFromUploads()
+    {
+        var imageList = new List<ImageInfo>();
+        var uploadsPath = Path.Combine(Env.WebRootPath, "uploads");
+
+        // Hämta alla filer i uploads-mappen
+        var files = Directory.GetFiles(uploadsPath);
+
+        foreach (var file in files)
+        {
+            var fileName = Path.GetFileName(file);
+
+            // Kolla om bilden är kopplad till någon kurs i databasen
+            var course = await CourseService.GetCourseByImageAsync(fileName); // Denna metod kollar om bilden är kopplad till någon kurs.
+
+            imageList.Add(new ImageInfo
+                {
+                    FileName = fileName,
+                    Url = $"/uploads/{fileName}",
+                    CourseName = course?.Title // Kursnamnet om den är kopplad, annars "null"
+                });
+        }
+
+        return imageList;
+    }
+
+    private async Task DeleteImage(ImageInfo image)
+    {
+        if (image.CourseName == null)
+        {
+            var filePath = Path.Combine(Env.WebRootPath, "uploads", image.FileName);
+            if (File.Exists(filePath))
+            {
+                File.Delete(filePath);
+                Logger.LogInformation("Oanvänd bild raderad: {FileName}", image.FileName);
+            }
+        }
+
+        images = await GetImagesFromUploads();
+    }
+
+    private async Task DeleteAllUnusedImages()
+    {
+        var uploadsPath = Path.Combine(Env.WebRootPath, "uploads");
+        var files = Directory.GetFiles(uploadsPath);
+        var courses = await CourseService.GetAllCoursesAsync();
+
+        var usedImages = courses
+            .Where(c => !string.IsNullOrEmpty(c.ImageUrl))
+            .Select(c => Path.GetFileName(c.ImageUrl!))
+            .ToHashSet();
+
+        int deletedCount = 0;
+
+        foreach (var file in files)
+        {
+            var fileName = Path.GetFileName(file);
+            if (!usedImages.Contains(fileName))
+            {
+                try
+                {
+                    File.Delete(file);
+                    Logger.LogInformation("Rensade oanvänd bild: {FileName}", fileName);
+                    deletedCount++;
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogError(ex, "Kunde inte ta bort: {FileName}", fileName);
+                }
+            }
+        }
+
+        Logger.LogInformation("Totalt rensade bilder: {Count}", deletedCount);
+
+        // Uppdatera listan i UI:t
+        images = await GetImagesFromUploads();
+    }
+
+    public class ImageInfo
+    {
+        public string FileName { get; set; }
+        public string Url { get; set; }
+        public string? CourseName { get; set; }
+    }
+}
