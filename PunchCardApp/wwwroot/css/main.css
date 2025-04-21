@@ -1661,23 +1661,18 @@ $color-background: var(--color-background);*/
   overflow-y: auto;
   background: var(--color-background);
   border-radius: 20px;
-  margin: auto; /* Centers it */
+  margin: auto;
+  border: 10px solid #dd3c6e;
 }
 @media (min-width: 64.01rem) {
   .main-content {
-    /*        width: 100%;
-            max-width: none;
-            padding-top: 350px;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-            align-items: center;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            border: 1px solid #dd3c6e;*/
-    display: none;
+    display: none !important;
   }
-  .main-content .right-content-placeholder {
-    display: none;
+}
+
+@media (min-width: 64.01rem) {
+  .right-content-placeholder {
+    display: none !important;
   }
 }
 
@@ -2668,4 +2663,159 @@ table th {
 }
 .main-content .btn {
   background: var(--color-theme);
+}
+
+.settings-content {
+  width: 100%;
+  max-width: 1700px;
+  padding: 0 10px;
+  background-color: var(--color-background);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  box-sizing: border-box;
+  padding-top: 7rem;
+}
+.settings-content .darkmode-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  padding-top: 7rem;
+  margin-bottom: 20px;
+}
+.settings-content .darkmode-toggle p {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+  margin-right: 10px;
+}
+.settings-content .darkmode-toggle .toggle {
+  position: relative;
+  display: inline-block;
+  width: 34px;
+  height: 20px;
+}
+.settings-content .darkmode-toggle .toggle input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.settings-content .darkmode-toggle .toggle .slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: 0.4s;
+  border-radius: 50px;
+}
+.settings-content .darkmode-toggle .toggle input:checked + .slider {
+  background-color: #4CAF50;
+}
+.settings-content .darkmode-toggle .toggle .slider:before {
+  position: absolute;
+  content: "";
+  height: 12px;
+  width: 12px;
+  border-radius: 50%;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: 0.4s;
+}
+.settings-content .darkmode-toggle .toggle input:checked + .slider:before {
+  transform: translateX(14px);
+}
+.settings-content .btn {
+  width: 100%;
+  margin: 10px 0;
+  padding: 15px;
+  font-size: 16px;
+  font-weight: bold;
+  text-align: center;
+  border-radius: 8px;
+  color: white;
+  background-color: #007bff;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+.settings-content .btn:hover {
+  background-color: #0056b3;
+}
+.settings-content .btn.btn-primary {
+  background-color: #007bff;
+}
+.settings-content .btn.btn-primary:hover {
+  background-color: #0056b3;
+}
+.settings-content .right-content {
+  position: fixed;
+  top: 0;
+  right: -300px;
+  width: 300px;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 20px;
+  transition: 0.3s ease;
+  display: none;
+}
+.settings-content .right-content.show {
+  right: 0;
+  display: block;
+}
+.settings-content .right-content .close-icon {
+  font-size: 24px;
+  color: #fff;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+.settings-content .right-content .close-icon:hover {
+  color: #ccc;
+}
+
+@media (min-width: 768px) {
+  .settings-content {
+    padding: 40px;
+  }
+  .settings-content .darkmode-toggle p {
+    font-size: 16px;
+  }
+  .settings-content .darkmode-toggle .toggle {
+    width: 50px;
+    height: 30px;
+  }
+  .settings-content .darkmode-toggle .toggle .slider {
+    background-color: #ccc;
+  }
+  .settings-content .darkmode-toggle .toggle input:checked + .slider {
+    background-color: #4CAF50;
+  }
+  .settings-content .darkmode-toggle .toggle .slider:before {
+    height: 18px;
+    width: 18px;
+    left: 7px;
+  }
+  .settings-content .darkmode-toggle .toggle input:checked + .slider:before {
+    transform: translateX(20px);
+  }
+  .settings-content .btn {
+    width: 80%;
+    padding: 15px;
+    font-size: 18px;
+  }
+}
+@media (min-width: 1024px) {
+  .settings-content {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  /*    .btn {
+          width: 40%;
+      }*/
 }

@@ -79,14 +79,35 @@ builder.Services.AddIdentityCore<ApplicationUser>(options =>
     .AddSignInManager()
     .AddDefaultTokenProviders();
 
+
 builder.Services.ConfigureApplicationCookie(x =>
 {
     x.LoginPath = "/signin";
     x.AccessDeniedPath = "/Error";
     x.Cookie.HttpOnly = true;
-    x.Cookie.SecurePolicy = CookieSecurePolicy.Always; 
-    x.ExpireTimeSpan = TimeSpan.FromMinutes(5);
+    x.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+    x.ExpireTimeSpan = TimeSpan.FromMinutes(5);  // Default expiration time
     x.SlidingExpiration = true;
+
+    x.Events.OnValidatePrincipal = context =>
+    {
+        if (context?.Principal?.Identity?.IsAuthenticated == true)
+        {
+            if (context.Properties != null && context.Properties.Items != null)
+            {
+                if (context.Properties.Items.TryGetValue(".rememberMe", out string? value) && value == "true")
+                {
+                    context.Properties.ExpiresUtc = DateTimeOffset.UtcNow.AddDays(14); 
+                }
+                else
+                {
+                    context.Properties.ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(5);  
+                }
+            }
+        }
+
+        return Task.CompletedTask;
+    };
 });
 
 builder.Services.AddAuthorization(x =>
@@ -142,7 +163,13 @@ else
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+
+app.UseRouting();
+
+app.UseAuthentication();  
+app.UseAuthorization();
 app.UseAntiforgery();
+
 
 using (var scope = app.Services.CreateScope())
 {

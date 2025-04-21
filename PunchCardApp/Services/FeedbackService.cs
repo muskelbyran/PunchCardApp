@@ -21,10 +21,7 @@ public class FeedbackService(FeedbackRepository feedbackRepository)
                 Message = feedback.Message,
                 FromName = feedback.FromName,
                 SubmittedAt = feedback.SubmittedAt,
-                IsTypo = feedback.IsTypo,
-                IsBug = feedback.IsBug,
-                IsIdea = feedback.IsIdea,
-                IsPraise = feedback.IsPraise
+                FeedbackType = feedback.FeedbackType
             };
 
             return await _feedbackRepository.CreateOneAsync(feedbackEntity);

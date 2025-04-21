@@ -25,8 +25,7 @@
 @rendermode InteractiveServer
 
 <PageTitle>Home</PageTitle>
-<main class="main-content-container">
-	<div class="main-section">
+<main class="settings-content">
 
 		<div class="darkmode-toggle">
 			<p>Dark Mode</p>
@@ -40,8 +39,6 @@
 		<NavLink class="w-100 btn btn-lg btn-primary" href="#">Byt e-post</NavLink>
 		<NavLink class="w-100 btn btn-lg btn-primary" href="#">Avsluta konto</NavLink>
 		<NavLink class="w-100 btn btn-lg btn-primary" href="#">Logga ut</NavLink>
-
-	</div>
 
 	<aside class="right-content two @( _isRightContentVisible ? "show" : "")">
 		<i class="fa-solid fa-x close-icon" @onclick="ToggleRightContent"></i>

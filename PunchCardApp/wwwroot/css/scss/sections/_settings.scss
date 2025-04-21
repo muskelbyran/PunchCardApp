@@ -1,0 +1,181 @@
+.settings-content {
+    width: 100%;
+    max-width: 1700px;
+    padding: 0 10px;
+    background-color: var(--color-background);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    box-sizing: border-box;
+    padding-top: 7rem;
+
+    .darkmode-toggle {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start; 
+        width: 100%;
+        padding-top: 7rem;
+        margin-bottom: 20px;
+
+        p {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            margin-right: 10px; 
+        }
+
+        .toggle {
+            position: relative;
+            display: inline-block;
+            width: 34px;
+            height: 20px;
+
+            input {
+                opacity: 0;
+                width: 0;
+                height: 0;
+            }
+
+            .slider {
+                position: absolute;
+                cursor: pointer;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-color: #ccc;
+                transition: 0.4s;
+                border-radius: 50px;
+            }
+
+            input:checked + .slider {
+                background-color: #4CAF50;
+            }
+
+            .slider:before {
+                position: absolute;
+                content: "";
+                height: 12px;
+                width: 12px;
+                border-radius: 50%;
+                left: 4px;
+                bottom: 4px;
+                background-color: white;
+                transition: 0.4s;
+            }
+
+            input:checked + .slider:before {
+                transform: translateX(14px);
+            }
+        }
+    }
+
+    .btn {
+        width: 100%;
+        margin: 10px 0;
+        padding: 15px;
+        font-size: 16px;
+        font-weight: bold;
+        text-align: center;
+        border-radius: 8px;
+        color: white;
+        background-color: #007bff;
+        border: none;
+        cursor: pointer;
+        transition: background-color 0.3s;
+
+        &:hover {
+            background-color: #0056b3;
+        }
+
+        &.btn-primary {
+            background-color: #007bff;
+        }
+
+        &.btn-primary:hover {
+            background-color: #0056b3;
+        }
+    }
+
+    .right-content {
+        position: fixed;
+        top: 0;
+        right: -300px;
+        width: 300px;
+        height: 100vh;
+        background-color: rgba(0, 0, 0, 0.8);
+        color: white;
+        padding: 20px;
+        transition: 0.3s ease;
+        display: none;
+
+        &.show {
+            right: 0;
+            display: block;
+        }
+
+        .close-icon {
+            font-size: 24px;
+            color: #fff;
+            cursor: pointer;
+            transition: color 0.3s;
+
+            &:hover {
+                color: #ccc;
+            }
+        }
+    }
+}
+
+@media (min-width: 768px) {
+    .settings-content {
+        padding: 40px;
+
+        .darkmode-toggle {
+            p {
+                font-size: 16px;
+            }
+
+            .toggle {
+                width: 50px;
+                height: 30px;
+
+                .slider {
+                    background-color: #ccc;
+                }
+
+                input:checked + .slider {
+                    background-color: #4CAF50;
+                }
+
+                .slider:before {
+                    height: 18px;
+                    width: 18px;
+                    left: 7px;
+                }
+
+                input:checked + .slider:before {
+                    transform: translateX(20px);
+                }
+            }
+        }
+
+        .btn {
+            width: 80%;
+            padding: 15px;
+            font-size: 18px;
+        }
+    }
+}
+
+@media (min-width: 1024px) {
+    .settings-content {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+/*    .btn {
+        width: 40%;
+    }*/
+}

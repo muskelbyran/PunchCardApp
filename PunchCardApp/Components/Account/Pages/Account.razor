@@ -57,7 +57,7 @@
     else
     {
         <div class="course-grid">
-            @foreach (var course in courses)
+            @foreach (var course in SortedCoursesList)
             {
                 <CourseCard Course="course" />
             }
@@ -175,12 +175,10 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var allCourses = await CourseService.GetAllCoursesAsync();
-        
-        // Funkar inte riktigt
-        SortedCoursesList = AllCourses.OrderBy(course => course.StartDate).ToList();
-
         var courseEntities = await CourseService.GetAllCoursesAsync();
+        AllCourses = MapEntitiesToModels(courseEntities);
+        SortedCoursesList = AllCourses.OrderByDescending(course => course.StartDate).ToList();
+
         courses = MapEntitiesToModels(courseEntities);
 
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();

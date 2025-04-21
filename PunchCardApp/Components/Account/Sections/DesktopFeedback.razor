@@ -1,19 +1,15 @@
-﻿@page "/account/feedback"
-
-@using PunchCardApp.Components.Account.Shared
+﻿@page "/Account/Feedback"
 @using PunchCardApp.Entities
 @using PunchCardApp.Models
 @using Microsoft.EntityFrameworkCore
-
 @inject ApplicationDbContext DbContext
 @inject UserManager<ApplicationUser> UserManager
-@layout AccountLayout
-@attribute [Microsoft.AspNetCore.Authorization.Authorize]
+@inject AuthenticationStateProvider AuthStateProvider
 
 <PageTitle>Feedback</PageTitle>
 
-<main class="main-content-container">
-    <div class="main-section">
+<main class="main-content">
+    <div class="content-card">
         <h1>Feedback</h1>
         <p>Din feedback är viktig för vidareutveckling av den här sidan.</p>
 
@@ -21,69 +17,86 @@
         {
             <div class="alert alert-info">@StatusMessage</div>
         }
+
         <EditForm Model="@FeedbackForm" OnValidSubmit="OnValidSubmit" FormName="feedback" method="post" novalidate>
             <DataAnnotationsValidator />
+            <ValidationSummary />
+            <AntiforgeryToken />
             <h5>Skicka feedback</h5>
+
             <div class="form">
                 <div class="form-floating mb-3">
-                    <InputTextArea @bind-Value="FeedbackForm.Message" autocomplete="off" aria-required="true" placeholder="Din feedback" />
+                    <InputTextArea @bind-Value="FeedbackForm.Message" autocomplete="off" aria-required="true" placeholder="Din feedback" class="form-control" />
                     <ValidationMessage For="() => FeedbackForm.Message" />
                 </div>
+
                 <div id="form-issues" class="mb-3">
                     <label class="form-label">Typ av feedback</label>
-                    <div>
-                        <InputCheckbox @bind-Value="FeedbackForm.IsTypo" class="me-2" /> Typo
-                        <InputCheckbox @bind-Value="FeedbackForm.IsBug" class="me-2" /> Bug
-                        <InputCheckbox @bind-Value="FeedbackForm.IsIdea" class="me-2" /> Idea
-                        <InputCheckbox @bind-Value="FeedbackForm.IsPraise" class="me-2" /> Praise
-                    </div>
+                    <select @bind="FeedbackForm.FeedbackType" class="form-select" aria-required="true">
+                        <option value="">Välj typ av feedback</option>
+                        <option value="Typo">Typo</option>
+                        <option value="Bug">Bug</option>
+                        <option value="Idea">Idea</option>
+                        <option value="Praise">Praise</option>
+                    </select>
+                    <ValidationMessage For="() => FeedbackForm.FeedbackType" />
                 </div>
+
                 <div id="form-button">
                     <button class="w-100 btn btn-lg btn-primary" type="submit">Skicka feedback</button>
                 </div>
             </div>
         </EditForm>
+
     </div>
-    <p>Här kommer det finnas kontaktinformation som epost osv.</p>
 </main>
 
 @code {
     [SupplyParameterFromForm]
     private FeedbackModel FeedbackForm { get; set; } = new();
 
-    [Parameter]
-    public Guid userId { get; set; }
-
+    private ApplicationUser? selectedUser;
     private string? StatusMessage;
 
     private async Task OnValidSubmit(EditContext editContext)
     {
-        Console.WriteLine($"FromName: {FeedbackForm.FromName}, Message: {FeedbackForm.Message}, IsTypo: {FeedbackForm.IsTypo}");
-
-        var currentUser = await DbContext.Users
-            .Include(u => u.UserProfile)
-            .Include(u => u.UserAddress)
-            .FirstOrDefaultAsync(u => u.Id == userId.ToString());
-
-        string FirstName = string.Empty;
-        string LastName = string.Empty;
-
-        if (currentUser != null)
+        try
         {
-            FirstName = currentUser.UserProfile?.FirstName ?? "";
-            LastName = currentUser.UserProfile?.LastName ?? "";
+            var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+            var user = authState.User;
+
+            if (user.Identity?.IsAuthenticated ?? false)
+            {
+                var userId = user.FindFirst(c => c.Type == System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+
+                if (userId != null)
+                {
+                    selectedUser = await DbContext.Users
+                        .AsNoTracking()
+                        .Include(u => u.UserProfile)
+                        .FirstOrDefaultAsync(u => u.Id == userId);
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error loading user details: {ex.Message}");
         }
 
-        Console.WriteLine($"{FirstName} {LastName}");
+        if (selectedUser == null || selectedUser.UserProfile?.FirstName == null)
+        {
+            StatusMessage = "Användarnamn hittades inte!";
+            return;
+        }
+
+        string FirstName = selectedUser.UserProfile?.FirstName ?? "Unknown";
+        string LastName = selectedUser.UserProfile?.LastName ?? "User";
 
         var feedbackEntity = new FeedbackEntity
             {
-                FromName = FirstName + " " + LastName,
+                FromName = $"{FirstName} {LastName}",
                 Message = FeedbackForm.Message,
-                IsTypo = FeedbackForm.IsTypo,
-                IsBug = FeedbackForm.IsBug,
-                IsIdea = FeedbackForm.IsIdea,
-                IsPraise = FeedbackForm.IsPraise,
+                FeedbackType = FeedbackForm.FeedbackType,
                 SubmittedAt = DateTime.UtcNow
             };
 
@@ -92,7 +105,7 @@
             DbContext.Add(feedbackEntity);
             await DbContext.SaveChangesAsync();
 
-            StatusMessage = "Feedback submitted successfully!";
+            StatusMessage = "Tack för din feedback!";
             FeedbackForm = new FeedbackModel();
         }
         catch (Exception ex)
