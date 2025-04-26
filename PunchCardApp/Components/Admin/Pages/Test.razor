@@ -1,9 +1,6 @@
-﻿@*  Referens: ChatGpt created the first version of the tabs based on some really old tabs
-    from a former website I made a long long time ago. *@
-@page "/admin/aardvark"
+﻿@page "/admin/test"
 
 @using PunchCardApp.Components.Admin.Components
-@using PunchCardApp.Components.Assets
 @using PunchCardApp.Models
 
 @layout AdminLayout
@@ -14,17 +11,7 @@
 <AuthorizeView>
 	<Authorized>
 		<main class="main-admin-container">
-			<div class="aardvark-toast">
-				<StatusToast Message="@StatusMessage"
-							 Class="alert-success"
-							 Duration="8000"
-							 OnDismiss="@(() => StatusMessage = "")" />
-			</div>
-
 			<div class="main-admin">
-
-				<UserAnalytics />
-
 				<div class="search-create-container">
 					<div class="search-box">
 						<h3>Sök kund:</h3>
@@ -72,7 +59,7 @@
 													<td>@(user.UserProfile?.FirstName ?? "N/A") @(user.UserProfile?.LastName ?? "N/A")</td>
 													<td>@user.Email</td>
 													<td>
-														<button class="btn btn-primary" @onclick="() => EditUser(user)">Hantera</button>
+														<button class="btn btn-primary" @onclick="() => EditUser(user)">Redigera</button>
 													</td>
 												</tr>
 											}
@@ -125,6 +112,8 @@
 							break;
 					}
 				</div>
+				
+
 			</div>
 		</main>
 	</Authorized>
@@ -134,27 +123,26 @@
 	private enum AdminView { None, Search, CreateUser, Events, Stats, Tabs }
 	private AdminView currentView = AdminView.None;
 
-	private enum Tab { Kund, Klippkort, Tasks }
+	private enum Tab { Kund, Klippkort, Uppgifter }
 
 	private List<ApplicationUser>? filteredUsers;
 	private ApplicationUser? selectedUser;
 	private string? searchString;
 	private Tab selectedTab = Tab.Kund;
 	private int userCount;
-	private string StatusMessage = "";
 
 	private Dictionary<Tab, Type> tabComponentMap = new()
 	{
 		{ Tab.Kund, typeof(UserProfileTab) },
 		{ Tab.Klippkort, typeof(UserPunchCardTab) },
-		{ Tab.Tasks, typeof(UserContactTab) }
+		{ Tab.Uppgifter, typeof(UserContactTab) }
 	};
 
-	private Dictionary<string, object> CurrentTabParameters => selectedUser == null
-		? new()
-		: new() { { "User", selectedUser }, { "OnStatusMessageChanged", EventCallback.Factory.Create<string>(this, HandleStatusMessage) } };
-
 	private Type CurrentTabComponent => tabComponentMap[selectedTab];
+	private Dictionary<string, object> CurrentTabParameters => new()
+	{
+		{ "User", selectedUser! }
+	};
 
 	protected override async Task OnInitializedAsync()
 	{
@@ -190,12 +178,5 @@
 		{
 			filteredUsers = new();
 		}
-	}
-
-	private Task HandleStatusMessage(string message)
-	{
-		StatusMessage = message;
-		StateHasChanged();
-		return Task.CompletedTask;
 	}
 }

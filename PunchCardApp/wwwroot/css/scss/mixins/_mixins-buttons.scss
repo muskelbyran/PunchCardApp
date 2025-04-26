@@ -14,6 +14,29 @@
     transition: 0.25s;
     text-decoration: none !important;
     background-color: transparent;
+    /*border-radius: 25px;
+    transition: background-color 0.2s ease-in-out, color 0.5s ease-in-out;*/
+
+
+    @include button;
+
+    &:hover {
+        transition: 0.25s;
+        text-decoration: none;
+    }
+}
+
+@mixin btn-square {
+    display: inline-block;
+    cursor: pointer;
+    border-radius: 3px;
+    border: 1px solid;
+    padding: 15px 40px;
+    font-size: 16px;
+    transition: 0.25s;
+    text-decoration: none !important;
+    background-color: transparent;
+
     @include button;
 
     &:hover {

@@ -1,0 +1,47 @@
+﻿<style>
+    .alerter {
+        padding: 1rem;
+        margin-top: 1rem;
+        border-radius: 5px;
+        transition: opacity 0.5s ease;
+        opacity: 1;
+    }
+
+    .alert-success {
+        background-color: #d1e7dd;
+        color: #0f5132;
+        border: 1px solid #badbcc;
+    }
+
+    .alert-danger { 
+        background-color: #f8d7da;
+        color: #842029;
+        border: 1px solid #f5c2c7;
+    }
+</style>
+
+@if (!string.IsNullOrWhiteSpace(Message))
+{
+    <div class="alerter @Class">
+        @((MarkupString)Message)
+    </div>
+}
+
+@code {
+    [Parameter] public string? Message { get; set; }
+    [Parameter] public string Class { get; set; } = "alert-success"; 
+    [Parameter] public int Duration { get; set; } = 5000;
+    [Parameter] public EventCallback OnDismiss { get; set; } 
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (!string.IsNullOrWhiteSpace(Message))
+        {
+            await Task.Delay(Duration); 
+            if (OnDismiss.HasDelegate)
+            {
+                await OnDismiss.InvokeAsync(null); 
+            }
+        }
+    }
+}

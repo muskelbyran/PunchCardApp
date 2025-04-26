@@ -1,0 +1,254 @@
+﻿@using PunchCardApp.Components.Assets
+@using PunchCardApp.Models
+@using PunchCardApp.Entities
+@using PunchCardApp.Services
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.EntityFrameworkCore
+@using Microsoft.AspNetCore.Components.Authorization
+@using PunchCardApp.Enums
+
+@inject UserManager<ApplicationUser> UserManager
+@inject ApplicationDbContext DbContext
+@inject PunchCardService PunchCardService
+@inject ILogger<UserPunchCardTab> Logger
+@inject AuthenticationStateProvider AuthStateProvider
+
+<ConfirmDialog @ref="confirmDialog" />
+
+@code {
+    [Parameter]
+    public ApplicationUser User { get; set; } = default!;
+
+    [Parameter]
+    public EventCallback<string> OnStatusMessageChanged { get; set; }
+
+    private List<PunchCardEntity> UserPunchCards { get; set; } = new();
+    private PunchCardFormModel NewPunchCardForm { get; set; } = new();
+    private bool isLoading = true;
+    private string? loggedInUserFullName; 
+    private ApplicationUser? selectedUser; 
+    private ConfirmDialog? confirmDialog; 
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadUserPunchCardsAsync();
+             
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity?.IsAuthenticated ?? false)
+        {
+            var userId = user.FindFirst(c => c.Type == System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+
+            if (userId != null)
+            {            
+                selectedUser = await DbContext.Users
+                    .AsNoTracking()
+                    .Include(u => u.UserProfile) 
+                    .FirstOrDefaultAsync(u => u.Id == userId);
+
+                if (selectedUser != null)
+                {
+                    var firstName = selectedUser.UserProfile?.FirstName ?? "No First Name";
+                    var lastName = selectedUser.UserProfile?.LastName ?? "No Last Name";
+                    loggedInUserFullName = $"{firstName} {lastName}";
+                }
+                else
+                {
+                    Console.WriteLine("User not found.");
+                }
+            }
+        }
+    }
+
+    private async Task LoadUserPunchCardsAsync()
+    {
+        try
+        {
+            if (!string.IsNullOrEmpty(User.UserProfileId))
+            {
+                UserPunchCards = await DbContext.PunchCards
+                    .Where(pc => pc.UserProfileId == User.UserProfileId)
+                    .Include(pc => pc.PunchCardUses)
+                    .ToListAsync();
+            }
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Failed to load punch cards.");
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private async Task CreatePunchCardAsync()
+    {
+        if (!string.IsNullOrEmpty(User.UserProfileId))
+        {
+            var confirmed = await confirmDialog!.ShowAsync(
+                "Bekräfta skapande",
+                "Är du säker på att du vill skapa detta klippkort?",
+                new ConfirmDialogOptions
+                    {
+                        YesButtonText = "Ja",
+                        NoButtonText = "Nej",
+                        YesButtonColor = ButtonColor.Primary,
+                        NoButtonColor = ButtonColor.Secondary
+                    });
+
+            if (confirmed)
+            {
+                try
+                {
+                    await PunchCardService.CreatePunchCardAsync(
+                        User.UserProfileId,
+                        NewPunchCardForm.Type,       // 🡐 No combination, just use Type
+                        NewPunchCardForm.Length,     // 🡐 Also pass Length
+                        NewPunchCardForm.TotalUses
+                    );
+                    await LoadUserPunchCardsAsync();
+                    NewPunchCardForm = new PunchCardFormModel();
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogError(ex, "Det gick inte att skapa ett klippkort");
+                }
+            }
+        }
+    }
+
+
+
+    private async Task UsePunchCardAsync(int punchCardId)
+    {
+        var confirmed = await confirmDialog!.ShowAsync(
+            "Bekräfta användning", 
+            "Är du säker på att du vill använda detta klippkort?",
+            new ConfirmDialogOptions
+            {
+                YesButtonText = "Ja",
+                NoButtonText = "Nej",
+                YesButtonColor = ButtonColor.Primary,
+                NoButtonColor = ButtonColor.Secondary
+            });
+
+        if (confirmed)
+        {
+            try
+            {
+                if (!string.IsNullOrEmpty(loggedInUserFullName))
+                {
+                    await PunchCardService.UsePunchCardAsync(punchCardId, loggedInUserFullName);
+                    await OnStatusMessageChanged.InvokeAsync("Klippkort använt!");
+                    await LoadUserPunchCardsAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                await OnStatusMessageChanged.InvokeAsync("Det gick inte att använda klippkort!");
+            }
+        }
+    }
+
+    private async Task DeletePunchCardAsync(int cardId)
+    {
+        var confirmed = await confirmDialog!.ShowAsync(
+            "Bekräfta radering", 
+            "Är du säker på att du vill radera detta klippkort?",
+            new ConfirmDialogOptions
+            {
+                YesButtonText = "Ja",
+                NoButtonText = "Nej",
+                YesButtonColor = ButtonColor.Danger,
+                NoButtonColor = ButtonColor.Secondary
+            });
+
+        if (confirmed)
+        {
+            try
+            {
+                var punchCard = await DbContext.PunchCards.FindAsync(cardId);
+                if (punchCard != null)
+                {
+                    DbContext.PunchCards.Remove(punchCard);
+                    await DbContext.SaveChangesAsync();
+                    await LoadUserPunchCardsAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "Error deleting punch card");
+            }
+        }
+    }
+
+    public class PunchCardFormModel
+    {
+        public string Type { get; set; } = "";   
+        public int Length { get; set; }          
+        public int TotalUses { get; set; }     
+    }
+
+}
+
+<div class="punchcard-tab">
+    <h5>Klippkort för @(User.UserProfile?.FirstName ?? "N/A")</h5>
+
+    <EditForm Model="NewPunchCardForm" OnValidSubmit="CreatePunchCardAsync" class="punchcard-form">
+        <DataAnnotationsValidator />
+        <div class="form-row">
+            <div class="input-wrapper">
+                <label>Sort</label>
+                <InputText @bind-Value="NewPunchCardForm.Type" class="form-control" />
+            </div>
+            <div class="input-wrapper">
+                <label>Tid</label>
+                <InputNumber @bind-Value="NewPunchCardForm.Length" class="form-control" />
+            </div>
+            <div class="input-wrapper">
+                <label>Användningar</label>
+                <InputNumber @bind-Value="NewPunchCardForm.TotalUses" class="form-control" />
+            </div>
+            <button type="submit" class="btn btn-success save-button">Spara</button>
+        </div>
+    </EditForm>
+
+
+    @if (isLoading)
+    {
+        <p>Laddar klippkort...</p>
+    }
+    else if (UserPunchCards != null && UserPunchCards.Any())
+    {
+        <table class="table mt-4">
+            <thead>
+                <tr>
+                    <th>Typ</th>
+                    <th>Köpt</th>
+                    <th>Kvar</th>
+                    <th>Åtgärder</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var card in UserPunchCards)
+                {
+                    <tr>
+                        <td>@card.Type</td>
+                        <td>@card.PurchasedDate.ToShortDateString()</td>
+                        <td>@card.UsesLeft</td>
+                        <td>
+                            <button @onclick="() => UsePunchCardAsync(card.Id)">Färdigknådad!</button>
+                            <button @onclick="() => DeletePunchCardAsync(card.Id)">Radera</button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p>Inga klippkort hittades.</p>
+    }
+</div>

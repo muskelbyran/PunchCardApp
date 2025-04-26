@@ -1,11 +1,12 @@
-﻿@page "/admin/createuser"
-@rendermode InteractiveServer
+﻿@* @page "/admin/createuser"
+@rendermode InteractiveServer *@
 
 @using System.ComponentModel.DataAnnotations
 @using System.Security.Cryptography
 @using Microsoft.AspNetCore.Identity
 @using Newtonsoft.Json
 @using Azure.Messaging.ServiceBus
+@using PunchCardApp.Components.Assets
 @using PunchCardApp.Data
 
 @inject UserManager<ApplicationUser> UserManager
@@ -16,7 +17,8 @@
 
     @if (!string.IsNullOrEmpty(StatusMessage))
     {
-        <div class="alerter">@StatusMessage</div>
+        <StatusToast Message="@StatusMessage" Class="alert-success" Duration="8000"
+        OnDismiss="@(() => StatusMessage = null)" />
     }
 
     <EditForm Model="AdminCreateForm" OnValidSubmit="OnValidSubmit">
@@ -73,18 +75,18 @@
         var password = GenerateSecurePassword();
 
         var user = new ApplicationUser
+        {
+            UserName = AdminCreateForm.Email,
+            Email = AdminCreateForm.Email,
+            CreatedByAdmin = true,
+            MustChangePassword = true,
+            EmailConfirmed = false,
+            UserProfile = new UserProfile
             {
-                UserName = AdminCreateForm.Email,
-                Email = AdminCreateForm.Email,
-                CreatedByAdmin = true,
-                MustChangePassword = true,
-                EmailConfirmed = false,
-                UserProfile = new UserProfile
-                {
-                    FirstName = AdminCreateForm.FirstName,
-                    LastName = AdminCreateForm.LastName
-                }
-            };
+                FirstName = AdminCreateForm.FirstName,
+                LastName = AdminCreateForm.LastName
+            }
+        };
 
         var result = await UserManager.CreateAsync(user, password);
 
@@ -119,6 +121,7 @@
             return;
         }
 
+        AdminCreateForm = new AdminCreateUserModel();
         StatusMessage = $"Användare skapad! Tillfälligt lösenord: <strong>{password}</strong>. Verifieringsmail skickat.";
     }
 

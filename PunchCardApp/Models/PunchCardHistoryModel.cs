@@ -3,6 +3,7 @@
 public class PunchCardHistoryModel
 {
     public string PunchCardType { get; set; } = null!;
+    public int PunchCardLength { get; set; }
     public DateTime PurchasedDate { get; set; }
     public int TotalUses { get; set; }
     public int UsesLeft { get; set; }

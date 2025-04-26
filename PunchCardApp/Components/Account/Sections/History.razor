@@ -7,12 +7,13 @@
 @using Microsoft.AspNetCore.Identity
 @using Microsoft.AspNetCore.Components.Authorization
 @using Microsoft.EntityFrameworkCore
+@using PunchCardApp.Components.Account.Shared
 @using PunchCardApp.Components.Layout
 @using PunchCardApp.Data
 @using PunchCardApp.Entities
 @using PunchCardApp.Models
 
-@layout AdminLayout
+@layout AccountLayout
 
 @rendermode InteractiveServer
 
@@ -24,10 +25,9 @@
 
 <PageTitle>Klippkortshistorik</PageTitle>
 
-<div class="main-content">
+<div class="history-content">
 
-	<h2>Punch Card Management</h2>
-	<h3>Existing Punch Cards</h3>
+	<h3>Aktuella klippkort</h3>
 	@if (UserPunchCards != null && UserPunchCards.Any())
 	{
 		<table>

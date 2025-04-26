@@ -1,15 +1,19 @@
 ﻿@page "/Account/Feedback"
+
+@using PunchCardApp.Components.Account.Shared
 @using PunchCardApp.Entities
 @using PunchCardApp.Models
 @using Microsoft.EntityFrameworkCore
+
 @inject ApplicationDbContext DbContext
 @inject UserManager<ApplicationUser> UserManager
 @inject AuthenticationStateProvider AuthStateProvider
 
+@layout AccountLayout
+
 <PageTitle>Feedback</PageTitle>
 
-<main class="main-content">
-    <div class="content-card">
+<main class="feedback-content">
         <h1>Feedback</h1>
         <p>Din feedback är viktig för vidareutveckling av den här sidan.</p>
 
@@ -48,7 +52,6 @@
             </div>
         </EditForm>
 
-    </div>
 </main>
 
 @code {

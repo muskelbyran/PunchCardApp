@@ -1,0 +1,9 @@
+﻿@using PunchCardApp.Models
+@code {
+	[Parameter] public ApplicationUser User { get; set; } = default!;
+}
+
+<div>
+	<h5>Kontaktuppgifter för @(User.UserProfile?.FirstName ?? "N/A")</h5>
+	<p>Email: @User.Email</p>
+</div>

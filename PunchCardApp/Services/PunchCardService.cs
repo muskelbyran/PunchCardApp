@@ -1,17 +1,19 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PunchCardApp.Entities;
 using PunchCardApp.Models;
+using System.ComponentModel.DataAnnotations;
 
 public class PunchCardService(PunchCardRepository repository)
 {
     private readonly PunchCardRepository _repository = repository;
 
-    public async Task CreatePunchCardAsync(string userProfileId, string type, int totalUses)
+    public async Task CreatePunchCardAsync(string userProfileId, string type, int length, int totalUses)
     {
         var punchCard = new PunchCardEntity
         {
             UserProfileId = userProfileId,
             Type = type,
+            Length = length,
             TotalUses = totalUses,
             UsesLeft = totalUses,
             PurchasedDate = DateTime.UtcNow,

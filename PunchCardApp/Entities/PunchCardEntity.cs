@@ -8,6 +8,7 @@ public class PunchCardEntity
     public string UserProfileId { get; set; } = null!;
     public UserProfile UserProfile { get; set; } = null!;
     public string Type { get; set; } = null!;
+    public int Length { get; set; } 
     public DateTime PurchasedDate { get; set; }
     public int TotalUses { get; set; }
     public int UsesLeft { get; set; }

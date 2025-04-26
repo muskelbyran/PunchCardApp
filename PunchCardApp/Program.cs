@@ -10,6 +10,7 @@ using PunchCardApp.Data;
 using PunchCardApp.Repositories;
 using PunchCardApp.Services;
 using PunchCardApp;
+using PunchCardApp.Helpers.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -83,10 +84,11 @@ builder.Services.AddIdentityCore<ApplicationUser>(options =>
 builder.Services.ConfigureApplicationCookie(x =>
 {
     x.LoginPath = "/signin";
+    x.LogoutPath = "/signout";
     x.AccessDeniedPath = "/Error";
     x.Cookie.HttpOnly = true;
     x.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-    x.ExpireTimeSpan = TimeSpan.FromMinutes(5);  // Default expiration time
+    x.ExpireTimeSpan = TimeSpan.FromMinutes(5); 
     x.SlidingExpiration = true;
 
     x.Events.OnValidatePrincipal = context =>
@@ -165,6 +167,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+app.UseUserSessionValidation(); // Egen middleware för validering att användaren existerar
 
 app.UseAuthentication();  
 app.UseAuthorization();

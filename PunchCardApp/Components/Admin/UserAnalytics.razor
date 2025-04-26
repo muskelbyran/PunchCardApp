@@ -2,43 +2,26 @@
 @inject IUserAnalyticsService UserAnalyticsService
 
 <div id="user-analytics">
-    <h3>Användarstatistik</h3>
-
-    <div class="row">
-        <div class="col-md-3">
-            <div class="card">
-                <div class="card-header">Dagliga Aktiva Användare</div>
-                <div class="card-body">
-                    <p>@dailyActiveUsers</p>
-                </div>
-            </div>
+  
+    <div class="analytics-grid">
+        <div class="analytics-card">
+            <span class="analytics-label">Dagliga Aktiva Användare</span>
+            <span class="analytics-number">@dailyActiveUsers</span>
         </div>
 
-        <div class="col-md-3">
-            <div class="card">
-                <div class="card-header">Månatliga Aktiva Användare</div>
-                <div class="card-body">
-                    <p>@monthlyActiveUsers</p>
-                </div>
-            </div>
+        <div class="analytics-card">
+            <span class="analytics-label">Månatliga Aktiva Användare</span>
+            <span class="analytics-number">@monthlyActiveUsers</span>
         </div>
 
-        <div class="col-md-3">
-            <div class="card">
-                <div class="card-header">Nya Användare Denna Månad</div>
-                <div class="card-body">
-                    <p>@newUsersThisMonth</p>
-                </div>
-            </div>
+        <div class="analytics-card">
+            <span class="analytics-label">Nya Användare Denna Månad</span>
+            <span class="analytics-number">@newUsersThisMonth</span>
         </div>
 
-        <div class="col-md-3">
-            <div class="card">
-                <div class="card-header">Användare Som Har Slutat</div>
-                <div class="card-body">
-                    <p>@string.Join(", ", churnedUsers)</p>
-                </div>
-            </div>
+        <div class="analytics-card">
+            <span class="analytics-label">Slutat Använda</span>
+            <span class="analytics-number">@churnedUsers.Count</span>
         </div>
     </div>
 </div>
@@ -47,7 +30,7 @@
     private int dailyActiveUsers;
     private int monthlyActiveUsers;
     private int newUsersThisMonth;
-    private List<string> churnedUsers = new List<string>();
+    private List<string> churnedUsers = new();
 
     protected override async Task OnInitializedAsync()
     {
