@@ -4,6 +4,13 @@
 
 .btn-primary {
     @include btn;
+    background-color: var(--color-primary);
+    border-color: var(--color-secondary);
+
+    &:hover {
+        background-color: var(--color-secondary);
+        border-color: var(--color-primary);
+    }
 }
 
 .btn-secondary {

@@ -29,12 +29,12 @@
             <h5>Skicka feedback</h5>
 
             <div class="form">
-                <div class="form-floating mb-3">
+                <div class="form-floating">
                     <InputTextArea @bind-Value="FeedbackForm.Message" autocomplete="off" aria-required="true" placeholder="Din feedback" class="form-control" />
                     <ValidationMessage For="() => FeedbackForm.Message" />
                 </div>
 
-                <div id="form-issues" class="mb-3">
+                <div id="form-issues">
                     <label class="form-label">Typ av feedback</label>
                     <select @bind="FeedbackForm.FeedbackType" class="form-select" aria-required="true">
                         <option value="">Välj typ av feedback</option>

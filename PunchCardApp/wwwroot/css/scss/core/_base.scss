@@ -102,9 +102,9 @@ ol, ul {
     list-style: none;
 }
 
-input, button, textarea, select {
+/*input, button, textarea, select {
     font: inherit;
-}
+}*/
 
 body {
     @include text;
@@ -130,7 +130,6 @@ body {
 
     main {
         margin-left: 0 !important; // Tack ChatGPT
-
     }
 }
 
@@ -184,14 +183,13 @@ body {
     }
 
     .nav-link {
-        /*   color: $color-text-navigation;*/
+        color: var(--color-black);
         text-decoration: none;
         font-weight: 600;
 
         &:hover,
         &:focus-visible {
-            color: var(--color-primary);
+            color: var(--color-secondary);
         }
     }
 }
-

@@ -1,0 +1,8 @@
+﻿<AuthorizeView Context="authContext">
+    <Authorized>
+        <p>Welcome, @authContext.User.Identity?.Name!</p>
+    </Authorized>
+    <NotAuthorized>
+        <p>Please log in.</p>
+    </NotAuthorized>
+</AuthorizeView>

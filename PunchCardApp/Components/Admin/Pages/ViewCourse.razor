@@ -1,12 +1,12 @@
 ﻿@page "/courses/course/{CourseId:int}"
-@using Microsoft.Extensions.Logging
+@* @using Microsoft.Extensions.Logging *@
 @using PunchCardApp.Entities
 @using PunchCardApp.Services
 @using PunchCardApp.Repositories
 @inject CourseService CourseService
 @inject CourseRepository CourseRepository
 
-@inject ILogger Logger
+@* @inject ILogger Logger *@
 @inject NavigationManager NavigationManager
 
 <h3 class="text-center mb-4">Course Details</h3>
@@ -71,7 +71,7 @@ else
         }
         catch (Exception ex)
         {
-            Logger.LogError(ex, "Error loading course with ID {CourseId}", CourseId);
+            // Logger.LogError(ex, "Error loading course with ID {CourseId}", CourseId);
         }
         isLoading = false;
     }

@@ -34,13 +34,14 @@
                 <hr />
                 <ValidationSummary class="text-danger" role="alert" />
                 <div class="form-floating mb-3">
+                   @*  <InputText @bind-Value="SignUpForm.FirstName" autocomplete="givenname" aria-required="true" placeholder="Förnamn" /> *@
                     <InputText @bind-Value="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
-                    <label for="email" class="form-label">Email</label>
+                    <label for="email" class="form-label"></label>
                     <ValidationMessage For="() => Input.Email" class="text-danger" />
                 </div>
                 <div class="form-floating mb-3">
                     <InputText type="password" @bind-Value="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="password" />
-                    <label for="password" class="form-label">Password</label>
+                    <label for="password" class="form-label"></label>
                     <ValidationMessage For="() => Input.Password" class="text-danger" />
                 </div>
                 <div class="checkbox mb-3">
@@ -50,34 +51,25 @@
                     </label>
                 </div>
                 <div>
-                    <button type="submit" class="w-100 btn btn-lg btn-primary">Logga in</button>
+                    <button type="submit" class="btn btn-primary">Logga in</button>
                 </div>                
             </EditForm>
         </div>
         <div class="social-or">eller </div>
         <div class="social-option">
-@*             <a href="www.facebook.com" target="_blank" class="socialmedia-item"><i class="fa-brands fa-facebook-f"></i></a>
+            <a href="www.facebook.com" target="_blank" class="socialmedia-item"><i class="fa-brands fa-facebook-f"></i></a>
             <a href="www.facebook.com" target="_blank" class="socialmedia-item"><i class="fa-brands fa-linkedin"></i></a>
-            <a href="www.facebook.com" target="_blank" class="socialmedia-item"><i class="fa-brands fa-google"></i></a> *@
-            <button class="btn btn-ultra-voilet btn-fab" onclick="window.open('https://www.facebook.com', '_blank')">
-                <i class="fa-brands fa-facebook"></i>
-            </button>
-            <button class="btn btn-ultra-voilet btn-fab" onclick="window.open('https://www.facebook.com', '_blank')">
-                <i class="fa-brands fa-linkedin"></i>
-            </button>
-            <button class="btn btn-ultra-voilet btn-fab" onclick="window.open('https://www.facebook.com', '_blank')">
-                <i class="fa-brands fa-google"></i>
-            </button>
+            <a href="www.facebook.com" target="_blank" class="socialmedia-item"><i class="fa-brands fa-google"></i></a>
         </div>
         <div class="login-footer">
             <p>
-                <a href="Account/ForgotPassword">Glömt ditt lösenord?</a>            
+                <a href="forgotPassword">Glömt ditt lösenord?</a>            
             </p>
             <p>
-                <a href="@(NavigationManager.GetUriWithQueryParameters("Account/Register", new Dictionary<string, object?> { ["ReturnUrl"] = ReturnUrl }))">Skapa ett nytt konto</a>
+                <a href="@(NavigationManager.GetUriWithQueryParameters("signup", new Dictionary<string, object?> { ["ReturnUrl"] = ReturnUrl }))">Skapa ett nytt konto</a>
             </p>
             <p>
-                <a href="Account/ResendEmailConfirmation">Skicka ny e-post bekräftelse</a>
+                <a href="confirmation">Skicka ny e-post bekräftelse</a>
             </p>
             <p>
                 <strong>© @DateTime.Now.Year Muskelbyrån.</strong>

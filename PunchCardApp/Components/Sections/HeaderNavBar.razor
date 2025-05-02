@@ -2,6 +2,7 @@
     Baserad på referens (6). Bygg en hemsida med HTML och CSS - Lindh, J (2024-09-23)
  *@
 @using Microsoft.AspNetCore.Authentication.Cookies
+@using Microsoft.AspNetCore.Authorization
 @using PunchCardApp.Services
 @using Microsoft.AspNetCore.Authentication
 
@@ -11,6 +12,9 @@
 @inject SignInManager<ApplicationUser> signInManager
 
 @rendermode InteractiveAuto
+
+@attribute [Authorize]
+
 
 <nav class="main-nav" aria-label="main navigation">
     <a href="#main" class="skip-link">Skip to main content</a>

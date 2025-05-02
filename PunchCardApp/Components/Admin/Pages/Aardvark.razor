@@ -44,7 +44,7 @@
 					</div>
 				</div>
 
-				<div class="curent-view">
+				<div class="current-view">
 					@switch (currentView)
 					{
 						case AdminView.Search:
@@ -95,27 +95,23 @@
 
 						case AdminView.Events:
 							<div class="event-info mt-3">
-								<h4>Event Information</h4>
-								<p>Här kan du se information om alla evenemang...</p>
+								<Events />
 							</div>
 							break;
 
 						case AdminView.Stats:
-							<div class="stats-info mt-3">
-								<h4>Statistik</h4>
-								<p>Antal registrerade användare: @userCount</p>
-							</div>
+							<Stats />
 							break;
 
 						case AdminView.Tabs when selectedUser != null:
-							<ul class="nav nav-tabs mt-3">
+							<ul class="tabs">
 								@foreach (var tab in Enum.GetValues<Tab>())
 								{
-									<li class="nav-item">
-										<a class="nav-link @(selectedTab == tab ? "active" : "")"
+									<li class="tab-item">
+										<button class="tab-button @(selectedTab == tab ? "active" : "")"
 										   @onclick="() => SelectTab(tab)">
 											@tab
-										</a>
+										</button>
 									</li>
 								}
 							</ul>

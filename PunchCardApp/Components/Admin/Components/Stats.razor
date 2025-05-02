@@ -1,0 +1,115 @@
+﻿@namespace PunchCardApp.Components.Admin.Components
+@using PunchCardApp.Entities
+@inject ApplicationDbContext DbContext
+
+<div class="stats-info mt-3">
+    <h4>Statistik</h4>
+    <p>Antal registrerade användare: @userCount</p>
+
+    <div class="punchcard-stats">
+        <h5>Översikt av Klippkort</h5>
+        <p>Totalt antal klippkort: @totalPunchCards</p>
+        <p>Total antal användningar: @totalPunches</p>
+
+        <h6>Top 5 användare med flest klippkort:</h6>
+        <ul>
+            @foreach (var user in topUsers)
+            {
+                <li>@user.Name - Klippkort: @user.PunchCardCount</li>
+            }
+        </ul>
+    </div>
+
+    <div class="search-section mt-4">
+        <h5>Sök Klippkort</h5>
+        <input class="form-control mb-2" placeholder="Sök typ eller längd..." @bind="searchQuery" />
+        <button class="btn btn-primary" @onclick="SearchPunchCards">Sök</button>
+
+        @if (searchedPunchCards != null && searchedPunchCards.Any())
+        {
+            <h6>Resultat:</h6>
+            <ul>
+                @foreach (var card in searchedPunchCards)
+                {
+                    <li>@card.Type - Längd: @card.Length</li>
+                }
+            </ul>
+        }
+        else if (!string.IsNullOrEmpty(searchQuery))
+        {
+            <p>Inga klippkort hittades.</p>
+        }
+    </div>
+
+    <div class="recent-events mt-4">
+        <h5>Sista 5 Händelser</h5>
+        <ul>
+            @foreach (var eventItem in recentEvents)
+            {
+                <li>@eventItem</li>
+            }
+        </ul>
+    </div>
+</div>
+
+@code {
+    private int userCount;
+    private int totalPunchCards;
+    private int totalPunches;
+    private List<(string Name, int PunchCardCount)> topUsers = new();
+    private List<PunchCardEntity> searchedPunchCards = new();
+    private string searchQuery = "";
+    private List<string> recentEvents = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        userCount = await DbContext.Users.CountAsync();
+        totalPunchCards = await DbContext.PunchCards.CountAsync();
+        totalPunches = await DbContext.PunchCardUses.CountAsync();
+
+        var topUsersQuery = await DbContext.PunchCards
+            .GroupBy(pc => pc.UserProfileId)
+            .OrderByDescending(group => group.Count())
+            .Take(5)
+            .Select(group => new
+            {
+                UserProfileId = group.Key,
+                PunchCardCount = group.Count()
+            })
+            .ToListAsync();
+
+        topUsers = new List<(string Name, int PunchCardCount)>();
+
+        foreach (var user in topUsersQuery)
+        {
+            var userName = DbContext.Users
+                .Where(u => u.Id == user.UserProfileId)
+                .Select(u => u.UserProfile != null ? u.UserProfile.FirstName + " " + u.UserProfile.LastName : "N/A")
+                .FirstOrDefault();
+
+            topUsers.Add((Name: userName ?? "N/A", PunchCardCount: user.PunchCardCount));
+        }
+
+        recentEvents = await DbContext.PunchCardUses
+            .OrderByDescending(pc => pc.UsedDate)
+            .Take(5)
+            .Select(pc => $"Klippkort användes av {pc.UsedBy} den {pc.UsedDate.ToShortDateString()}")
+            .ToListAsync();
+    }
+
+
+
+    private async Task SearchPunchCards()
+    {
+        if (!string.IsNullOrWhiteSpace(searchQuery))
+        {
+            searchedPunchCards = await DbContext.PunchCards
+                .Where(pc => EF.Functions.Like(pc.Type, $"%{searchQuery}%") || pc.Length.ToString().Contains(searchQuery))
+                .ToListAsync();
+        }
+        else
+        {
+            searchedPunchCards = new List<PunchCardEntity>();
+        }
+    }
+}

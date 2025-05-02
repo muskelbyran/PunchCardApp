@@ -9,23 +9,26 @@
     --color-gray-700: #565973;
     --color-gray-800: #33354D;
     --color-gray-900: #0B0F19;
-    --color-white: #FFFFFF;
+   /* --color-white: #FFFFFF;*/
     --color-black: #000000;
     --color-gray: #EFF2FC;
-    --color-theme: #8B5CF6;
+    /*  --color-theme: #A74136;*/
+    --color-theme: #d4867d;
     --color-danger: #EF4444;
     --color-danger-dark: #E57E88;
     --color-success: #BCF7D2;
     --color-warning: #FFBA08;
     --color-info: #4C82F7;
-    /*--color-background: #fff1e6;*/
-    /*--color-background: #F5F5F5;*/
-    /*--color-background: #ECECEC;*/
+  /*  --color-white: #fff1e6;*/
+    --color-white: #F5F5F5;
+   /* --color-white: #ECECEC;*/
     /*--color-background: #FAF9F6;*/
     /* --color-background: #FFFFF0;*/
-    --color-background: #F8F8FF;
-    --color-primary: #FFBBB2;
-    --color-secondary: #fbaf5d;
+    /*--color-background: #F8F8FF;*/
+    --color-background: #f3dfc5;
+    --color-primary: #d4867d;
+    --color-secondary: #A74136;
+    /* --color-secondary: #fbaf5d;*/
     --color-third: #523d2b;
     --color-fourth: #75c8ae;
 }
@@ -94,8 +97,6 @@
         opacity: 0;
     }
 }
-
-
 
 $transparent: transparent;
 $success-dark: #22C55E;

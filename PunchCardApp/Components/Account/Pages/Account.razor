@@ -19,11 +19,10 @@
             <table class="punch-table">
                 <thead>
                     <tr>
-                        <th>Typ</th>
-                        <th>Åtgärd</th>
-                        <th>Progress</th>
+                        <th>Typ</th>                      
                         <th>Totalt klippkort</th>
                         <th>Klipp kvar</th>
+                        <th>Åtgärd</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -31,14 +30,14 @@
                     {
                         <tr>
                             <td>@card.Type</td>
-                            <td>
-                                <PunchButton PunchCardId="@card.Id" CssClass="btn btn-copper" ButtonText="Färdigknådad!" OnPunchUsed="LoadUserPunchCardsAsync" />
-                            </td>
-                            <td>
-                                <progress class="punch-progress" value="@(card.TotalUses - card.UsesLeft)" max="@card.TotalUses"></progress>
-                            </td>
                             <td>@card.TotalUses</td>
                             <td>@card.UsesLeft klipp kvar</td>
+@*                             <td>
+                                <progress class="punch-progress" value="@(card.TotalUses - card.UsesLeft)" max="@card.TotalUses"></progress>
+                            </td> *@
+                            <td>
+                                <PunchButton PunchCardId="@card.Id" CssClass="btn btn-primary" ButtonText="Färdigknådad!" OnPunchUsed="LoadUserPunchCardsAsync" />
+                            </td>
                         </tr>
                     }
                 </tbody>

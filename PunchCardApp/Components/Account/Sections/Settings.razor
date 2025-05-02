@@ -4,6 +4,7 @@
  *@
 @page "/account/settings"
 @using System.ComponentModel.DataAnnotations
+@using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Identity
 @using Microsoft.AspNetCore.Components.Authorization
 @using Microsoft.EntityFrameworkCore
@@ -22,6 +23,8 @@
 @inject ApplicationDbContext DbContext
 @inject PunchCardService PunchCardService
 
+@attribute [Authorize]
+
 @rendermode InteractiveServer
 
 <PageTitle>Home</PageTitle>
@@ -35,10 +38,10 @@
 			</label>
 		</div>
 
-		<NavLink class="w-100 btn btn-lg btn-primary" href="#">Byt lösenord</NavLink>
-		<NavLink class="w-100 btn btn-lg btn-primary" href="#">Byt e-post</NavLink>
-		<NavLink class="w-100 btn btn-lg btn-primary" href="#">Avsluta konto</NavLink>
-		<NavLink class="w-100 btn btn-lg btn-primary" href="#">Logga ut</NavLink>
+		<NavLink class="btn btn-primary" href="#">Byt lösenord</NavLink>
+		<NavLink class="btn btn-primary" href="#">Byt e-post</NavLink>
+		<NavLink class="btn btn-primary" href="#">Avsluta konto</NavLink>
+		<NavLink class="btn btn-primary" href="#">Logga ut</NavLink>
 
 	<aside class="right-content two @( _isRightContentVisible ? "show" : "")">
 		<i class="fa-solid fa-x close-icon" @onclick="ToggleRightContent"></i>

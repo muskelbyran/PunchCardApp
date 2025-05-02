@@ -1,8 +1,20 @@
-﻿@using PunchCardApp.Services
+﻿@using Microsoft.AspNetCore.Components.Server.Circuits
+@using PunchCardApp.Services
+
 @inject IUserAnalyticsService UserAnalyticsService
+@inject IDbContextFactory<ApplicationDbContext> DbFactory
+@inject AuthenticationStateProvider AuthStateProvider
+@inject ICircuitUserService UserService
+@inject CircuitHandler BlazorCircuitHandler
+
+<div>
+    <span>Your Circuit ID: @MyCircuitMessage</span>
+    <br />
+    <span>Current User: @MyUserId</span>
+    <span>There are @UserService.Circuits.Count Users Connected</span>
+</div>
 
 <div id="user-analytics">
-  
     <div class="analytics-grid">
         <div class="analytics-card">
             <span class="analytics-label">Dagliga Aktiva Användare</span>
@@ -31,6 +43,9 @@
     private int monthlyActiveUsers;
     private int newUsersThisMonth;
     private List<string> churnedUsers = new();
+
+    private string MyCircuitMessage = "";
+    private string MyUserId = "";
 
     protected override async Task OnInitializedAsync()
     {

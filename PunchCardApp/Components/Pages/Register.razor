@@ -43,7 +43,7 @@
 
             <DataAnnotationsValidator />
             <h5>Skapa ett konto</h5>
-            <p>Har du redan ett konto? <a href="/signin">Sign in here></a></p>
+            <p>Har du redan ett konto? <a href="/signin">Sign in here</a></p>
 
             <div class="form">
 
@@ -89,7 +89,7 @@
 
 
                 <div id="form-button">
-                    <button class="w-100 btn btn-lg btn-primary" type="submit">Registrera konto</button>
+                    <button class="btn btn-primary" type="submit">Registrera konto</button>
                 </div>
             </div>
         </EditForm>
@@ -104,7 +104,7 @@
                 <a href="@(NavigationManager.GetUriWithQueryParameters("signin", new Dictionary<string, object?> { ["ReturnUrl"] = ReturnUrl }))">Har du redan ett konto?</a>
             </p>
             <p>
-                <a href="Account/ResendEmailConfirmation">Resend email confirmation</a>
+                <a href="confirmation">Resend email confirmation</a>
             </p>
             <p>
                 <strong>© @DateTime.Now.Year Muskelbyrån.</strong>

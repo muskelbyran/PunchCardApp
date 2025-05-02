@@ -1,9 +1,222 @@
 ﻿@using PunchCardApp.Models
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.EntityFrameworkCore
+@using PunchCardApp.Services
+
+@inject UserManager<ApplicationUser> UserManager
+@inject ApplicationDbContext DbContext
+@inject ILogger<UserProfileTab> Logger
+@inject RoleService RoleService
+
 @code {
-	[Parameter] public ApplicationUser User { get; set; } = default!;
+	[Parameter]
+	public ApplicationUser User { get; set; } = default!;
+
+	[Parameter]
+	public EventCallback<string> OnStatusMessageChanged { get; set; }
+
+	private bool IsAdmin { get; set; }
+	private bool CanEditNames { get; set; } = false;
+	private bool isEditing = false;
+
+	private EditProfileFormModel EditProfileForm { get; set; } = new();
+	private AddressInfoFormModel AddressInfoForm { get; set; } = new();
+
+	protected override async Task OnInitializedAsync()
+	{
+		IsAdmin = await RoleService.IsAdminAsync();
+
+		var fullUser = await DbContext.Users
+			.Include(u => u.UserProfile)
+			.Include(u => u.UserAddress)
+			.FirstOrDefaultAsync(u => u.Id == User.Id);
+
+		if (fullUser is not null)
+		{
+			User = fullUser;
+
+			EditProfileForm = new EditProfileFormModel
+				{
+					FirstName = User.UserProfile?.FirstName ?? "",
+					LastName = User.UserProfile?.LastName ?? "",
+					Email = User.Email ?? "",
+					PhoneNumber = User.PhoneNumber ?? "",
+					Biography = User.UserProfile?.Biography ?? ""
+				};
+
+			AddressInfoForm = new AddressInfoFormModel
+				{
+					AddressLine_1 = User.UserAddress?.AddressLine_1 ?? "",
+					AddressLine_2 = User.UserAddress?.AddressLine_2 ?? "",
+					PostalCode = User.UserAddress?.PostalCode ?? "",
+					City = User.UserAddress?.City ?? ""
+				};
+		}
+	}
+
+	private void StartEditing() => isEditing = true;
+	private void CancelEditing() => isEditing = false;
+
+	private void EnableNameEditing()
+	{
+		CanEditNames = true;
+	}
+
+	private async Task SaveChangesAsync()
+	{
+		try
+		{
+			var currentUser = await DbContext.Users
+				.Include(u => u.UserProfile)
+				.Include(u => u.UserAddress)
+				.FirstOrDefaultAsync(u => u.Id == User.Id);
+
+			if (currentUser != null)
+			{
+				currentUser.UserProfile ??= new UserProfile();
+				currentUser.UserAddress ??= new UserAddress();
+
+				currentUser.UserProfile.FirstName = EditProfileForm.FirstName;
+				currentUser.UserProfile.LastName = EditProfileForm.LastName;
+				currentUser.UserProfile.Biography = EditProfileForm.Biography;
+
+				currentUser.Email = EditProfileForm.Email;
+				currentUser.PhoneNumber = EditProfileForm.PhoneNumber;
+
+				currentUser.UserAddress.AddressLine_1 = AddressInfoForm.AddressLine_1;
+				currentUser.UserAddress.AddressLine_2 = AddressInfoForm.AddressLine_2;
+				currentUser.UserAddress.PostalCode = AddressInfoForm.PostalCode;
+				currentUser.UserAddress.City = AddressInfoForm.City;
+
+				var result = await UserManager.UpdateAsync(currentUser);
+
+				if (result.Succeeded)
+				{
+					// StatusMessage = "Användare uppdaterad!";
+					await OnStatusMessageChanged.InvokeAsync("Användare uppdaterad!");
+					isEditing = false;
+				}
+				else
+				{
+					// StatusMessage = "Uppdatering misslyckades!";
+					await OnStatusMessageChanged.InvokeAsync("Uppdatering misslyckades!");
+				}
+			}
+		}
+		catch (Exception ex)
+		{
+			Logger.LogError(ex, "Uppdatering misslyckades!");
+			await OnStatusMessageChanged.InvokeAsync("Det gick inte att spara användaren!");
+		}
+
+	}
+
+	public class EditProfileFormModel
+	{
+		public string FirstName { get; set; } = "";
+		public string LastName { get; set; } = "";
+		public string PhoneNumber { get; set; } = "";
+		public string Email { get; set; } = "";
+		public string Biography { get; set; } = "";
+	}
+
+	public class AddressInfoFormModel
+	{
+		public string AddressLine_1 { get; set; } = "";
+		public string? AddressLine_2 { get; set; }
+		public string PostalCode { get; set; } = "";
+		public string City { get; set; } = "";
+	}
 }
 
-<div>
-	<h5>Kontaktuppgifter för @(User.UserProfile?.FirstName ?? "N/A")</h5>
-	<p>Email: @User.Email</p>
-</div>
+@if (!isEditing)
+{
+	<div class="details">
+		<div class="basic-info">
+			<h5>@(User.UserProfile?.FirstName ?? "N/A") @(User.UserProfile?.LastName ?? "")</h5>
+			<p><strong>DGFDGDGDGDGDGDGDG:</strong> @User.Email</p>
+			<p><strong>Telefon:</strong> @User.PhoneNumber</p>
+			<p><strong>Adress:</strong> @User.UserAddress?.AddressLine_1, @User.UserAddress?.PostalCode @User.UserAddress?.City</p>
+			<p><strong>Information:</strong> @User.UserProfile?.Biography</p>
+			<button class="btn btn-primary" @onclick="StartEditing">Uppdatera</button>
+		</div>
+	</div>
+}
+else
+{
+	<div class="profile-content">
+		<div class="basic-info">
+			<EditForm Model="EditProfileForm" OnValidSubmit="SaveChangesAsync" class="edit-form">
+				<DataAnnotationsValidator />
+				@* 				@if (!string.IsNullOrEmpty(StatusMessage))
+				{
+					<div class="alert alert-info">@StatusMessage</div>
+				} *@
+
+				<h2>Edit Profile</h2>
+				<div class="content">
+					<div class="input-group" id="form-firstname">
+						<label>First Name</label>
+						<div class="input-with-button">
+							<InputText @bind-Value="EditProfileForm.FirstName" class="form-control" disabled="@(!CanEditNames)" />
+							@if (IsAdmin)
+							{
+								<button type="button" class="btn btn-warning btn-sudo" @onclick="EnableNameEditing">Sudo</button>
+							}
+						</div>
+					</div>
+					<div class="input-group" id="form-lastname">
+						<label>Last Name</label>
+						<div class="input-with-button">
+							<InputText @bind-Value="EditProfileForm.LastName" class="form-control" disabled="@(!CanEditNames)" />
+							@if (IsAdmin)
+							{
+								<button type="button" class="btn btn-warning btn-sudo" @onclick="EnableNameEditing">Sudo</button>
+							}
+						</div>
+					</div>
+					<div class="input-group" id="form-phone">
+						<label>Phone Number</label>
+						<InputText @bind-Value="EditProfileForm.PhoneNumber" class="form-control" />
+					</div>
+					<div class="input-group" id="form-email">
+						<label>Email</label>
+						<InputText @bind-Value="EditProfileForm.Email" class="form-control" />
+					</div>
+					<div class="input-group" id="form-bio">
+						<label>Biography</label>
+						<InputTextArea @bind-Value="EditProfileForm.Biography" class="form-control" />
+					</div>
+				</div>
+
+
+				<section class="address-info">
+					<h5>Address</h5>
+					<div class="content">
+						<div id="form-addressline-1" class="input-group">
+							<label>Address Line 1</label>
+							<InputText @bind-Value="AddressInfoForm.AddressLine_1" class="form-control" />
+						</div>
+						<div id="form-addressline-2" class="input-group">
+							<label>Address Line 2</label>
+							<InputText @bind-Value="AddressInfoForm.AddressLine_2" class="form-control" />
+						</div>
+						<div id="form-postalcode" class="input-group">
+							<label>Postal Code</label>
+							<InputText @bind-Value="AddressInfoForm.PostalCode" class="form-control" />
+						</div>
+						<div id="form-city" class="input-group">
+							<label>City</label>
+							<InputText @bind-Value="AddressInfoForm.City" class="form-control" />
+						</div>
+					</div>
+				</section>
+
+				<div class="form-buttons mt-3">
+					<button class="btn btn-success me-2" type="submit">Spara</button>
+					<button class="btn btn-secondary" type="button" @onclick="CancelEditing">Avbryt</button>
+				</div>
+			</EditForm>
+		</div>
+	</div>
+}

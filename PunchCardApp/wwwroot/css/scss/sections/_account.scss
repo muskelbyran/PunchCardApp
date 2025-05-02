@@ -7,8 +7,8 @@
 
     .main-section {
         width: 95%;
-        max-width: none; 
-        padding: 1.5rem; 
+        max-width: none;
+        padding: 1.5rem;
         padding-top: 7rem;
         box-sizing: border-box;
         overflow-x: hidden;
@@ -22,9 +22,9 @@
             border-radius: 10px;
             overflow: hidden;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            border: 1px solid #b87333;
+            border: 1px solid var(--color-white);
             display: block;
-            overflow-x: auto; 
+            overflow-x: auto;
             white-space: nowrap;
 
             thead, tbody {
@@ -33,10 +33,10 @@
             }
 
             thead {
-                background-color: #6366F1;
+                background-color: var(--color-secondary);
                 color: white;
                 text-align: left;
-               /* border: 1px solid #dd3c6e;*/
+                /* border: 1px solid #dd3c6e;*/
 
                 tr {
                     display: flex;
@@ -44,12 +44,14 @@
                 }
 
                 th {
+                    background-color: var(--color-white);
+                    /*  background-color: var(--color-secondary);*/
                     padding: 12px;
                     font-weight: bold;
-                 /*   border: 1px solid #dd3c6e;*/
+                    border: 1px solid var(--color-white);
                     flex: 1;
                     text-align: center;
-                    min-width: 100px; 
+                    min-width: 100px;
                 }
             }
 
@@ -60,14 +62,15 @@
                 tr {
                     display: flex;
                     width: 100%;
-                    border-bottom: 1px solid #ddd;
-
-                    &:nth-child(even) {
+                  /*  border-bottom: 1px solid #ddd;*/
+                    border: 1px solid var(--color-white);
+                    /*                    &:nth-child(even) {
                         background-color: #f9f9f9;
-                    }
+                        border: 1px solid var(--color-secondary);
+                    }*/
 
                     &:hover {
-                        background-color: #e0e0ff;
+                        background-color: var(--color-secondary);
                     }
 
                     td {
@@ -87,7 +90,7 @@
                 border: none;
 
                 &::-webkit-progress-bar {
-                    background: #ddd;
+                    background: var(--color-gray-600);
                     border-radius: 4px;
                 }
 
@@ -232,106 +235,8 @@
     }
 }
 
-    /*.content-table {
-    max-width: none;
-    margin-top: 2rem;
-    margin-left: auto;
-    margin-right: auto;
-    overflow-x: auto;
-  
-
-    @media (max-width: 64rem) {
-        display: none !important;
-    }
-
-
-    .punch-table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 1rem;
-        background-color: var(--color-background);
-        border-radius: 10px;
-        overflow: hidden;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        border: 1px solid #b87333;
-
-        thead {
-            background-color: #6366F1;
-            color: white;
-            text-align: left;
-            border: 1px solid #dd3c6e;
-            display: flex; // Use flex layout
-
-            th {
-                padding: 50px;
-                font-weight: bold;
-                border: 1px solid #dd3c6e;
-                flex: 1; // Make th elements take equal space
-            }
-        }
-
-        tbody {
-            display: flex; // Use flex layout for tbody
-            flex-direction: column; // Keep rows as separate flex items
-            tr {
-                display: flex; // Display tr as flex
-                border-bottom: 1px solid #ddd;
-
-                &:nth-child(even) {
-                    background-color: #f9f9f9;
-                }
-
-                &:hover {
-                    background-color: #e0e0ff;
-                }
-
-                td {
-                    padding: 10px;
-                    vertical-align: middle;
-                    flex: 1; // Make td elements take equal space
-                    text-align: left;
-                }
-            }
-        }
-
-        .punch-progress {
-            width: 100%;
-            height: 8px;
-            border-radius: 4px;
-            background: #ddd;
-            border: none;
-
-            &::-webkit-progress-bar {
-                background: #ddd;
-                border-radius: 4px;
-            }
-
-            &::-webkit-progress-value {
-                background: linear-gradient(90deg, #433485, #dd3c6e);
-                border-radius: 4px;
-            }
-        }
-
-        .btn-copper {
-            background-color: #b87333;
-            color: white;
-            padding: 8px 12px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background 0.3s ease;
-
-            &:hover {
-                background-color: #995a2b;
-            }
-        }
-    }
-}*/
-
     .content-card {
-        /* border-radius: 15px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
- */ padding: 2rem;
+ padding: 2rem;
         margin: 0;
         max-width: 800px;
         width: 100%;
@@ -355,7 +260,6 @@
         }
 
         .punch-card {
-            /*background: var(--color-primary);*/
             background: linear-gradient(to bottom, #ddd, #fff);
             margin: 1rem;
             padding-top: 1rem;
@@ -939,87 +843,65 @@
     }
 
 
-    .course-grid {
+.course-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+
+    .course-card {
+        width: 300px;
         display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 1rem;
+        flex-direction: column;
+        overflow: hidden;
+        border-radius: 12px;
+        background-color: #fff;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        position: relative;
 
-        .course-card {
-            width: 300px;
-            aspect-ratio: 1 / 1;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        &:hover {
+            transform: scale(1.03);
+            box-shadow: 0 6px 16px rgba(0, 123, 255, 0.25);
+        }
+
+        .image-container {
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+            flex-shrink: 0;
+        }
+
+        .title-bar {
+            padding: 1rem;
+            color: #333;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .info-bar {
             background-color: #fff;
-            margin: 1rem;
-            cursor: pointer;
-            position: relative;
-            transition: transform 0.3s ease;
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem 1rem;
+            font-size: 0.9rem;
+            color: #333;
+            border-top: 1px solid #eee;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+            z-index: 1;
+        }
 
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
 
-            &:hover {
-                transform: scale(1.03);
-                box-shadow: 0 6px 16px rgba(0, 123, 255, 0.25);
-            }
-            /* Image container */
-            .image-container {
-                position: relative;
-                height: 80%;
-                background-size: cover;
-                background-position: center;
-                display: flex;
-                flex-direction: column;
-            }
-
-            .title-bar {
-                position: relative;
-                width: 100%;
-                padding: 1rem;
-                color: #fff;
-                font-weight: bold;
-                backdrop-filter: blur(4px);
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                z-index: 2;
-                margin-top: -20px;
-                text-align: center;
-                overflow: hidden;
-            }
-
-            .info-bar {
-                display: flex;
-                justify-content: space-around;
-                align-items: center;
-                background-color: #f8f9fa;
-                padding: 0.5rem;
-                font-size: 0.9rem;
-                color: #333;
-                height: 20%;
-            }
-
-            .info-item {
-                display: flex;
-                align-items: center;
-                gap: 0.4rem;
-
-                i {
-                    font-size: 1rem;
-                    color: #666;
-                }
-            }
-
-            @media (max-width: 767px) {
-                .course-list {
-                    flex-direction: column;
-                    align-items: center;
-                }
+            i {
+                color: #666;
             }
         }
     }
+}
 
 
 
