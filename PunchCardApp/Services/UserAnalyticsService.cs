@@ -38,14 +38,32 @@ public class UserAnalyticsService(IDbContextFactory<ApplicationDbContext> contex
         return activeUsers.Count;
     }
 
+    //public async Task<int> GetNewUsersThisMonthAsync()
+    //{
+    //    await using var context = await _contextFactory.CreateDbContextAsync();
+
+    //    var startDate = DateTime.UtcNow.Date.AddDays(-30);
+    //    return await context.UserEngagementLogs
+    //        .AsNoTracking()
+    //        .Where(l => l.Type == EngagementType.Login && l.Timestamp >= startDate && l.IsFirstLogin)
+    //        .Select(l => l.UserId)
+    //        .Distinct()
+    //        .CountAsync();
+    //}
+
     public async Task<int> GetNewUsersThisMonthAsync()
     {
         await using var context = await _contextFactory.CreateDbContextAsync();
 
-        var startDate = DateTime.UtcNow.Date.AddDays(-30);
+        var startOfMonth = new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, 1);
+        var startOfNextMonth = startOfMonth.AddMonths(1);
+
         return await context.UserEngagementLogs
             .AsNoTracking()
-            .Where(l => l.Type == EngagementType.Login && l.Timestamp >= startDate && l.IsFirstLogin)
+            .Where(l => l.Type == EngagementType.Login
+                && l.IsFirstLogin
+                && l.Timestamp >= startOfMonth
+                && l.Timestamp < startOfNextMonth)
             .Select(l => l.UserId)
             .Distinct()
             .CountAsync();

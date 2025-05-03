@@ -4,21 +4,18 @@ using PunchCardApp.Models;
 
 namespace PunchCardApp.Services;
 
-public class UserEngagementService : IUserEngagementService
+public class UserEngagementService(IDbContextFactory<ApplicationDbContext> dbContextFactory) : IUserEngagementService
 {
-    private readonly ApplicationDbContext _context;
-
-    public UserEngagementService(ApplicationDbContext context)
-    {
-        _context = context;
-    }
+    private readonly IDbContextFactory<ApplicationDbContext> _dbContextFactory = dbContextFactory;
 
     public async Task LogLoginAsync(string userId)
     {
-        var isFirstLogin = !await _context.UserEngagementLogs
+        using var context = _dbContextFactory.CreateDbContext();
+
+        var isFirstLogin = !await context.UserEngagementLogs
             .AnyAsync(l => l.UserId == userId && l.Type == EngagementType.Login);
 
-        _context.UserEngagementLogs.Add(new UserEngagementLog
+        context.UserEngagementLogs.Add(new UserEngagementLog
         {
             UserId = userId,
             Timestamp = DateTime.UtcNow,
@@ -26,12 +23,14 @@ public class UserEngagementService : IUserEngagementService
             IsFirstLogin = isFirstLogin
         });
 
-        await _context.SaveChangesAsync();
+        await context.SaveChangesAsync();
     }
 
     public async Task LogPageViewAsync(string userId, string pageName)
     {
-        _context.UserEngagementLogs.Add(new UserEngagementLog
+        using var context = _dbContextFactory.CreateDbContext();
+
+        context.UserEngagementLogs.Add(new UserEngagementLog
         {
             UserId = userId,
             Timestamp = DateTime.UtcNow,
@@ -39,12 +38,14 @@ public class UserEngagementService : IUserEngagementService
             Metadata = pageName
         });
 
-        await _context.SaveChangesAsync();
+        await context.SaveChangesAsync();
     }
 
     public async Task LogEventAsync(string userId, EngagementType type, string? metadata = null)
     {
-        _context.UserEngagementLogs.Add(new UserEngagementLog
+        using var context = _dbContextFactory.CreateDbContext();
+
+        context.UserEngagementLogs.Add(new UserEngagementLog
         {
             UserId = userId,
             Timestamp = DateTime.UtcNow,
@@ -52,6 +53,6 @@ public class UserEngagementService : IUserEngagementService
             Metadata = metadata
         });
 
-        await _context.SaveChangesAsync();
+        await context.SaveChangesAsync();
     }
 }

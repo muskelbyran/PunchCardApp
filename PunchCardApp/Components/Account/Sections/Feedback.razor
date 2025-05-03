@@ -14,106 +14,113 @@
 <PageTitle>Feedback</PageTitle>
 
 <main class="feedback-content">
-        <h1>Feedback</h1>
-        <p>Din feedback är viktig för vidareutveckling av den här sidan.</p>
+	<h1>Feedback</h1>
+	<p>Din feedback är viktig för vidareutveckling av den här sidan.</p>
 
-        @if (!string.IsNullOrEmpty(StatusMessage))
-        {
-            <div class="alert alert-info">@StatusMessage</div>
-        }
+	@if (!string.IsNullOrEmpty(StatusMessage))
+	{
+		<div class="alert alert-info">@StatusMessage</div>
+	}
 
-        <EditForm Model="@FeedbackForm" OnValidSubmit="OnValidSubmit" FormName="feedback" method="post" novalidate>
-            <DataAnnotationsValidator />
-            <ValidationSummary />
-            <AntiforgeryToken />
-            <h5>Skicka feedback</h5>
+	<EditForm Model="@FeedbackForm" OnValidSubmit="OnValidSubmit" FormName="feedback" novalidate>
+		<DataAnnotationsValidator />
+	@* 	<ValidationSummary /> *@
+		<h5>Skicka feedback</h5>
 
-            <div class="form">
-                <div class="form-floating">
-                    <InputTextArea @bind-Value="FeedbackForm.Message" autocomplete="off" aria-required="true" placeholder="Din feedback" class="form-control" />
-                    <ValidationMessage For="() => FeedbackForm.Message" />
-                </div>
+		<div class="form">
+			<div class="form-floating">
+				<InputTextArea @bind-Value="FeedbackForm.Message" autocomplete="off" aria-required="true" placeholder="Din feedback" class="form-control" />
+				<ValidationMessage For="() => FeedbackForm.Message" />
+			</div>
 
-                <div id="form-issues">
-                    <label class="form-label">Typ av feedback</label>
-                    <select @bind="FeedbackForm.FeedbackType" class="form-select" aria-required="true">
-                        <option value="">Välj typ av feedback</option>
-                        <option value="Typo">Typo</option>
-                        <option value="Bug">Bug</option>
-                        <option value="Idea">Idea</option>
-                        <option value="Praise">Praise</option>
-                    </select>
-                    <ValidationMessage For="() => FeedbackForm.FeedbackType" />
-                </div>
+			<div class="mb-3">
+				<label class="form-label" for="feedbackType">Typ av feedback</label>
+				<InputSelect id="feedbackType" class="form-select" @bind-Value="FeedbackForm.FeedbackType">
+					<option value="">-- Välj en typ --</option>
+					<option value="Typo">Typo</option>
+					<option value="Bug">Bug</option>
+					<option value="Idea">Idea</option>
+					<option value="Praise">Praise</option>
+				</InputSelect>
+				<ValidationMessage For="() => FeedbackForm.FeedbackType" />
+			</div>
 
-                <div id="form-button">
-                    <button class="w-100 btn btn-lg btn-primary" type="submit">Skicka feedback</button>
-                </div>
-            </div>
-        </EditForm>
+
+
+			<div class="live-feedback">
+				<p>Vald typ av feedback: <strong>@FeedbackForm.FeedbackType</strong></p>
+			</div>
+
+			<div id="form-button">
+				<button class="w-100 btn btn-lg btn-primary" type="submit">Skicka feedback</button>
+			</div>
+		</div>
+	</EditForm>
 
 </main>
 
 @code {
-    [SupplyParameterFromForm]
-    private FeedbackModel FeedbackForm { get; set; } = new();
+	[SupplyParameterFromForm]
+	private FeedbackModel FeedbackForm { get; set; } = new();
 
-    private ApplicationUser? selectedUser;
-    private string? StatusMessage;
+	private ApplicationUser? selectedUser;
+	private string? StatusMessage;
 
-    private async Task OnValidSubmit(EditContext editContext)
-    {
-        try
-        {
-            var authState = await AuthStateProvider.GetAuthenticationStateAsync();
-            var user = authState.User;
+	private async Task OnValidSubmit(EditContext editContext)
+	{
+		try
+		{
+			var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+			var user = authState.User;
 
-            if (user.Identity?.IsAuthenticated ?? false)
-            {
-                var userId = user.FindFirst(c => c.Type == System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+			if (user.Identity?.IsAuthenticated ?? false)
+			{
+				var userId = user.FindFirst(c => c.Type == System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
 
-                if (userId != null)
-                {
-                    selectedUser = await DbContext.Users
-                        .AsNoTracking()
-                        .Include(u => u.UserProfile)
-                        .FirstOrDefaultAsync(u => u.Id == userId);
-                }
-            }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error loading user details: {ex.Message}");
-        }
+				if (userId != null)
+				{
+					selectedUser = await DbContext.Users
+						.AsNoTracking()
+						.Include(u => u.UserProfile)
+						.FirstOrDefaultAsync(u => u.Id == userId);
+				}
+			}
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine($"Error loading user details: {ex.Message}");
+		}
 
-        if (selectedUser == null || selectedUser.UserProfile?.FirstName == null)
-        {
-            StatusMessage = "Användarnamn hittades inte!";
-            return;
-        }
+		if (selectedUser == null || selectedUser.UserProfile?.FirstName == null)
+		{
+			StatusMessage = "Användarnamn hittades inte!";
+			return;
+		}
 
-        string FirstName = selectedUser.UserProfile?.FirstName ?? "Unknown";
-        string LastName = selectedUser.UserProfile?.LastName ?? "User";
+		string FirstName = selectedUser.UserProfile?.FirstName ?? "Unknown";
+		string LastName = selectedUser.UserProfile?.LastName ?? "User";
 
-        var feedbackEntity = new FeedbackEntity
-            {
-                FromName = $"{FirstName} {LastName}",
-                Message = FeedbackForm.Message,
-                FeedbackType = FeedbackForm.FeedbackType, 
-                SubmittedAt = DateTime.UtcNow
-            };
+		var feedbackEntity = new FeedbackEntity
+			{
+				FromName = $"{FirstName} {LastName}",
+				Message = FeedbackForm.Message,
+				FeedbackType = FeedbackForm.FeedbackType,
+				SubmittedAt = DateTime.UtcNow
+			};
 
-        try
-        {
-            DbContext.Add(feedbackEntity);
-            await DbContext.SaveChangesAsync();
 
-            StatusMessage = "Tack för din feedback!";
-            FeedbackForm = new FeedbackModel(); 
-        }
-        catch (Exception ex)
-        {
-            StatusMessage = $"An error occurred while submitting feedback: {ex.Message}";
-        }
-    }
+
+		try
+		{
+			DbContext.Add(feedbackEntity);
+			await DbContext.SaveChangesAsync();
+
+			StatusMessage = "Tack för din feedback!";
+			FeedbackForm = new FeedbackModel();
+		}
+		catch (Exception ex)
+		{
+			StatusMessage = $"An error occurred while submitting feedback: {ex.Message}";
+		}
+	}
 }
