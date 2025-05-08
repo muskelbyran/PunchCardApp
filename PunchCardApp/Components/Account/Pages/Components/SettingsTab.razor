@@ -1,0 +1,21 @@
+﻿@using PunchCardApp.Models
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.EntityFrameworkCore
+@using PunchCardApp.Services
+
+@inject UserManager<ApplicationUser> UserManager
+
+<div class="settings-content">
+	<button class="btn btn-primary" href="#">Byt lösenord</button>
+	<button class="btn btn-primary" href="#">Byt e-post</button>
+	<button class="btn btn-primary" href="#">Avsluta konto</button>
+	<button class="btn btn-primary" href="#">Logga ut</button>
+</div>
+
+@code {
+	[Parameter]
+	public ApplicationUser User { get; set; } = default!;
+
+	[Parameter]
+	public EventCallback<string> OnStatusMessageChanged { get; set; }
+}

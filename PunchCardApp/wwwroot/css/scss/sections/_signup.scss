@@ -11,7 +11,7 @@
         background-color: white;
         border-radius: 8px;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    
+
         .logo {
 
             img {
@@ -138,10 +138,10 @@
 
         .social-option {
             display: flex;
-            justify-content: center; 
-            align-items: center; 
-            gap: 15px; 
-            
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+
             .socialmedia-item {
                 color: var(--color-primary);
                 display: flex;
@@ -154,26 +154,27 @@
                 }
 
                 i {
-                    display: flex; 
-                    justify-content: center; 
-                    align-items: center; 
-                    font-size: 24px; 
-                    width: 50px; 
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    font-size: 24px;
+                    width: 50px;
                     height: 50px;
-                    border: 2px solid var(--color-primary); 
-                    border-radius: 50%; 
-                    background-color: transparent; 
-                    transition: background-color 0.3s ease; 
+                    border: 2px solid var(--color-primary);
+                    border-radius: 50%;
+                    background-color: transparent;
+                    transition: background-color 0.3s ease;
                 }
-              
+
                 i:hover {
-                    background-color: var(--color-secondary); 
-                    color: #fff; 
+                    background-color: var(--color-secondary);
+                    color: #fff;
                 }
             }
         }
 
-        .login-footer {
+        .footer-copy {
+            margin-top: 1rem;
         }
     }
 }

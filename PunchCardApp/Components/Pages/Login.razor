@@ -35,12 +35,12 @@
                 <ValidationSummary class="text-danger" role="alert" />
                 <div class="form-floating mb-3">
                    @*  <InputText @bind-Value="SignUpForm.FirstName" autocomplete="givenname" aria-required="true" placeholder="Förnamn" /> *@
-                    <InputText @bind-Value="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
+                    <InputText @bind-Value="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="E-post" />
                     <label for="email" class="form-label"></label>
                     <ValidationMessage For="() => Input.Email" class="text-danger" />
                 </div>
                 <div class="form-floating mb-3">
-                    <InputText type="password" @bind-Value="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="password" />
+                    <InputText type="password" @bind-Value="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="Lösenord" />
                     <label for="password" class="form-label"></label>
                     <ValidationMessage For="() => Input.Password" class="text-danger" />
                 </div>
@@ -71,7 +71,7 @@
             <p>
                 <a href="confirmation">Skicka ny e-post bekräftelse</a>
             </p>
-            <p>
+            <p class="footer-copy">
                 <strong>© @DateTime.Now.Year Muskelbyrån.</strong>
             </p>
         </div>

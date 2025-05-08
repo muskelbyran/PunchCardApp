@@ -1,6 +1,7 @@
 ﻿@page "/Account/Feedback"
 
 @using PunchCardApp.Components.Account.Shared
+@using PunchCardApp.Components.Assets
 @using PunchCardApp.Entities
 @using PunchCardApp.Models
 @using Microsoft.EntityFrameworkCore
@@ -10,17 +11,19 @@
 @inject AuthenticationStateProvider AuthStateProvider
 
 @layout AccountLayout
+@rendermode InteractiveServer
 
 <PageTitle>Feedback</PageTitle>
 
 <main class="feedback-content">
+	<div class="feedback-toast">
+		<StatusToast Message="@StatusMessage"
+					 Class="alert-success"
+					 Duration="8000"
+					 OnDismiss="@(() => StatusMessage = "")" />
+	</div>
 	<h1>Feedback</h1>
 	<p>Din feedback är viktig för vidareutveckling av den här sidan.</p>
-
-	@if (!string.IsNullOrEmpty(StatusMessage))
-	{
-		<div class="alert alert-info">@StatusMessage</div>
-	}
 
 	<EditForm Model="@FeedbackForm" OnValidSubmit="OnValidSubmit" FormName="feedback" novalidate>
 		<DataAnnotationsValidator />
@@ -45,14 +48,8 @@
 				<ValidationMessage For="() => FeedbackForm.FeedbackType" />
 			</div>
 
-
-
-			<div class="live-feedback">
-				<p>Vald typ av feedback: <strong>@FeedbackForm.FeedbackType</strong></p>
-			</div>
-
 			<div id="form-button">
-				<button class="w-100 btn btn-lg btn-primary" type="submit">Skicka feedback</button>
+				<button class="btn btn-primary" type="submit">Skicka feedback</button>
 			</div>
 		</div>
 	</EditForm>
@@ -115,12 +112,20 @@
 			DbContext.Add(feedbackEntity);
 			await DbContext.SaveChangesAsync();
 
-			StatusMessage = "Tack för din feedback!";
+			await HandleStatusMessage("Tack för din feedback!");
 			FeedbackForm = new FeedbackModel();
 		}
 		catch (Exception ex)
 		{
 			StatusMessage = $"An error occurred while submitting feedback: {ex.Message}";
 		}
+	}
+
+	private Task HandleStatusMessage(string message)
+	{
+		Console.WriteLine($"Setting StatusMessage: {message}");
+		StatusMessage = message;
+		StateHasChanged();
+		return Task.CompletedTask;
 	}
 }

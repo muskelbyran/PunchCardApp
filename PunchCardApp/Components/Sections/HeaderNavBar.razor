@@ -27,18 +27,10 @@
         </button>
         <ul id="main-menu" class="main-menu hide">
             <li>
-                <NavLink class="nav-link" href="/Account">Hem</NavLink>
-            </li>
-            <li>
-                <NavLink class="nav-link" href="/account/history">Historik</NavLink>
-
-                @* <a href="/account/history" class="nav-link">Historik</a> *@
+                <NavLink class="nav-link" href="/account">Hem</NavLink>
             </li>
             <li>
                 <NavLink class="nav-link" href="/account/deets">Profil</NavLink>
-            </li>
-            <li>
-                <NavLink class="nav-link" href="/account/settings">Inställningar</NavLink>
             </li>
             <li>
                 <NavLink class="nav-link" href="/account/feedback">Kontakt</NavLink>
@@ -64,18 +56,21 @@
         <i class="fa-solid fa-house"></i>
         <span>Hem</span>
     </NavLink>
-    <NavLink class="nav-item" href="/account/history">
-        <i class="fa-regular fa-file"></i>
-        <span>Historik</span>
-    </NavLink>
     <NavLink class="nav-item" href="/account/deets">
         <i class="fa-regular fa-user"></i>
         <span>Profil</span>
     </NavLink>
-    <NavLink class="nav-item" href="/account/settings">
-        <i class="fa-solid fa-shield-halved"></i>
-        <span>Inställningar</span>
+    <NavLink class="nav-item" href="/account/feedback">
+        <i class="fa-regular fa-comment"></i>
+        <span>Kontakt</span>
     </NavLink>
+    @if (IsManager)
+    {
+        <NavLink class="nav-item" href="/admin/aardvark">
+            <i class="fa-solid fa-poo"></i>
+            <span>Backoffice</span>
+        </NavLink>
+    }
 </aside>
 
 @code {

@@ -14,41 +14,41 @@
 <PageTitle>Home</PageTitle>
 <main class="main-content-container">
     <div class="main-section">
+        <h5>Klippkort</h5>
         @if (UserPunchCards != null && UserPunchCards.Any())
         {
-            <table class="punch-table">
-                <thead>
-                    <tr>
-                        <th>Typ</th>                      
-                        <th>Totalt klippkort</th>
-                        <th>Klipp kvar</th>
-                        <th>Åtgärd</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var card in UserPunchCards)
-                    {
-                        <tr>
-                            <td>@card.Type</td>
-                            <td>@card.TotalUses</td>
-                            <td>@card.UsesLeft klipp kvar</td>
-@*                             <td>
-                                <progress class="punch-progress" value="@(card.TotalUses - card.UsesLeft)" max="@card.TotalUses"></progress>
-                            </td> *@
-                            <td>
-                                <PunchButton PunchCardId="@card.Id" CssClass="btn btn-primary" ButtonText="Färdigknådad!" OnPunchUsed="LoadUserPunchCardsAsync" />
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
+            <div class="punchcard-grid">
+                @foreach (var card in UserPunchCards)
+                {
+                    <div class="punch-card">
+                        <h4>@card.Type</h4>
+
+                        <div class="punch-hearts">
+                            @for (int i = 0; i < card.TotalUses; i++)
+                            {
+                                <i class="fa-solid fa-face-smile"
+                                   style="color: @(i < card.TotalUses - card.UsesLeft ? "var(--color-primary)" : "var(--color-background)"); margin-right: 4px;"></i>
+                            }
+                        </div>
+
+                        <div class="punch-button">
+                            <PunchButton PunchCardId="@card.Id"
+                                         CssClass="btn btn-primary"
+                                         ButtonText="Färdigknådad!"
+                                         OnPunchUsed="LoadUserPunchCardsAsync" />
+                        </div>
+                    </div>
+                }
+            </div>
         }
         else
         {
-            <p>Ingen historik att visa.</p>
+            <p>Du har inga klippkort just nu.</p>
         }
+
     </div>
 
+    <h5>Kurser och workshops på Muskelbyrån</h5>
     @if (courses == null)
     {
         <p>Laddar kurser...</p>
@@ -62,43 +62,14 @@
             }
         </div>
     }
-  
-    <div class="main-content">
-      <div class="content-card">
-            @if (UserPunchCards != null && UserPunchCards.Any())
-            {
-                @foreach (var card in UserPunchCards)
-                {
-                    <div class="punch-card">
-                        <h4>@card.Type</h4>
-
-                        <PunchButton PunchCardId="@card.Id" CssClass="btn btn-copper" ButtonText="Färdigknådad!" OnPunchUsed="LoadUserPunchCardsAsync" />
-
-
-                        <div class="punches">
-                            <h3>@card.TotalUses klippkort</h3>
-@*                             @for (int i = 0; i < card.TotalUses; i++)
-                            {
-                                <i class="fa-solid fa-heart" style="color: @(i < card.TotalUses - card.UsesLeft ? "red" : "black");"></i>
-                            } *@
-                            <progress class="punch-progress" value="@(card.TotalUses - card.UsesLeft)" max="@card.TotalUses"></progress>
-                            <p>@card.UsesLeft klipp kvar.</p>
-                        </div>
-                    </div>
-                }
-            }
-            else
-            {
-                <p>Ingen historik att visa.</p>
-            }
-        </div>
-        <div class="button-card">
+    
+    @*  -- Live to fight another day. Just nu är slides från sidan down the drain. 
+    <div class="button-card"> 
             <button class="btn btn-pink" @onclick="ShowNewsContent">Nyheter</button>
             <button class="btn btn-pink" @onclick="ShowFeedbackContent">Feedback</button>
             <button class="btn btn-pink" @onclick="ShowContactContent">Kontakt</button>
             <NavLink class="btn btn-pink" href="/Admin/Aardvark">Backoffice</NavLink>
-        </div>
-    </div>
+        </div>    
     <aside class="right-content-placeholder">Testing 123...</aside>
     <aside class="right-content @( _isRightContentVisible ? "show" : "")">
         <i class="fa-solid fa-x close-icon" @onclick="ToggleRightContent"></i>
@@ -112,6 +83,7 @@
         <i class="fa-solid fa-x close-icon" @onclick="ToggleRightContent3"></i>
        <PunchCardApp.Components.Account.Sections.Contact />
     </aside>
+    *@
 </main>
 
 @code {

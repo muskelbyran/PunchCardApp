@@ -1,343 +1,104 @@
-﻿@page "/Account/Deets"
+﻿@page "/account/deets"
 
-@using Microsoft.Extensions.Logging
+@using PunchCardApp.Components.Account.Pages.Components
 @using PunchCardApp.Components.Account.Shared
+@using PunchCardApp.Components.Admin.Components
 @using PunchCardApp.Components.Assets
 @using PunchCardApp.Models
-@using System.ComponentModel.DataAnnotations
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.EntityFrameworkCore
 
-@inject UserManager<ApplicationUser> UserManager
 @inject ApplicationDbContext DbContext
-@inject AuthenticationStateProvider AuthStateProvider
-
-@rendermode InteractiveServer
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
 @layout AccountLayout
+@rendermode InteractiveServer
 
-<PageTitle>Profil</PageTitle>
+<PageTitle>Klippkort</PageTitle>
 
-<AuthorizeView Context="authContext">
-    <Authorized>
-        <main class="deets-content">
-            @if (!string.IsNullOrEmpty(@StatusMessage))
-            {
-                <div class="alert alert-info">@StatusMessage</div>
-            }
-            <h1>Welcome!</h1>
-            @if (selectedUser != null)
-            {
-            <div>
-                <ul class="nav nav-tabs">
-                    <li class="nav-item">
-                        <a class="nav-link profil @(selectedTab == Tab.Profil ? "active" : "")" @onclick="() => SelectTab(Tab.Profil)">
-                            Profil
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link uppgifter @(selectedTab == Tab.Uppgifter ? "active" : "")" @onclick="() => SelectTab(Tab.Uppgifter)">
-                            Kontaktuppgifter
-                        </a>
-                    </li>                   
-                </ul>
-                <div class="tab-content mt-3">
-                @if (selectedTab == Tab.Profil)
-                {
-                    <div class="tab-pane active">
-                        <div>
-                            <h5>@(selectedUser.UserProfile?.FirstName ?? "N/A") @(selectedUser.UserProfile?.LastName ?? "N/A")</h5>
-                            <p>Email: @selectedUser.Email</p>
-                            <p>Adress: @selectedUser.UserAddress?.AddressLine_1, @selectedUser.UserAddress?.PostalCode @selectedUser.UserAddress?.City</p>
-                        </div>
-                    </div>
-                }              
-                else if (selectedTab == Tab.Uppgifter)
-                {
-                    <div class="tab-pane active">
-                        <EditForm Model="EditProfileForm" OnValidSubmit="OnValidSubmitAsync" class="edit-form" FormName="editProfile" method="post" novalidate>
-                            <DataAnnotationsValidator />
-                            <h2>Edit Profile</h2>
-                            <div class="content">
-                                <div class="input-group" id="form-firstname">
-                                    <label>Förnamn</label>
-                                    <InputText @bind-Value="EditProfileForm.FirstName" />
-                                    <ValidationMessage For="() => EditProfileForm.FirstName" />
-                                </div>
-                                <div class="input-group" id="form-lastname">
-                                    <label>Efternamn</label>
-                                    <InputText @bind-Value="EditProfileForm.LastName" />
-                                    <ValidationMessage For="() => EditProfileForm.LastName" />
-                                </div>
-                                <div class="input-group" id="form-phone">
-                                    <label>Telefonnummer</label>
-                                    <InputText @bind-Value="EditProfileForm.PhoneNumber" />
-                                    <ValidationMessage For="() => EditProfileForm.PhoneNumber" />
-                                </div>
-                                <div class="input-group" id="form-email">
-                                    <label>E-post</label>
-                                    <InputText @bind-Value="EditProfileForm.Email" />
-                                    <ValidationMessage For="() => EditProfileForm.Email" />
-                                </div>
-                                <div class="input-group" id="form-bio">
-                                    <label>Information</label>
-                                    <InputTextArea @bind-Value="EditProfileForm.Biography" />
-                                    <ValidationMessage For="() => EditProfileForm.Biography" />
-                                </div>
-                                <div class="form-buttons">
-                                    <button class="btn-gray" type="reset">Avbryt</button>
-                                    <button class="btn-primary" type="submit">Uppdatera</button>
-                                </div>
-                            </div>
-                        </EditForm>
-                    <section class="address-info">
-                        <h5>Address</h5>
-                        <EditForm Model="AddressInfoForm" OnValidSubmit="OnValidSubmitAddressAsync" class="edit-form" FormName="addressForm" method="post" novalidate>
-                            <DataAnnotationsValidator />
-                            <div class="content">
-                                <div id="form-addressline-1" class="input-group">
-                                    <label>Gatuadress</label>
-                                    <InputText @bind-Value="AddressInfoForm.AddressLine_1" />
-                                    <ValidationMessage For="() => AddressInfoForm.AddressLine_1" />
-                                </div>
-                                <div id="form-addressline-2" class="input-group">
-                                    <label>C/O adress 2<span>(Ej nödvändig)</span></label>
-                                    <InputText @bind-Value="AddressInfoForm.AddressLine_2" />
-                                    <ValidationMessage For="() => AddressInfoForm.AddressLine_2" />
-                                </div>
-                                <div id="form-postalcode" class="input-group">
-                                    <label>Postnummer</label>
-                                    <InputText @bind-Value="AddressInfoForm.PostalCode" />
-                                    <ValidationMessage For="() => AddressInfoForm.PostalCode" />
-                                </div>
-                                <div id="form-city" class="input-group">
-                                    <label>Stad</label>
-                                    <InputText @bind-Value="AddressInfoForm.City" />
-                                    <ValidationMessage For="() => AddressInfoForm.City" />
-                                </div>
-                                <div class="form-buttons">
-                                    <button class="btn-gray" type="reset">Avbryt</button>
-                                    <button class="btn-primary" type="submit">Uppdatera</button>
-                                </div>
-                            </div>
-                        </EditForm>
-                    </section>
-                </div>
-                }               
-            </div>
-        </div>
-        }
-        else
-        {
-            <p>Loading user deets...</p>
-        }
-        </main>
-    </Authorized>
+<AuthorizeView>
+	<Authorized>
+		<main class="main-deets-container">
+			<div class="aardvark-toast">
+				<StatusToast Message="@StatusMessage"
+							 Class="alert-success"
+							 Duration="8000"
+							 OnDismiss="@(() => StatusMessage = "")" />
+			</div>
+
+			<div class="main-deets">
+				@if (selectedUser != null)
+				{
+					<ul class="tabs">
+						@foreach (var tab in Enum.GetValues<Tab>())
+						{
+							<li class="tab-item">
+								<button class="tab-button @(selectedTab == tab ? "active" : "")"
+										@onclick="() => SelectTab(tab)">
+									@tab
+								</button>
+							</li>
+						}
+					</ul>
+
+					<div class="tab-content">
+						<DynamicComponent Type="CurrentTabComponent" Parameters="CurrentTabParameters" />
+					</div>
+				}
+			</div>
+		</main>
+	</Authorized>
 </AuthorizeView>
 
 @code {
-    [SupplyParameterFromQuery]
-    public string? StatusMessage { get; set; } = "";
+	private enum Tab { Profil, Klippkort, Alternativ }
 
-    private ApplicationUser? selectedUser;
-    private Tab selectedTab = Tab.Profil;
-    public EditProfileFormModel EditProfileForm { get; set; } = new();
-    public AddressInfoFormModel AddressInfoForm { get; set; } = new();
+	private ApplicationUser? selectedUser;
+	private Tab selectedTab = Tab.Profil;
+	private string StatusMessage = "";
 
-    private enum Tab
-    {
-        Profil,
-        Uppgifter,
-    }
+	private Dictionary<Tab, Type> tabComponentMap = new()
+	{
+		{ Tab.Profil, typeof(UserProfileTab) },
+		{ Tab.Klippkort, typeof(PunchCardTab) },
+		{ Tab.Alternativ, typeof(SettingsTab) }
+	};
 
-    private void SelectTab(Tab tab)
-    {
-        selectedTab = tab;
-    }
+	private Dictionary<string, object> CurrentTabParameters => selectedUser == null
+		? new()
+		: new()
+		{
+			{ "User", selectedUser }, 
+			{ "OnStatusMessageChanged", EventCallback.Factory.Create<string>(this, HandleStatusMessage) } };
 
-    protected override async Task OnInitializedAsync()
-    {
-        try
-        {
-            var authState = await AuthStateProvider.GetAuthenticationStateAsync();
-            var user = authState.User;
+	private Type CurrentTabComponent => tabComponentMap[selectedTab];
 
-            if (user.Identity?.IsAuthenticated ?? false)
-            {
-                var userId = user.FindFirst(c => c.Type == System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+	protected override async Task OnInitializedAsync()
+	{
+		var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+		var user = authState.User;
 
-                if (userId != null)
-                {
-                    selectedUser = await DbContext.Users
-                        .AsNoTracking()
-                        .Include(u => u.UserProfile)
-                        .Include(u => u.UserAddress)
-                        .FirstOrDefaultAsync(u => u.Id == userId);
+		if (user.Identity?.IsAuthenticated ?? false)
+		{
+			var userId = user.FindFirst(c => c.Type == System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
 
-                    if (selectedUser != null)
-                    {
-                        EditProfileForm.FirstName = selectedUser.UserProfile?.FirstName ?? "";
-                        EditProfileForm.LastName = selectedUser.UserProfile?.LastName ?? "";
-                        EditProfileForm.PhoneNumber = selectedUser.PhoneNumber ?? "";
-                        EditProfileForm.Email = selectedUser.Email ?? "";
-                        EditProfileForm.Biography = selectedUser.UserProfile?.Biography ?? "";
+			if (userId != null)
+			{
+				selectedUser = await DbContext.Users
+					.Include(u => u.UserProfile)
+					.FirstOrDefaultAsync(u => u.Id == userId);
+			}
+		}
 
-                        AddressInfoForm.AddressLine_1 = selectedUser.UserAddress?.AddressLine_1 ?? "";
-                        AddressInfoForm.AddressLine_2 = selectedUser.UserAddress?.AddressLine_2 ?? "";
-                        AddressInfoForm.PostalCode = selectedUser.UserAddress?.PostalCode ?? "";
-                        AddressInfoForm.City = selectedUser.UserAddress?.City ?? "";
+		SelectTab(Tab.Profil);
+	}
 
-                        SelectTab(Tab.Profil);
-                    }
-                }
-            }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error loading user details: {ex.Message}");
-        }
-    }
+	private void SelectTab(Tab tab) => selectedTab = tab;
 
-    public async Task OnValidSubmitAsync()
-    {
-        try
-        {
-            var authState = await AuthStateProvider.GetAuthenticationStateAsync();
-            var user = authState.User;
-
-            var userId = UserManager.GetUserId(user);
-
-            var currentUser = await DbContext.Users
-                .Include(u => u.UserProfile)
-                .Include(u => u.UserAddress)
-                .FirstOrDefaultAsync(u => u.Id == userId);
-
-            if (currentUser != null)
-            {
-                if (currentUser.UserProfile != null)
-                {
-                    currentUser.UserProfile.FirstName = EditProfileForm.FirstName;
-                    currentUser.UserProfile.LastName = EditProfileForm.LastName;
-                    currentUser.UserProfile.Biography = EditProfileForm.Biography;
-                }
-                else
-                {
-                    currentUser.UserProfile = new UserProfile
-                        {
-                            FirstName = EditProfileForm.FirstName,
-                            LastName = EditProfileForm.LastName,
-                            Biography = EditProfileForm.Biography
-                        };
-                }
-
-                currentUser.PhoneNumber = EditProfileForm.PhoneNumber;
-                currentUser.Email = EditProfileForm.Email;
-
-                var result = await UserManager.UpdateAsync(currentUser);
-
-                if (result.Succeeded)
-                {
-                    StatusMessage = "Profile updated successfully!";
-                }
-                else
-                {
-                    StatusMessage = "Error updating profile.";
-                }
-            }
-        }
-        catch (Exception ex)
-        {
-            StatusMessage = "An error occurred while updating profile.";
-        }
-    }
-
-    public async Task OnValidSubmitAddressAsync()
-    {
-        try
-        {
-            var authState = await AuthStateProvider.GetAuthenticationStateAsync();
-
-            var user = authState.User;
-
-            var userId = UserManager.GetUserId(user);
-
-            var currentUser = await DbContext.Users
-                .Include(u => u.UserAddress)
-                .FirstOrDefaultAsync(u => u.Id == userId);
-
-            if (currentUser != null)
-            {
-                if (currentUser.UserAddress != null)
-                {
-                    currentUser.UserAddress.AddressLine_1 = AddressInfoForm.AddressLine_1;
-                    currentUser.UserAddress.AddressLine_2 = AddressInfoForm.AddressLine_2;
-                    currentUser.UserAddress.PostalCode = AddressInfoForm.PostalCode;
-                    currentUser.UserAddress.City = AddressInfoForm.City;
-                }
-                else
-                {
-                    currentUser.UserAddress = new UserAddress
-                        {
-                            AddressLine_1 = AddressInfoForm.AddressLine_1,
-                            AddressLine_2 = AddressInfoForm.AddressLine_2,
-                            PostalCode = AddressInfoForm.PostalCode,
-                            City = AddressInfoForm.City
-                        };
-                }
-
-                var result = await UserManager.UpdateAsync(currentUser);
-
-                if (result.Succeeded)
-                {
-                    StatusMessage = "Address updated successfully!";
-                }
-                else
-                {
-                    StatusMessage = "Error updating address.";
-                }
-            }
-        }
-        catch (Exception ex)
-        {
-            StatusMessage = "An error occurred while updating address.";           
-        }
-    }
-
-    public class EditProfileFormModel
-    {
-        [Display(Name = "First Name")]
-        [Required(ErrorMessage = "First name is required")]
-        public string FirstName { get; set; } = "";
-
-        [Display(Name = "Last Name")]
-        [Required(ErrorMessage = "Last name is required")]
-        public string LastName { get; set; } = "";
-
-        [Display(Name = "Phone Number")]
-        public string PhoneNumber { get; set; } = "";
-
-        [Display(Name = "Email")]
-        [Required(ErrorMessage = "Email address is required")]
-        [EmailAddress(ErrorMessage = "Invalid email address")]
-        public string Email { get; set; } = "";
-
-        [Display(Name = "Biography")]
-        public string Biography { get; set; } = "";
-    }
-
-    public class AddressInfoFormModel
-    {
-        [Display(Name = "Address Line 1")]
-        [Required(ErrorMessage = "Address line 1 is required")]
-        public string AddressLine_1 { get; set; } = "";
-
-        [Display(Name = "Address Line 2")]
-        public string? AddressLine_2 { get; set; }
-
-        [Display(Name = "Postal Code")]
-        [Required(ErrorMessage = "Postal code is required")]
-        public string PostalCode { get; set; } = "";
-
-        [Display(Name = "City")]
-        [Required(ErrorMessage = "City is required")]
-        public string City { get; set; } = "";
-    }
+	private Task HandleStatusMessage(string message)
+	{
+		StatusMessage = message;
+		StateHasChanged();
+		return Task.CompletedTask;
+	}
 }

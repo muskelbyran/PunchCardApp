@@ -39,14 +39,16 @@
         }
 
         <StatusMessage Message="@Message" />
+        <h5>Registrering</h5>
         <EditForm Model="SignUpForm" OnValidSubmit="OnValidSubmit" FormName="signup" method="post" novalidate>
 
             <DataAnnotationsValidator />
-            <h5>Skapa ett konto</h5>
-            <p>Har du redan ett konto? <a href="/signin">Sign in here</a></p>
+           
+            @* <h5>Skapa ett konto</h5>
+            <p>Har du redan ett konto? <a href="/signin">Logga in här</a></p> *@
 
             <div class="form">
-
+                <hr />
                 <div class="form-floating mb-3">
                     <div id="form-firstname" class="input-group">
 
@@ -84,7 +86,7 @@
 
                 <div id="form-terms" class="checkbox mb-3 d-flex align-items-center">
                     <InputCheckbox @bind-Value="SignUpForm.TermsAndConditions" class="darker-border-checkbox form-check-input me-2" />
-                    <label class="form-label mb-0">I agree to the Terms & Conditions.</label>
+                    <label class="form-label mb-0">Jag godkänner användarvillkoren.</label>
                 </div>
 
 
@@ -93,7 +95,7 @@
                 </div>
             </div>
         </EditForm>
-        <div class="social-or">or </div>
+        <div class="social-or">eller </div>
         <div class="social-option">
             <a href="www.facebook.com" target="_blank" class="socialmedia-item"><i class="fa-brands fa-facebook-f"></i></a>
             <a href="www.facebook.com" target="_blank" class="socialmedia-item"><i class="fa-brands fa-linkedin"></i></a>
@@ -104,9 +106,9 @@
                 <a href="@(NavigationManager.GetUriWithQueryParameters("signin", new Dictionary<string, object?> { ["ReturnUrl"] = ReturnUrl }))">Har du redan ett konto?</a>
             </p>
             <p>
-                <a href="confirmation">Resend email confirmation</a>
+                <a href="confirmation">Skicka ny verifieringskod</a>
             </p>
-            <p>
+            <p class="footer-copy">
                 <strong>© @DateTime.Now.Year Muskelbyrån.</strong>
             </p>
         </div>

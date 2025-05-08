@@ -1,0 +1,121 @@
+﻿@*
+    Baserad på referens (3) The Complete Tutorial [ASP.NET Core - G-kraven] - Hans Mattin-Lassei (2024-04-04)
+    Även tagit hjälp av ChatGPT med concurrency.
+ *@
+@using System.ComponentModel.DataAnnotations
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.EntityFrameworkCore
+@using PunchCardApp.Entities
+@using PunchCardApp.Models
+@inject ApplicationDbContext DbContext
+@inject PunchCardService PunchCardService
+@inject UserManager<ApplicationUser> UserManager
+
+@if (UserPunchCards == null)
+{
+    <p>Laddar klippkort...</p>
+}
+else if (!UserPunchCards.Any())
+{
+    <p>Inga klippkort hittades.</p>
+}
+else
+{
+    <div class="history-content">
+        <h3>Aktuella klippkort</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Typ</th>
+                    <th>Köpt</th>
+                    <th>Kvar</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var card in UserPunchCards)
+                {
+                    <tr>
+                        <td>@card.Type</td>
+                        <td>@card.PurchasedDate.ToShortDateString()</td>
+                        <td>@card.UsesLeft</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <h3>Historik över klippkort</h3>
+        <div class="punch-card-history-container">
+            @foreach (var card in UserPunchCards)
+            {
+                <div class="punch-card-history">
+                    <h4>@card.Type</h4>
+                    <p>Köpt: @card.PurchasedDate.ToShortDateString()</p>
+                    <p>Totalt: @card.TotalUses</p>
+                    <p>Kvar: @card.UsesLeft</p>
+
+                    <details>
+                        <summary><h5>Användarhistorik</h5></summary>
+                        @if (card.PunchCardUses.Any())
+                        {
+                            <ul>
+                                @foreach (var use in card.PunchCardUses)
+                                {
+                                    <li>@use.UsedDate.ToShortDateString() av @use.UsedBy</li>
+                                }
+                            </ul>
+                        }
+                        else
+                        {
+                            <p>Ingen historik.</p>
+                        }
+                    </details>
+                </div>
+            }
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public ApplicationUser User { get; set; } = default!;
+    [Parameter] public EventCallback<string> OnStatusMessageChanged { get; set; }
+
+    public List<PunchCardEntity> UserPunchCards { get; set; } = new();
+    public List<PunchCardHistoryModel> PunchCardHistory { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (User == null)
+        {
+            await OnStatusMessageChanged.InvokeAsync("Ingen användare angiven.");
+            return;
+        }
+
+        var userId = User.Id;
+
+        try
+        {
+            var userProfileId = await DbContext.Users
+                .Where(u => u.Id == userId)
+                .Select(u => u.UserProfileId)
+                .FirstOrDefaultAsync();
+
+            if (string.IsNullOrEmpty(userProfileId))
+            {
+                await OnStatusMessageChanged.InvokeAsync("Kunde inte hitta UserProfileId.");
+                return;
+            }
+
+            UserPunchCards = await DbContext.PunchCards
+                .Where(pc => pc.UserProfileId == userProfileId)
+                .Include(pc => pc.PunchCardUses)
+                .ToListAsync();
+
+            PunchCardHistory = await PunchCardService.GetPunchCardHistoryAsync(userId);
+        }
+        catch (Exception ex)
+        {
+            await OnStatusMessageChanged.InvokeAsync("Fel vid laddning av klippkort.");
+            Console.WriteLine($"Error: {ex.Message}");
+        }
+    }
+}
