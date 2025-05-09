@@ -147,6 +147,13 @@ body {
   position: relative;
   display: flex;
   align-items: center;
+  margin-left: 0;
+}
+.main-nav .container img {
+  position: relative;
+  margin-left: 0.1rem;
+  top: -1.3rem;
+  left: -0.9rem;
 }
 .main-nav .menu-btn {
   display: none;
@@ -240,6 +247,8 @@ body {
 
 .show-light {
   display: block;
+  transform: scale(0.6);
+  transform-origin: center center;
 }
 
 .show-dark {
@@ -820,10 +829,10 @@ h6 {
 header {
   /*padding: 4em;*/
   background: var(--color-background);
-}
-header img {
-  width: auto;
-  margin-top: -240px;
+  /*    img {
+          width: auto;
+          margin-top: -240px;
+          }*/
 }
 @media (min-width: 768px) {
   header {
@@ -1053,6 +1062,7 @@ footer .credits a:hover {
 #signin .container h5 {
   text-align: center;
   color: #333;
+  margin-top: 1rem;
   margin-bottom: 1rem;
   font-size: 1.5rem;
 }
@@ -1571,7 +1581,7 @@ $color-background: var(--color-background);*/
   max-width: 1700px;
   min-height: 100vh;
   height: auto;
-  padding: 0 10px;
+  padding: 20px 10px;
 }
 .main-content-container .main-section {
   /*        width: 95%;
