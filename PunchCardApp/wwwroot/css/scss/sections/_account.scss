@@ -1,9 +1,4 @@
 ﻿.main-content-container {
-    /*    width: 100%;
-    max-width: 1700px;
-    height: 100vh;
-    padding: 0 10px;
-    background-color: var(--color-background);*/
     width: 100%;
     max-width: 1700px;
     min-height: 100vh;
@@ -11,13 +6,6 @@
     padding: 20px 10px;
 
     .main-section {
-        /*        width: 95%;
-        max-width: none;
-        padding: 1rem;
-        padding-top: 7rem;
-        box-sizing: border-box;
-        overflow-x: hidden;
-        border: 1px solid #dd3c6e;*/
         width: 95%;
         max-width: none;
         padding: 1.5rem;
@@ -33,11 +21,6 @@
             justify-content: left;
             gap: 1rem;
             margin-bottom: 3rem; 
-
-            /*     display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-                gap: 1rem;*/
-
 
             .punch-card {
                 border: 1px solid #ccc;
@@ -281,7 +264,7 @@
                 padding: 0.5rem 0;
             }
         }
-        // --- Forms ---
+       
         .edit-form {
             display: flex;
             flex-direction: column;
@@ -746,15 +729,15 @@ input.form-control {
         .tab-button {
             background-color: #f8f9fa;
             border: 1px solid var(--color-primary);
-            border-bottom: none; // removes bottom border to “connect” with content
+            border-bottom: none; 
             border-radius: 8px 8px 0 0;
             padding: 10px 20px;
             font-size: 1rem;
             cursor: pointer;
             color: #333;
             position: relative;
-            z-index: 3; // sits above the content
-            margin-bottom: -1px; // magic fix: lifts the button to touch the content
+            z-index: 3; 
+            margin-bottom: -1px; 
 
 
             &:hover {
@@ -771,12 +754,11 @@ input.form-control {
 }
 
 .tab-content {
-    
-    background-color: #fff;
-    border: 1px solid #ccc;
+    background-color: var(--color-background);
+    border: 1px solid var(--color-secondary);
     padding: 1.5rem;
     position: relative;
     z-index: 1;
-    top: -1px; 
+    top: -1px;
     margin-top: -23px;
 }

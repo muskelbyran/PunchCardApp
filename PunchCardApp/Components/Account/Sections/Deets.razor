@@ -1,17 +1,8 @@
 ﻿@page "/account/deets"
 
-@using PunchCardApp.Components.Account.Pages.Components
-@using PunchCardApp.Components.Account.Shared
-@using PunchCardApp.Components.Admin.Components
-@using PunchCardApp.Components.Assets
-@using PunchCardApp.Models
-@using Microsoft.AspNetCore.Components.Authorization
-@using Microsoft.EntityFrameworkCore
-
 @inject ApplicationDbContext DbContext
 @inject AuthenticationStateProvider AuthenticationStateProvider
 
-@layout AccountLayout
 @rendermode InteractiveServer
 
 <PageTitle>Klippkort</PageTitle>

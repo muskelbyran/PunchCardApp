@@ -9,7 +9,9 @@
 	<button class="btn btn-primary" href="#">Byt lösenord</button>
 	<button class="btn btn-primary" href="#">Byt e-post</button>
 	<button class="btn btn-primary" href="#">Avsluta konto</button>
-	<button class="btn btn-primary" href="#">Logga ut</button>
+	<button class="btn btn-primary" @onclick="HandleSignOut">
+		<i class="fa-solid fa-arrow-right-to-bracket"></i>Logga ut
+	</button>
 </div>
 
 @code {
@@ -18,4 +20,9 @@
 
 	[Parameter]
 	public EventCallback<string> OnStatusMessageChanged { get; set; }
+
+	private async Task HandleSignOut()
+	{
+		NavigationManager.NavigateTo("/signout", forceLoad: true);
+	}
 }

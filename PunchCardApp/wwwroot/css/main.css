@@ -1572,11 +1572,6 @@ $color-background: var(--color-background);*/
 }
 
 .main-content-container {
-  /*    width: 100%;
-  max-width: 1700px;
-  height: 100vh;
-  padding: 0 10px;
-  background-color: var(--color-background);*/
   width: 100%;
   max-width: 1700px;
   min-height: 100vh;
@@ -1584,13 +1579,6 @@ $color-background: var(--color-background);*/
   padding: 20px 10px;
 }
 .main-content-container .main-section {
-  /*        width: 95%;
-  max-width: none;
-  padding: 1rem;
-  padding-top: 7rem;
-  box-sizing: border-box;
-  overflow-x: hidden;
-  border: 1px solid #dd3c6e;*/
   width: 95%;
   max-width: none;
   padding: 1.5rem;
@@ -1606,9 +1594,6 @@ $color-background: var(--color-background);*/
   justify-content: left;
   gap: 1rem;
   margin-bottom: 3rem;
-  /*     display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 1rem;*/
 }
 .main-content-container .main-section .punchcard-grid .punch-card {
   border: 1px solid #ccc;
@@ -2225,8 +2210,8 @@ input.form-control {
 }
 
 .tab-content {
-  background-color: #fff;
-  border: 1px solid #ccc;
+  background-color: var(--color-background);
+  border: 1px solid var(--color-secondary);
   padding: 1.5rem;
   position: relative;
   z-index: 1;
@@ -2253,6 +2238,7 @@ input.form-control {
   box-shadow: 4px 4px 0px #ccc;
   background: linear-gradient(to bottom, #ddd, #fff 30%);
 }
+
 input.form-control {
   border-radius: 0.25rem;
   padding: 0.5rem;
@@ -2274,6 +2260,7 @@ input.form-control {
   padding-top: 7rem;
   box-sizing: border-box;
   overflow-x: hidden;
+  background: var(--color-background);
 }
 .main-admin-container .main-admin .search-create-container {
   display: flex;
@@ -2283,7 +2270,7 @@ input.form-control {
   width: 100%;
   padding: 1rem;
   box-sizing: border-box;
-  /*border: 1px solid #b87333;*/
+  /*  border: 1px solid #b87333;*/
   /*   background-color: var(--color-background);*/
   border-radius: 10px;
   /*  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);*/
@@ -2327,7 +2314,7 @@ input.form-control {
 }
 
 .profile-content, .details {
-  background: #fff;
+  background: var(--color-background);
   border-radius: 12px;
   padding: 1.5rem;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
@@ -2527,7 +2514,6 @@ input.form-control {
   margin: 0.5rem 0;
 }
 
-/* Mobile First */
 @media (max-width: 768px) {
   .stats-info {
     padding: 1rem;
@@ -2544,7 +2530,6 @@ input.form-control {
     width: 100%;
   }
 }
-/* Desktop */
 @media (min-width: 768px) {
   .stats-info {
     max-width: 800px;

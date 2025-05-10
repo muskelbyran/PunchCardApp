@@ -17,15 +17,6 @@
         box-shadow: 4px 4px 0px #ccc;
         background: linear-gradient(to bottom, #ddd, #fff 30%);
     }
-
-    .kund-content {
-    }
-
-    .klippkort-content {
-    }
-
-    .uppgifter-content {
-    }
 }
 
 input.form-control {
@@ -49,6 +40,7 @@ input.form-control {
         padding-top: 7rem;
         box-sizing: border-box;
         overflow-x: hidden;
+        background: var(--color-background);
 
         .search-create-container {
             display: flex;
@@ -58,7 +50,7 @@ input.form-control {
             width: 100%;
             padding: 1rem;
             box-sizing: border-box;
-            /*border: 1px solid #b87333;*/
+            /*  border: 1px solid #b87333;*/
             /*   background-color: var(--color-background);*/
             border-radius: 10px;
             /*  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);*/
@@ -105,7 +97,7 @@ input.form-control {
 }
 
 .profile-content, .details {
-    background: #fff;
+    background: var(--color-background);
     border-radius: 12px;
     padding: 1.5rem;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
@@ -346,7 +338,6 @@ input.form-control {
     }
 }
 
-/* Mobile First */
 @media (max-width: 768px) {
     .stats-info {
         padding: 1rem;
@@ -367,7 +358,6 @@ input.form-control {
     }
 }
 
-/* Desktop */
 @media (min-width: 768px) {
     .stats-info {
         max-width: 800px;

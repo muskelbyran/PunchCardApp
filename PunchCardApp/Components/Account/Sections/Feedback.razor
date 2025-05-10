@@ -1,16 +1,9 @@
 ﻿@page "/Account/Feedback"
 
-@using PunchCardApp.Components.Account.Shared
-@using PunchCardApp.Components.Assets
-@using PunchCardApp.Entities
-@using PunchCardApp.Models
-@using Microsoft.EntityFrameworkCore
-
 @inject ApplicationDbContext DbContext
 @inject UserManager<ApplicationUser> UserManager
 @inject AuthenticationStateProvider AuthStateProvider
 
-@layout AccountLayout
 @rendermode InteractiveServer
 
 <PageTitle>Feedback</PageTitle>

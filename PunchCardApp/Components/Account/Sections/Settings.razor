@@ -1,29 +1,14 @@
 ﻿@*
     Baserad på referens (3) The Complete Tutorial [ASP.NET Core - G-kraven] - Hans Mattin-Lassei (2024-04-04)
     Även tagit hjälp av ChatGPT med concurrency.
- *@
+*@
 @page "/account/settings"
-@using System.ComponentModel.DataAnnotations
-@using Microsoft.AspNetCore.Authorization
-@using Microsoft.AspNetCore.Identity
-@using Microsoft.AspNetCore.Components.Authorization
-@using Microsoft.EntityFrameworkCore
-@using PunchCardApp.Components.Account.Shared
-@using PunchCardApp.Data
-@using PunchCardApp.Entities
-@using PunchCardApp.Models
-@using PunchCardApp.Components.Assets
-@using PunchCardApp.Components.Layout
-
-@layout AccountLayout
 
 @inject UserManager<ApplicationUser> UserManager
 @inject NavigationManager NavigationManager
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject ApplicationDbContext DbContext
 @inject PunchCardService PunchCardService
-
-@attribute [Authorize]
 
 @rendermode InteractiveServer
 
