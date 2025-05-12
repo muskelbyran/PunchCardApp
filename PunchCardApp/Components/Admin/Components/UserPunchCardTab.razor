@@ -104,8 +104,8 @@
                 {
                     await PunchCardService.CreatePunchCardAsync(
                         User.UserProfileId,
-                        NewPunchCardForm.Type,       // 🡐 No combination, just use Type
-                        NewPunchCardForm.Length,     // 🡐 Also pass Length
+                        NewPunchCardForm.Type,       
+                        NewPunchCardForm.Length,     
                         NewPunchCardForm.TotalUses
                     );
                     await LoadUserPunchCardsAsync();

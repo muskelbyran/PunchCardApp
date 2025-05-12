@@ -1,89 +1,46 @@
 ﻿@page "/construction"
-@using PunchCardApp.Components.Assets
-@using PunchCardApp.Models
-
+@using PunchCardApp.Components.Layout
+@layout EmptyLayout
 @rendermode InteractiveServer
 
-<PageTitle>Home</PageTitle>
-<div class="container">
-
-
-    <h1>My Tab Component</h1>
-
-    <h3>Blazor Tabs Example</h3>
-
-    <div>
-        <ul class="nav nav-tabs">
-            <li class="nav-item">
-                <a class="nav-link @(selectedTab == Tab.Kund ? "active" : "")" @onclick="() => SelectTab(Tab.Kund)">
-                    Kund
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link @(selectedTab == Tab.Klippkort ? "active" : "")" @onclick="() => SelectTab(Tab.Klippkort)">
-                    Klippkort
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link  @(selectedTab == Tab.Uppgifter ? "active" : "")" @onclick="() => SelectTab(Tab.Uppgifter)">
-                    Kontaktuppgifter
-                </a>
-            </li>
-        </ul>
-
-        <div class="tab-content mt-3">
-            @if (selectedTab == Tab.Kund)
-            {
-                <div class="tab-pane active">
-                    <h4>Kundalini Yoga</h4>
-                    <p>Your Kundalini Yoga content goes here...</p>
-                </div>
-            }
-            else if (selectedTab == Tab.Klippkort)
-            {
-                <div class="tab-pane active">
-                    <h4>Medicinsk Yoga</h4>
-                    <p>Your Medicinsk Yoga content goes here...</p>
-                </div>
-            }
-            else if (selectedTab == Tab.Uppgifter)
-            {
-                <div class="tab-pane active">
-                    <h4>Yin Yoga</h4>
-                    <p>Your Yin Yoga content goes here...</p>
-                </div>
-            }
-        </div>
-    </div>
-
+<PageTitle>Under Construction</PageTitle>
+<div class="construction">
+	<div class="container">
+		<h1>UNDER</h1>
+		<h1>CONSTRUCTION</h1>
+		<div class="ready">
+			<h5>SITE NEARLY READY</h5>
+			<div class="bar">
+				<div class="progress">
+					<div class="progress-bar progress-bar-striped progress-bar-animated bg-warning" role="progressbar" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100" style="width: 30%"></div>
+				</div>
+				<div class="progress-percent">
+					<p class="percent">0%</p>
+					<p class="percent">100%</p>
+				</div>
+			</div>
+		</div>
+		<div class="notifyme">
+			<a href="/notifyme" class="btn btn-primary"><span>Notify Me</span></a>
+		</div>
+		<div class="socials">
+			<a class="btn-social" href="https://www.instagram.com/muskelbyran/"><i class="fa-brands fa-facebook"></i></a>
+			<a class="btn-social" href="https://www.facebook.com/muskelbyran/"><i class="fa-brands fa-linkedin"></i></a>
+			<a class="btn-social" href="https://www.linkedin.com/in/katrin-sj%C3%B6str%C3%B6m-43a14b56/"><i class="fa-brands fa-instagram"></i></a>
+			<a class="btn-social" href="https://www.youtube.com/channel/UCydvZ6YqLjlQN8y9-adBM0A"><i class="fa-brands fa-youtube"></i></a>
+		</div>
+		<div class="copyright">
+			<p>© @DateTime.Now.Year Muskelbyrån All rights reserved.</p>
+		</div>
+	</div>
 </div>
 
-@* <TabComponent TItem="TabItemModel">
-    <TabItem TItem="TabItemModel" Title="Tab 1">
-        <div>Content for Tab 1</div>
-    </TabItem>
-    <TabItem TItem="TabItemModel" Title="Tab 2">
-        <div>Content for Tab 2</div>
-    </TabItem>
-</TabComponent> *@
-
 @code {
-    private Tab selectedTab = Tab.Kund;
+	private bool dialogShown = false;
 
-    private void SelectTab(Tab tab)
-    {
-        selectedTab = tab;
-    }
-
-    private string GetActiveClass(Tab tab)
-    {
-        return selectedTab == tab ? "active" : "";
-    }
-
-    private enum Tab
-    {
-        Kund,
-        Klippkort,
-        Uppgifter
-    }
+	private void ShowDialog()
+	{
+		Console.WriteLine("klick");
+		dialogShown = true;
+	}
 }

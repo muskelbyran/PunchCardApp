@@ -1,4 +1,5 @@
 ﻿@page "/Account"
+@using PunchCardApp.Enums
 
 @layout AdminLayout
 
@@ -14,6 +15,12 @@
 <PageTitle>Home</PageTitle>
 <main class="main-content-container">
     <div class="main-section">
+        <div class="feedback-toast">
+            <StatusToast Message="@StatusMessage"
+                         Class="alert-success"
+                         Duration="8000"
+                         OnDismiss="@(() => StatusMessage = "")" />
+        </div>
         <h3>Välkommen <UserProfileInfo /></h3>
         <h5>Klippkort</h5>
         @if (UserPunchCards != null && UserPunchCards.Any())
@@ -28,15 +35,15 @@
                             @for (int i = 0; i < card.TotalUses; i++)
                             {
                                 <i class="fa-solid fa-face-smile"
-                                   style="color: @(i < card.TotalUses - card.UsesLeft ? "var(--color-primary)" : "var(--color-background)"); margin-right: 4px;"></i>
+                                style="color: @(i < card.TotalUses - card.UsesLeft ? "var(--color-primary)" : "var(--color-background)"); margin-right: 4px;"></i>
                             }
                         </div>
 
                         <div class="punch-button">
                             <PunchButton PunchCardId="@card.Id"
-                                         CssClass="btn btn-primary"
-                                         ButtonText="Färdigknådad!"
-                                         OnPunchUsed="LoadUserPunchCardsAsync" />
+                            CssClass="btn btn-primary"
+                            ButtonText="Färdigknådad!"
+                            OnPunchUsed="LoadUserPunchCardsAsync" />                            
                         </div>
                     </div>
                 }
@@ -47,8 +54,10 @@
             <p>Du har inga klippkort just nu.</p>
         }
 
+        <div class="order-button">
+            <button class="btn btn-primary" @onclick="OrderPunchCard">Beställ nytt klippkort</button>
+        </div>
     </div>
-
     <h5>Kurser och workshops på Muskelbyrån</h5>
     @if (courses == null)
     {
@@ -63,7 +72,7 @@
             }
         </div>
     }
-    
+
     @*  -- Live to fight another day. Just nu är slides från sidan down the drain. 
     <div class="button-card"> 
             <button class="btn btn-pink" @onclick="ShowNewsContent">Nyheter</button>
@@ -94,7 +103,7 @@
     private bool _isRightContentVisible = false;
     private bool _isRightContentVisible2 = false;
     private bool _isRightContentVisible3 = false;
-    
+
     private List<CreateCourseModel>? courses;
     private List<CreateCourseModel> AllCourses = new();
     private List<CreateCourseModel> SortedCoursesList = new();
@@ -155,7 +164,7 @@
 
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         var user = authState.User;
-        
+
         if (user.Identity?.IsAuthenticated ?? false)
         {
             var currentUser = await UserManager.GetUserAsync(user);
@@ -253,5 +262,18 @@
                 Location = entity.Location,
                 ImageUrl = entity.ImageUrl
             }).ToList();
+    }
+
+    private async Task OrderPunchCard()
+    {
+        StatusMessage = "För tillfället går det inte att beställa nya klippkort";
+    }
+
+    private Task HandleStatusMessage(string message)
+    {
+        Console.WriteLine($"Setting StatusMessage: {message}");
+        StatusMessage = message;
+        StateHasChanged();
+        return Task.CompletedTask;
     }
 }

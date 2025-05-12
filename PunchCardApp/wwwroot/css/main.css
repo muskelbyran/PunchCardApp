@@ -173,12 +173,30 @@ body {
   align-items: center;
 }
 .main-nav .nav-link {
+  position: relative;
+  display: inline-block;
   color: var(--color-black);
   text-decoration: none;
   font-weight: 600;
+  overflow: hidden;
+}
+.main-nav .nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 10px;
+  width: 100%;
+  height: 2px;
+  background-color: var(--color-secondary);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease;
 }
 .main-nav .nav-link:hover, .main-nav .nav-link:focus-visible {
   color: var(--color-secondary);
+}
+.main-nav .nav-link:hover::after, .main-nav .nav-link:focus-visible::after {
+  transform: scaleX(1);
 }
 
 :root {
@@ -592,7 +610,7 @@ a[target=_blank]::after {
   transition: background-color 0.2s ease-in-out, color 0.5s ease-in-out;*/
 }
 .btn-rounded:hover {
-  border: 3px solid var(--color-primary) !important;
+  border: 1px solid var(--color-primary) !important;
 }
 
 .btn-fab {
@@ -826,6 +844,116 @@ h6 {
   opacity: 0;
 }
 
+.modal.show.d-block {
+  position: fixed;
+  z-index: 1050;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex !important;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  animation: fadeIn 0.3s ease-out;
+}
+
+.modal-dialog {
+  max-width: 600px;
+  margin: 0;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.modal-content {
+  background-color: #fff;
+  border-radius: 10px;
+  padding: 0;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  animation: slideUp 0.3s ease-out;
+}
+
+.modal-header {
+  padding: 1.5rem 2rem;
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #eaeaea;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.modal-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+button.close {
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  padding: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease;
+  cursor: pointer;
+}
+
+button.close:hover {
+  background-color: #e0e0e0;
+}
+
+.modal-body {
+  padding: 2rem;
+  font-size: 1rem;
+  color: #333;
+}
+
+.modal-footer {
+  padding: 1rem 2rem 1.5rem;
+  background-color: #f8f9fa;
+  border-top: 1px solid #eaeaea;
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+}
+
+.modal-footer .btn {
+  min-width: 100px;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+}
+
+.modal-backdrop.fade.show {
+  display: none;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
 header {
   /*padding: 4em;*/
   background: var(--color-background);
@@ -1588,6 +1716,15 @@ $color-background: var(--color-background);*/
   padding: 0;
   margin-top: 10rem;
 }
+.main-content-container .main-section h3 {
+  padding: 20px 0 20px 0;
+}
+.main-content-container .main-section h5 {
+  padding: 20px 0 20px 0;
+}
+.main-content-container .main-section .order-button {
+  padding: 10px 0 40px 0;
+}
 .main-content-container .main-section .punchcard-grid {
   display: flex;
   flex-wrap: wrap;
@@ -2320,58 +2457,39 @@ input.form-control {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   max-width: 1700px;
   margin: 1rem auto;
-  font-family: "Inter", "Segoe UI", sans-serif;
 }
 .profile-content .basic-info, .details .basic-info {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-}
-.profile-content .basic-info h5, .profile-content .basic-info h2, .details .basic-info h5, .details .basic-info h2 {
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-  color: #333;
-}
-.profile-content .basic-info p, .details .basic-info p {
-  margin: 0;
-  color: #555;
-  line-height: 1.5;
-}
-.profile-content .basic-info p strong, .details .basic-info p strong {
-  color: #222;
-}
-.profile-content .basic-info .btn-primary, .details .basic-info .btn-primary {
-  width: fit-content;
-  margin-top: 1rem;
+  /*    gap: 1rem;*/
 }
 .profile-content .edit-form, .details .edit-form {
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  /*  gap: 2rem;*/
 }
 .profile-content .edit-form .content, .profile-content .edit-form .address-info .content, .details .edit-form .content, .details .edit-form .address-info .content {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  /*gap: 1.5rem;*/
 }
 .profile-content .edit-form .input-group, .details .edit-form .input-group {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
-  padding: 2rem;
-}
-.profile-content .edit-form .input-group label, .details .edit-form .input-group label {
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: #444;
-  margin-bottom: 0.2rem;
+  /*gap: 0.5rem;*/
+  /*      padding: 2rem;*/
+  /*            label {
+                  font-size: 0.9rem;
+                  font-weight: 600;
+                  color: #444;
+                  margin-bottom: 0.2rem;
+              }*/
 }
 .profile-content .edit-form .input-group input, .profile-content .edit-form .input-group textarea, .details .edit-form .input-group input, .details .edit-form .input-group textarea {
-  width: 100%;
-  padding: 0.6rem 0.8rem;
+  width: 50%;
+  /*   padding: 0.6rem 0.8rem;*/
   border: 1px solid #ccc;
   border-radius: 8px;
-  font-size: 1rem;
   background-color: #f9fafb;
   transition: border 0.2s, background-color 0.2s;
 }
@@ -2385,23 +2503,13 @@ input.form-control {
   min-height: 100px;
 }
 .profile-content .edit-form .address-info, .details .edit-form .address-info {
-  margin-top: 2rem;
-}
-.profile-content .edit-form .address-info h5, .details .edit-form .address-info h5 {
-  font-size: 1.2rem;
-  margin-bottom: 1rem;
-  color: #333;
+  /* margin-top: 2rem;*/
 }
 .profile-content .edit-form .form-buttons, .details .edit-form .form-buttons {
   display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  margin-top: 1.5rem;
-}
-.profile-content .edit-form .form-buttons button, .details .edit-form .form-buttons button {
-  padding: 0.6rem 1.2rem;
-  font-size: 1rem;
-  border-radius: 8px;
+  flex-direction: row;
+  /*  gap: 1rem;
+    margin-top: 1.5rem;*/
 }
 .profile-content .alert-info, .details .alert-info {
   background-color: #e7f1ff;
