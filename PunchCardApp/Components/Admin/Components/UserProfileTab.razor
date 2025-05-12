@@ -21,15 +21,15 @@
 
 	private EditProfileFormModel EditProfileForm { get; set; } = new();
 	private AddressInfoFormModel AddressInfoForm { get; set; } = new();
-	
+
 	protected override async Task OnInitializedAsync()
 	{
 		IsAdmin = await RoleService.IsAdminAsync();
 
 		var fullUser = await DbContext.Users
-			.Include(u => u.UserProfile)
-			.Include(u => u.UserAddress)
-			.FirstOrDefaultAsync(u => u.Id == User.Id);
+		.Include(u => u.UserProfile)
+		.Include(u => u.UserAddress)
+		.FirstOrDefaultAsync(u => u.Id == User.Id);
 
 		if (fullUser is not null)
 		{
@@ -67,9 +67,9 @@
 		try
 		{
 			var currentUser = await DbContext.Users
-				.Include(u => u.UserProfile)
-				.Include(u => u.UserAddress)
-				.FirstOrDefaultAsync(u => u.Id == User.Id);
+			.Include(u => u.UserProfile)
+			.Include(u => u.UserAddress)
+			.FirstOrDefaultAsync(u => u.Id == User.Id);
 
 			if (currentUser != null)
 			{
@@ -148,10 +148,10 @@ else
 		<div class="basic-info">
 			<EditForm Model="EditProfileForm" OnValidSubmit="SaveChangesAsync" class="edit-form">
 				<DataAnnotationsValidator />
-@* 				@if (!string.IsNullOrEmpty(StatusMessage))
-				{
-					<div class="alert alert-info">@StatusMessage</div>
-				} *@
+				@* @if (!string.IsNullOrEmpty(StatusMessage))
+{
+<div class="alert alert-info">@StatusMessage</div>
+} *@
 
 				<h2>Uppdatera profil</h2>
 				<div class="content">
