@@ -27,18 +27,18 @@
         </button>
         <ul id="main-menu" class="main-menu hide">
             <li>
-                <NavLink class="nav-link" href="/account">Hem</NavLink>
+                <NavLink class="nav-link" @* ActiveClass="active" *@ href="/account">Hem</NavLink>
             </li>
             <li>
-                <NavLink class="nav-link" href="/account/deets">Profil</NavLink>
+                <NavLink class="nav-link" @* ActiveClass="active" *@ href="/account/deets">Profil</NavLink>
             </li>
             <li>
-                <NavLink class="nav-link" href="/account/feedback">Kontakt</NavLink>
+                <NavLink class="nav-link" @* ActiveClass="active" *@ href="/account/feedback">Kontakt</NavLink>
             </li>
             @if (IsManager)
             {
                 <li>
-                    <NavLink class="nav-link" href="/admin/aardvark">Backoffice</NavLink>
+                    <NavLink class="nav-link" @* ActiveClass="active" *@ href="/admin/aardvark">Backoffice</NavLink>
                 </li>
             }
 @*             <li>

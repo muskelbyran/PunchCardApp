@@ -25,7 +25,7 @@
 
 
 	h5 {
-		text-align: center;
+		/* text-align: center; */
 		color: #333;
 		margin-top: 1rem;
 		margin-bottom: 1rem;
@@ -33,7 +33,7 @@
 	}
 
 	p {
-		text-align: center;
+		/* 	text-align: center; */
 		font-size: 0.875rem;
 	}
 
@@ -45,9 +45,21 @@
 	.test {
 		/* display: flex; */
 	}
+
+	.two-side {
+		/* 	display: flex;
+			flex-direction: row; */
+		gap: 1rem;
+		max-width: 1700px;
+		margin-left: 1rem;
+		margin-right: 1rem;
+		/* 		.test {
+				width: 30%;
+			} */
+	}
 </style>
 
-<div class="container">
+<div>
 	<div class="logo">
 		<a href="/">
 			<img src="/images/new-logo.png" alt="Muskelbyrån Logo" />
@@ -58,31 +70,35 @@
 		<NavLink class="btn btn-primary btn-rounded" href="/signup">Skapa konto</NavLink>
 	</div>
 	<hr />
-	<div class="test">
-		<h5><marquee>Examensarbete</marquee></h5>
-		<br />
-		<br />
-		<p>* Det här är ett examensarbete i samarbete med Muskelbyrån. I webbappen finns ett backoffice för att hantera kunder och klippkort, men även en funktion för att skapa nyheter, events, workshops osv som sen läggs ut på hemsidan via ett API. Kunder ska kunna logga in och använda sina klippkort, uppdatera olika uppgifter. Fler funktioner tillkommer om det finns tid.</p>
-		<br />
-		<br />
-		<p>* Alla uppgifter i databasen kommer att raderas 31/5 och hela projektet kommer att gå i produktion via Muskelbyråns webhotell. Det innebär att ditt konto kommer att försvinna och att de här länkarna kommer att sluta att fungera.</p>
-		<br />
-		<p>* Som testare uppskattas att du lämnar ärlig och konstruktiv feedback utifrån din upplevelse av att använda webappen. Feedback lämnas genom feedbackfunktionen under 'kontakt' länken.</p>
-		<br />
-		<br />
-		<p>* Alternativt använd denna tillfälliga Discordserver <strong>https://discord.gg/FZKEpyNM</strong>. Den plockas ner när examensarbetet är klart.</p>
-		<br />
-		<br />
-		<p>* Den här sidan / är en tillfällig sida så den behöver ingen feedback.</p>
-		<br />
-		<br />
-		<p>* Jag är medveten om att röd är en varningsfärg, men beställaren vill väldigt gärna ha dessa färgerna. Tacksam om alla åstiker och förbättringsförslag om färger.</p>
-		<br />
-		<br />
-		<p>* Den största buggen jag vet om just nu är att man blir utloggad efter kortare inaktivitet och att man då i vissa fall får Reconnecting to Server. Försöker åtgärda detta, men låg prioritet just nu.</p>
-		<p>* Det är långt ifrån klart, det är fortfarande mycket buggar och fix med responsitivet. Mobilt läge är inte 100% i synk med desktop.</p>
-		<br />
-		<br />
+	<h5><marquee>Examensarbete</marquee></h5>
+	<div class="two-side">
+
+		<div class="test">
+
+			<br />
+			<br />
+			<p>* Det här är ett examensarbete i samarbete med Muskelbyrån. I webbappen finns ett backoffice för att hantera kunder och klippkort, men även en funktion för att skapa nyheter, events, workshops osv som sen läggs ut på hemsidan via ett API. Kunder ska kunna logga in och använda sina klippkort, uppdatera olika uppgifter. Fler funktioner tillkommer om det finns tid.</p>
+			<br />
+			<br />
+			<p>* Alla uppgifter i databasen kommer att raderas 31/5 och hela projektet kommer att gå i produktion via Muskelbyråns webhotell. Det innebär att ditt konto kommer att försvinna och att de här länkarna kommer att sluta att fungera.</p>
+			<br />
+			<p>* Som testare uppskattas att du lämnar ärlig och konstruktiv feedback utifrån din upplevelse av att använda webappen. Feedback lämnas genom feedbackfunktionen under 'kontakt' länken.</p>
+			<br />
+			<br />
+			<p>* Alternativt använd denna tillfälliga Discordserver <strong>https://discord.gg/FZKEpyNM</strong>. Den plockas ner när examensarbetet är klart.</p>
+			<br />
+			<br />
+			<p>* Den här sidan / är en tillfällig sida så den behöver ingen feedback.</p>
+			<br />
+			<br />
+			<p>* Jag är medveten om att röd är en varningsfärg, men beställaren vill väldigt gärna ha dessa färgerna. Tacksam om alla åstiker och förbättringsförslag om färger.</p>
+			<br />
+			<br />
+			<p>* Den största buggen jag vet om just nu är att man blir utloggad efter kortare inaktivitet och att man då i vissa fall får Reconnecting to Server. Försöker åtgärda detta, men låg prioritet just nu.</p>
+			<p>* Det är långt ifrån klart, det är fortfarande mycket buggar och fix med responsitivet. Mobilt läge är inte 100% i synk med desktop.</p>
+			<br />
+			<br />
+		</div>
 		<div class="github">
 			<h5>Github Changelog</h5>
 			<br />
@@ -106,8 +122,8 @@
 					if (data.length > 0) {
 						commits = commits.concat(data);
 						page++;
-					}	 
-					else 
+					}
+					else
 					{
 						moreData = false;
 					}
@@ -118,7 +134,7 @@
 
 				function displayCommits(commits) {
 					const list = document.getElementById("commit-list");
-				
+
 					commits.forEach(commit => {
 						const li = document.createElement("li");
 						// li.innerHTML = `<a href="${commit.html_url}" target="_blank">${commit.commit.message}</a>`;
@@ -133,10 +149,10 @@
 		</div>
 		<br />
 		<br />
-		<div style="display: flex; justify-content: center;">
-			<img src="/images/Resistance Is Futile.jpg" />
-		</div>
+
 
 	</div>
-
+	@* 	<div style="display: flex; justify-content: center;">
+		<img src="/images/Resistance Is Futile.jpg" />
+	</div> *@
 </div>

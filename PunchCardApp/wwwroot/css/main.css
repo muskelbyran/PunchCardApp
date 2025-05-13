@@ -198,6 +198,12 @@ body {
 .main-nav .nav-link:hover::after, .main-nav .nav-link:focus-visible::after {
   transform: scaleX(1);
 }
+.main-nav .nav-link.active {
+  color: var(--color-secondary);
+}
+.main-nav .nav-link.active::after {
+  transform: scaleX(1);
+}
 
 :root {
   --color-gray-000: #FFFFFF;
@@ -610,7 +616,7 @@ a[target=_blank]::after {
   transition: background-color 0.2s ease-in-out, color 0.5s ease-in-out;*/
 }
 .btn-rounded:hover {
-  border: 1px solid var(--color-primary) !important;
+  /* border: 1px solid var(--color-primary) !important;*/
 }
 
 .btn-fab {
@@ -1760,60 +1766,60 @@ $color-background: var(--color-background);*/
 }
 
 /* Mobile - Sliding Effect */
-/*   @media (max-width: 767px) {
-       .main-content-container {
-           display: block;
-       }
+/* @media (max-width: 767px) {
+.main-content-container {
+display: block;
+}
 
-       .main-content {
-           width: 100%;
-       }
+.main-content {
+width: 100%;
+}
 
-       .right-content {
-           position: fixed;
-           top: 0;
-           right: -100%;
-           width: 100%;
-           height: 100vh;
-           transition: right 0.5s ease-in-out;
-       }
+.right-content {
+position: fixed;
+top: 0;
+right: -100%;
+width: 100%;
+height: 100vh;
+transition: right 0.5s ease-in-out;
+}
 
-       .right-content.show {
-           right: 0;
-       }
+.right-content.show {
+right: 0;
+}
 
-       .right-content2 {
-           position: fixed;
-           top: 0;
-           right: -100%;
-           width: 100%;
-           height: 100vh;
-           transition: right 0.5s ease-in-out;
-       }
+.right-content2 {
+position: fixed;
+top: 0;
+right: -100%;
+width: 100%;
+height: 100vh;
+transition: right 0.5s ease-in-out;
+}
 
-       .right-content2.show {
-           right: 0;
-       }
+.right-content2.show {
+right: 0;
+}
 
-       .right-content3 {
-           position: fixed;
-           top: 0;
-           right: -100%;
-           width: 100%;
-           height: 100vh;
-           transition: right 0.5s ease-in-out;
-       }
+.right-content3 {
+position: fixed;
+top: 0;
+right: -100%;
+width: 100%;
+height: 100vh;
+transition: right 0.5s ease-in-out;
+}
 
-       .right-content3.show {
-           right: 0;
-       }
+.right-content3.show {
+right: 0;
+}
 
-       @media (max-width: 768px) {
-           .main-section {
-               display: none;
-           }
-       }
-   }*/
+@media (max-width: 768px) {
+.main-section {
+display: none;
+}
+}
+}*/
 #confirm {
   display: flex;
   justify-content: center;
@@ -2108,14 +2114,14 @@ input.form-control {
   padding-top: 7rem;
   box-sizing: border-box;
   overflow-x: hidden;
-  /*        .tab-pane {
-              border: 1px solid #ccc;
-              border-radius: 8px;
-              background: #fff;
-              padding: 1rem;
-              margin-top: 1rem;
-              box-shadow: 2px 2px 6px rgba(0,0,0,0.1);
-          }*/
+  /* .tab-pane {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background: #fff;
+  padding: 1rem;
+  margin-top: 1rem;
+  box-shadow: 2px 2px 6px rgba(0,0,0,0.1);
+  }*/
 }
 
 .profile-content, .details {
@@ -2862,6 +2868,25 @@ table th {
   display: flex;
   flex-direction: column;
   gap: 15px;
+  /*#form-button {
+      margin-top: 10px;
+
+      button {
+          background: var(--color-theme);
+          color: #fff;
+          border: none;
+          padding: 12px;
+          font-size: 16px;
+          font-weight: bold;
+          border-radius: 8px;
+          cursor: pointer;
+          transition: background 0.3s;
+
+          &:hover {
+              background: #0056b3;
+          }
+      }
+  }*/
 }
 .feedback-content .form .form-floating {
   background-color: var(--color-white);
@@ -2912,23 +2937,6 @@ table th {
   outline: none;
   border-color: var(--color-secondary);
   box-shadow: 0 0 0 0.2rem rgba(255, 8, 0, 0.25);
-}
-.feedback-content .form #form-button {
-  margin-top: 10px;
-}
-.feedback-content .form #form-button button {
-  background: var(--color-theme);
-  color: #fff;
-  border: none;
-  padding: 12px;
-  font-size: 16px;
-  font-weight: bold;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background 0.3s;
-}
-.feedback-content .form #form-button button:hover {
-  background: #0056b3;
 }
 
 .main-content {

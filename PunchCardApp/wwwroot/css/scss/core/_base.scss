@@ -219,5 +219,13 @@ body {
                 transform: scaleX(1);
             }
         }
+
+        &.active {
+            color: var(--color-secondary);
+
+            &::after {
+                transform: scaleX(1);
+            }
+        }
     }
 }

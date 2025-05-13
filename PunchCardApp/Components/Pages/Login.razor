@@ -15,6 +15,7 @@
 @inject NavigationManager NavigationManager
 @inject IdentityRedirectManager RedirectManager
 @inject ApplicationDbContext _context
+@inject IJSRuntime JSRuntime
 
 <PageTitle>Muskelbyrån - Inloggning</PageTitle>
 
@@ -101,7 +102,7 @@
             {
                 ReturnUrl = "/Account";
             }
-        }
+        }        
     }
 
     public async Task LoginUser()
