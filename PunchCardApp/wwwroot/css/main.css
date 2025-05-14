@@ -179,6 +179,13 @@ body {
   text-decoration: none;
   font-weight: 600;
   overflow: hidden;
+  /* &.active {
+       color: var(--color-secondary);
+
+       &::after {
+           transform: scaleX(1);
+       }
+   }*/
 }
 .main-nav .nav-link::after {
   content: "";
@@ -196,12 +203,6 @@ body {
   color: var(--color-secondary);
 }
 .main-nav .nav-link:hover::after, .main-nav .nav-link:focus-visible::after {
-  transform: scaleX(1);
-}
-.main-nav .nav-link.active {
-  color: var(--color-secondary);
-}
-.main-nav .nav-link.active::after {
   transform: scaleX(1);
 }
 
@@ -2026,6 +2027,7 @@ display: none;
   flex-wrap: wrap;
   justify-content: left;
   gap: 1rem;
+  overflow: hidden;
 }
 .course-grid .course-card {
   width: 300px;
@@ -2106,6 +2108,7 @@ input.form-control {
   padding: 0 10px;
   /*background-color: var(--color-background);*/
   background-color: #f3dfc5;
+  overflow-y: auto;
 }
 .main-deets-container .main-deets {
   width: 95%;
@@ -2113,7 +2116,6 @@ input.form-control {
   padding: 1.5rem;
   padding-top: 7rem;
   box-sizing: border-box;
-  overflow-x: hidden;
   /* .tab-pane {
   border: 1px solid #ccc;
   border-radius: 8px;
@@ -2726,14 +2728,12 @@ input.form-control {
 
 .history-content {
   border-radius: 12px;
-  /*    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); */
   width: 100%;
   max-width: 1700px;
-  padding: 0 10px;
+  padding: 20px 10px 20px 10px;
   background-color: var(--color-background);
   display: flex;
   flex-direction: column;
-  padding: 20px;
   box-sizing: border-box;
   padding-top: 7rem;
 }
@@ -2743,7 +2743,8 @@ table {
   border-collapse: collapse;
   margin-top: 1rem;
 }
-table th, table td {
+table th,
+table td {
   border: 1px solid #ddd;
   padding: 0.5rem;
   text-align: left;
@@ -2769,7 +2770,9 @@ table th {
   flex: 1 1 calc(50% - 1rem);
   max-width: 100%;
 }
-.punch-card-history h4, .punch-card-history p, .punch-card-history details {
+.punch-card-history h4,
+.punch-card-history p,
+.punch-card-history details {
   margin: 0.5rem 0;
 }
 .punch-card-history details {
@@ -2792,16 +2795,14 @@ table th {
   padding: 0;
   margin: 0;
   max-height: 200px;
-  overflow-y: auto;
 }
 
 .punch-card-history ul {
   list-style: none;
   padding: 0;
   margin: 0;
-  overflow-x: auto;
   max-width: 100%;
-  white-space: nowrap;
+  white-space: normal;
 }
 
 @media (max-width: 768px) {
@@ -2813,10 +2814,6 @@ table th {
   }
 }
 @media (min-width: 768px) {
-  .main-content {
-    display: flex;
-    gap: 1rem;
-  }
   .punch-card-history details {
     display: block;
   }

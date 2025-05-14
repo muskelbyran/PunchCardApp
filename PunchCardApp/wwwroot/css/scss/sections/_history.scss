@@ -1,20 +1,11 @@
-$primary-color: #007bff;
-$secondary-color: #6c757d;
-$background-color: #f8f9fa;
-$text-color: #212529;
-$border-radius: 8px;
-$transition-speed: 0.3s;
-
 .history-content {
     border-radius: 12px;
-    /*    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); */
     width: 100%;
     max-width: 1700px;
-    padding: 0 10px;
+    padding: 20px 10px 20px 10px;
     background-color: var(--color-background);
     display: flex;
     flex-direction: column;
-    padding: 20px;
     box-sizing: border-box;
     padding-top: 7rem;
 }
@@ -24,7 +15,8 @@ table {
     border-collapse: collapse;
     margin-top: 1rem;
 
-    th, td {
+    th,
+    td {
         border: 1px solid #ddd;
         padding: 0.5rem;
         text-align: left;
@@ -38,8 +30,8 @@ table {
 
 .punch-card-history-container {
     display: flex;
-    flex-wrap: wrap; 
-    gap: 1rem; 
+    flex-wrap: wrap;
+    gap: 1rem;
 }
 
 .punch-card-history {
@@ -52,7 +44,9 @@ table {
     flex: 1 1 calc(50% - 1rem);
     max-width: 100%;
 
-    h4, p, details {
+    h4,
+    p,
+    details {
         margin: 0.5rem 0;
     }
 
@@ -77,7 +71,6 @@ table {
             padding: 0;
             margin: 0;
             max-height: 200px;
-            overflow-y: auto;
         }
     }
 }
@@ -86,28 +79,21 @@ table {
     list-style: none;
     padding: 0;
     margin: 0;
-    overflow-x: auto;
     max-width: 100%;
-    white-space: nowrap;
+    white-space: normal;
 }
 
 @media (max-width: 768px) {
-
     .punch-card-history-container {
-        flex-direction: column; 
+        flex-direction: column;
     }
 
     .punch-card-history {
-        flex: 1 1 100%; 
+        flex: 1 1 100%;
     }
 }
 
 @media (min-width: 768px) {
-    .main-content {
-        display: flex;
-        gap: 1rem;
-    }
-
     .punch-card-history details {
         display: block;
     }
@@ -118,5 +104,5 @@ table {
         display: flex;
         flex-direction: column;
         justify-content: space-between;
-    }  
+    }
 }
