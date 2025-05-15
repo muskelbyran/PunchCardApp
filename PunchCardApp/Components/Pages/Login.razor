@@ -1,4 +1,5 @@
 ﻿@page "/signin"
+@using PunchCardApp.Components.Assets
 @using PunchCardApp.Components.Layout
 @using System.ComponentModel.DataAnnotations
 @using Microsoft.AspNetCore.Authentication
@@ -20,172 +21,178 @@
 <PageTitle>Muskelbyrån - Inloggning</PageTitle>
 
 <section id="signin">
-    <div class="container">
+	<div class="container">
 
-        <div class="logo">
-            <a href="/">
-                <img src="/images/new-logo.png" alt="Muskelbyrån Logo" />
-            </a>
-        </div>
-        <h5>Inloggning</h5>
-        <div class="form">
-            <StatusMessage Message="@errorMessage" />
-            <EditForm Model="Input" method="post" OnValidSubmit="LoginUser" FormName="login">
-                <DataAnnotationsValidator />
-                <hr />
-                <ValidationSummary class="text-danger" role="alert" />
-                <div class="form-floating mb-3">
-                   @*  <InputText @bind-Value="SignUpForm.FirstName" autocomplete="givenname" aria-required="true" placeholder="Förnamn" /> *@
-                    <InputText @bind-Value="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="E-post" />
-                    <label for="email" class="form-label"></label>
-                    <ValidationMessage For="() => Input.Email" class="text-danger" />
-                </div>
-                <div class="form-floating mb-3">
-                    <InputText type="password" @bind-Value="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="Lösenord" />
-                    <label for="password" class="form-label"></label>
-                    <ValidationMessage For="() => Input.Password" class="text-danger" />
-                </div>
-                <div class="checkbox mb-3">
-                    <label class="form-label">
-                        <InputCheckbox @bind-Value="Input.RememberMe" class="darker-border-checkbox form-check-input" />
-                        Remember me
-                    </label>
-                </div>
-                <div>
-                    <button type="submit" class="btn btn-primary">Logga in</button>
-                </div>                
-            </EditForm>
-        </div>
-        <div class="social-or">eller </div>
-        <div class="social-option">
-            <a href="www.facebook.com" target="_blank" class="socialmedia-item"><i class="fa-brands fa-facebook-f"></i></a>
-            <a href="www.facebook.com" target="_blank" class="socialmedia-item"><i class="fa-brands fa-linkedin"></i></a>
-            <a href="www.facebook.com" target="_blank" class="socialmedia-item"><i class="fa-brands fa-google"></i></a>
-        </div>
-        <div class="login-footer">
-            <p>
-                <a href="forgotPassword">Glömt ditt lösenord?</a>            
-            </p>
-            <p>
-                <a href="@(NavigationManager.GetUriWithQueryParameters("signup", new Dictionary<string, object?> { ["ReturnUrl"] = ReturnUrl }))">Skapa ett nytt konto</a>
-            </p>
-            <p>
-                <a href="confirmation">Skicka ny e-post bekräftelse</a>
-            </p>
-            <p class="footer-copy">
-                <strong>© @DateTime.Now.Year Muskelbyrån.</strong>
-            </p>
-        </div>
-    </div>
+		<div class="logo">
+			<a href="/">
+				<img src="/images/new-logo.png" alt="Muskelbyrån Logo" />
+			</a>
+		</div>
+		@if (!string.IsNullOrWhiteSpace(errorMessage))
+		{
+			<div class="alert alert-danger">@errorMessage</div>
+		}
+
+		<h5>Inloggning</h5>
+		<div class="form">
+			@* <StatusMessage Message="@errorMessage" /> *@
+			
+
+		
+			<EditForm Model="Input" method="post" OnValidSubmit="LoginUser" FormName="login">
+				<DataAnnotationsValidator />
+				<hr />
+				@* <ValidationSummary class="text-danger" role="alert" /> *@
+				<div class="form-floating mb-3">
+					@*  <InputText @bind-Value="SignUpForm.FirstName" autocomplete="givenname" aria-required="true" placeholder="Förnamn" /> *@
+					<InputText @bind-Value="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="E-post" />
+					<label for="email" class="form-label"></label>
+					<ValidationMessage For="() => Input.Email" class="text-danger" />
+				</div>
+				<div class="form-floating mb-3">
+					<InputText type="password" @bind-Value="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="Lösenord" />
+					<label for="password" class="form-label"></label>
+					<ValidationMessage For="() => Input.Password" class="text-danger" />
+				</div>
+				<div class="checkbox mb-3">
+					<label class="form-label">
+						<InputCheckbox @bind-Value="Input.RememberMe" class="darker-border-checkbox form-check-input" />
+						Remember me
+					</label>
+				</div>
+				<div>
+					<button type="submit" class="btn btn-primary">Logga in</button>
+				</div>
+			</EditForm>
+		</div>
+		<div class="social-or">eller </div>
+		<div class="social-option">
+			<a href="www.facebook.com" target="_blank" class="socialmedia-item"><i class="fa-brands fa-facebook-f"></i></a>
+			<a href="www.facebook.com" target="_blank" class="socialmedia-item"><i class="fa-brands fa-linkedin"></i></a>
+			<a href="www.facebook.com" target="_blank" class="socialmedia-item"><i class="fa-brands fa-google"></i></a>
+		</div>
+		<div class="login-footer">
+			<p>
+				<a href="forgotPassword">Glömt ditt lösenord?</a>
+			</p>
+			<p>
+				<a href="@(NavigationManager.GetUriWithQueryParameters("signup", new Dictionary<string, object?> { ["ReturnUrl"] = ReturnUrl }))">Skapa ett nytt konto</a>
+			</p>
+			<p>
+				<a href="confirmation">Skicka ny e-post bekräftelse</a>
+			</p>
+			<p class="footer-copy">
+				<strong>© @DateTime.Now.Year Muskelbyrån.</strong>
+			</p>
+		</div>
+	</div>
 </section>
 
 @code {
-    private string? errorMessage;
+	private string? errorMessage;
 
-    [CascadingParameter]
-    private HttpContext HttpContext { get; set; } = default!;
+	[CascadingParameter]
+	private HttpContext HttpContext { get; set; } = default!;
 
-    [SupplyParameterFromForm]
-    private InputModel Input { get; set; } = new();
+	[SupplyParameterFromForm]
+	private InputModel Input { get; set; } = new();
 
-    [SupplyParameterFromQuery]
-    private string? ReturnUrl { get; set; }
+	[SupplyParameterFromQuery]
+	private string? ReturnUrl { get; set; }
 
-    protected override async Task OnInitializedAsync()
-    {
-        if (HttpMethods.IsGet(HttpContext.Request.Method))
-        {
-            // Clear the existing external cookie to ensure a clean login process
-            await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
+	protected override async Task OnInitializedAsync()
+	{
+		// Logga ut från eventuell extern cookie oavsett metod
+		await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
 
-            if (string.IsNullOrEmpty(ReturnUrl))
-            {
-                ReturnUrl = "/Account";
-            }
-        }        
-    }
+		if (string.IsNullOrEmpty(ReturnUrl))
+		{
+			ReturnUrl = "/Account";
+		}
+	}
 
-    public async Task LoginUser()
-    {
-        var result = await SignInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
+	public async Task LoginUser()
+	{
+		var result = await SignInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
 
-        if (result.Succeeded)
-        {
-            Logger.LogInformation("User logged in.");
+		if (result.Succeeded)
+		{
+			Logger.LogInformation("User logged in.");
 
-            var user = await SignInManager.UserManager.FindByEmailAsync(Input.Email);
+			var user = await SignInManager.UserManager.FindByEmailAsync(Input.Email);
 
-            if (user == null)
-            {
-                errorMessage = "Error: User not found.";
-                return;
-            }
+			if (user == null)
+			{
+				errorMessage = "Användaren hittades inte!";
+				return;
+			}
 
-            bool isFirstLogin = await IsFirstLoginAsync(user);
+			bool isFirstLogin = await IsFirstLoginAsync(user);
 
-            // Log the user engagement
-            var engagementLog = new UserEngagementLog
-                {
-                    UserId = user.Id,
-                    Timestamp = DateTime.UtcNow,
-                    Type = EngagementType.Login,
-                    IsFirstLogin = isFirstLogin,
-                };
+			// Log the user engagement
+			var engagementLog = new UserEngagementLog
+				{
+					UserId = user.Id,
+					Timestamp = DateTime.UtcNow,
+					Type = EngagementType.Login,
+					IsFirstLogin = isFirstLogin,
+				};
 
-            _context.UserEngagementLogs.Add(engagementLog);
-            await _context.SaveChangesAsync();
+			_context.UserEngagementLogs.Add(engagementLog);
+			await _context.SaveChangesAsync();
 
-            // if (string.IsNullOrEmpty(ReturnUrl) || !Uri.IsWellFormedUriString(ReturnUrl, UriKind.RelativeOrAbsolute))
-            // {
-            //     ReturnUrl = "/Account"; 
-            // }
-            // try
-            // {
-            //     RedirectManager.RedirectTo(ReturnUrl);
-            // }
-            // catch (Exception ex)
-            // {
-            //     Logger.LogError(ex, "Navigation failed.");
-            //     errorMessage = "ERROR :: " + ex.Message;
-            // }
+			// if (string.IsNullOrEmpty(ReturnUrl) || !Uri.IsWellFormedUriString(ReturnUrl, UriKind.RelativeOrAbsolute))
+			// {
+			//     ReturnUrl = "/Account";
+			// }
+			// try
+			// {
+			//     RedirectManager.RedirectTo(ReturnUrl);
+			// }
+			// catch (Exception ex)
+			// {
+			//     Logger.LogError(ex, "Navigation failed.");
+			//     errorMessage = "ERROR :: " + ex.Message;
+			// }
 
-            RedirectManager.RedirectTo("/Account");
-        }
-        else if (result.RequiresTwoFactor)
-        {
-            RedirectManager.RedirectTo("Account/LoginWith2fa", new() { ["returnUrl"] = ReturnUrl, ["rememberMe"] = Input.RememberMe });
-        }
-        else if (result.IsLockedOut)
-        {
-            Logger.LogWarning("User account locked out.");
-            RedirectManager.RedirectTo("Account/Lockout");
-        }
-        else
-        {
-            errorMessage = "Error: Invalid login attempt.";
-        }
-    }
+			RedirectManager.RedirectTo("/Account");
+		}
+		else if (result.RequiresTwoFactor)
+		{
+			RedirectManager.RedirectTo("Account/LoginWith2fa", new() { ["returnUrl"] = ReturnUrl, ["rememberMe"] = Input.RememberMe });
+		}
+		else if (result.IsLockedOut)
+		{
+			Logger.LogWarning("User account locked out.");
+			RedirectManager.RedirectTo("Account/Lockout");
+		}
+		else
+		{
+			errorMessage = "Ogiltigt inloggningsförsök.";
 
-        private async Task<bool> IsFirstLoginAsync(ApplicationUser user)
-    {
-        var engagementLogs = await _context.UserEngagementLogs
-            .Where(log => log.UserId == user.Id && log.Type == EngagementType.Login)
-            .ToListAsync();
+		}
+	}
 
-        return engagementLogs.Count == 0;
-    }
+	private async Task<bool> IsFirstLoginAsync(ApplicationUser user)
+	{
+		var engagementLogs = await _context.UserEngagementLogs
+			.Where(log => log.UserId == user.Id && log.Type == EngagementType.Login)
+			.ToListAsync();
 
-    private sealed class InputModel
-    {
-        [Required]
-        [EmailAddress]
-        public string Email { get; set; } = "";
+		return engagementLogs.Count == 0;
+	}
 
-        [Required]
-        [DataType(DataType.Password)]
-        public string Password { get; set; } = "";
+	private sealed class InputModel
+	{
+		[Required]
+		[EmailAddress]
+		public string Email { get; set; } = "";
 
-        [Display(Name = "Remember me?")]
-        public bool RememberMe { get; set; }
-    }
+		[Required]
+		[DataType(DataType.Password)]
+		public string Password { get; set; } = "";
+
+		[Display(Name = "Remember me?")]
+		public bool RememberMe { get; set; }
+	}
 }
