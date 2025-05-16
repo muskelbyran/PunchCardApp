@@ -3,6 +3,16 @@
 @* @layout EmptyLayout *@
 
 <style>
+/* 	@@import url('https://fonts.googleapis.com/css2?family=VT323&display=swap'); */
+
+/* 	.intro {
+	background-color: #1A1A1A;
+	} */
+
+	.btn {
+		color: #000;
+	}
+
 	.button-row {
 		display: flex;
 		justify-content: center;
@@ -23,23 +33,23 @@
 			height: auto;
 		}
 
-
-	h5 {
-		/* text-align: center; */
-		color: #333;
-		margin-top: 1rem;
-		margin-bottom: 1rem;
-		font-size: 1.5rem;
-	}
-
 	p {
 		/* 	text-align: center; */
-		font-size: 0.875rem;
+		/* font-size: 0.875rem; */
 	}
 
 	hr {
-		border-top: 1px solid #ddd;
+		/* border-top: 1px solid #ddd; */
 		margin: 1.5rem 0;
+	}
+
+	h5 {
+		/* font-family: 'Press Start 2P', monospace; */
+		/* font-family: 'VT323', monospace; */
+		font-size: 1.5rem;
+		/* letter-spacing: 1px;
+		color: #C17E00; */
+		/* text-shadow: 0 0 5px #FFB000, 0 0 10px #FFB000, 0 0 20px #FF8C00, 0 0 30px #FF8C00, 0 0 40px #FF8C00; */
 	}
 
 	.test {
@@ -57,9 +67,67 @@
 				width: 30%;
 			} */
 	}
+
+	.raster-container {
+		position: relative;
+		height: 200px;
+		
+	}
+
+	.raster-bar {
+		width: 100%;
+		height: 20px;
+		/* background: linear-gradient(to right, red, yellow, lime, cyan, blue, magenta, red); */
+		/* background: linear-gradient(145deg, #FDB99B, #CF8BF3, #A770EF); */
+		background: linear-gradient(145deg, hsl(27, 100%, 20%), hsl(34, 100%, 41.6%));
+		position: absolute;
+		top: 50%;
+		animation: bounce 2s ease-in-out infinite;
+		animation-delay: var(--delay);
+
+	}
+
+	@@keyframes drift {
+		0% {
+			top: 20px;
+		}
+
+		50% {
+			top: 120px;
+		}
+
+		100% {
+			top: 20px;
+		}
+	}
+
+	@@keyframes verticalDrift {
+		0% {
+			transform: translateY(0);
+		}
+
+		50% {
+			transform: translateY(10cm);
+		}
+
+		100% {
+			transform: translateY(0);
+		}
+	}
+
+	@@keyframes bounce {
+		0%, 100% {
+			transform: translateY(-5px);
+		}
+
+		50% {
+			transform: translateY(5px);
+		}
+	}
+
 </style>
 
-<div>
+<div class="intro">
 	<div class="logo">
 		<a href="/">
 			<img src="/images/new-logo.png" alt="Muskelbyrån Logo" />
@@ -72,13 +140,9 @@
 	<hr />
 	<h5><marquee>Examensarbete</marquee></h5>
 	<div class="two-side">
-
 		<div class="test">
-
-			<br />
 			<br />
 			<p>* Det här är ett examensarbete i samarbete med Muskelbyrån. I webbappen finns ett backoffice för att hantera kunder och klippkort, men även en funktion för att skapa nyheter, events, workshops osv som sen läggs ut på hemsidan via ett API. Kunder ska kunna logga in och använda sina klippkort, uppdatera olika uppgifter. Fler funktioner tillkommer om det finns tid.</p>
-			<br />
 			<br />
 			<p>* Alla uppgifter i databasen kommer att raderas 31/5 och hela projektet kommer att gå i produktion via Muskelbyråns webhotell. Det innebär att ditt konto kommer att försvinna och att de här länkarna kommer att sluta att fungera.</p>
 			<br />
@@ -87,16 +151,12 @@
 			<br />
 			<p>* Alternativt använd denna tillfälliga Discordserver <strong>https://discord.gg/FZKEpyNM</strong>. Den plockas ner när examensarbetet är klart.</p>
 			<br />
-			<br />
 			<p>* Den här sidan / är en tillfällig sida så den behöver ingen feedback.</p>
-			<br />
 			<br />
 			<p>* Jag är medveten om att röd är en varningsfärg, men beställaren vill väldigt gärna ha dessa färgerna. Tacksam om alla åstiker och förbättringsförslag om färger.</p>
 			<br />
-			<br />
 			<p>* Den största buggen jag vet om just nu är att man blir utloggad efter kortare inaktivitet och att man då i vissa fall får Reconnecting to Server. Försöker åtgärda detta, men låg prioritet just nu.</p>
 			<p>* Det är långt ifrån klart, det är fortfarande mycket buggar och fix med responsitivet. Mobilt läge är inte 100% i synk med desktop.</p>
-			<br />
 			<br />
 		</div>
 		<div class="github">
@@ -154,5 +214,12 @@
 	</div>
 	@* 	<div style="display: flex; justify-content: center;">
 		<img src="/images/Resistance Is Futile.jpg" />
+	</div> *@
+	@* <div class="raster-container">
+		<div class="raster-bar" style="--delay: 0s;"></div>
+		<div class="raster-bar" style="--delay: 0.1s;"></div>
+		<div class="raster-bar" style="--delay: 0.2s;"></div>
+		<div class="raster-bar" style="--delay: 0.3s;"></div>
+		<div class="raster-bar" style="--delay: 0.4s;"></div>
 	</div> *@
 </div>

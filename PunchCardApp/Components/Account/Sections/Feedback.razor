@@ -18,34 +18,57 @@
 	<h1>Feedback</h1>
 	<p>Din feedback är viktig för vidareutveckling av den här sidan.</p>
 
-	<EditForm Model="@FeedbackForm" OnValidSubmit="OnValidSubmit" FormName="feedback" novalidate>
-		<DataAnnotationsValidator />
+
 	@* 	<ValidationSummary /> *@
-		<h5>Skicka feedback</h5>
 
-		<div class="form">
-			<div class="form-floating">
-				<InputTextArea @bind-Value="FeedbackForm.Message" autocomplete="off" aria-required="true" placeholder="Din feedback" class="form-control" />
-				<ValidationMessage For="() => FeedbackForm.Message" />
-			</div>
+	<div class="contact-splitscreen">
+			<div class="contact">
+          <h1>
+            Kontakt info
+          </h1>
+          <address>
+            <p><i class="fa fa-home"></i>Adress: Hantverksbyn 3, 78433, Borlänge</p>
+            <p><i class="fa fa-phone"></i>Telefon: 073-369 23 93</p>
+            <p><i class="fa fa-envelope"></i>E-post: muskelbyran@live.se</p>
+            <p><i class="fa fa-globe"></i>Hemsida: muskelbyran.eu</p>
+			<p><i class="fa-regular fa-file"></i>Vi har så klart F-skattesedel!</p>
+            <br>
+            <p><em>Nästan</em> alla foton tagna av <a href="https://www.facebook.com/picsbyp/" target="new"><strong>Pics
+                  by Penny</strong></a>!</p>
+          </address>
+        </div>
+	<div class="feedback">
+			<EditForm Model="@FeedbackForm" OnValidSubmit="OnValidSubmit" FormName="feedback" novalidate>
+				<DataAnnotationsValidator />
+				<h5>Skicka feedback</h5>
 
-			<div class="mb-3">
-				<label class="form-label" for="feedbackType">Typ av feedback</label>
-				<InputSelect id="feedbackType" class="form-select" @bind-Value="FeedbackForm.FeedbackType">
-					<option value="">-- Välj en typ --</option>
-					<option value="Typo">Typo</option>
-					<option value="Bug">Bug</option>
-					<option value="Idea">Idea</option>
-					<option value="Praise">Praise</option>
-				</InputSelect>
-				<ValidationMessage For="() => FeedbackForm.FeedbackType" />
-			</div>
+				<div class="form">
+					<div class="form-floating">
+						<InputTextArea @bind-Value="FeedbackForm.Message" autocomplete="off" aria-required="true" placeholder="Din feedback" class="form-control" />
+						<ValidationMessage For="() => FeedbackForm.Message" />
+					</div>
+					<div class="mb-3">
+						<label class="form-label" for="feedbackType">Typ av feedback</label>
+						<InputSelect id="feedbackType" class="form-select" @bind-Value="FeedbackForm.FeedbackType">
+							<option value="">-- Välj en typ --</option>
+							<option value="Typo">Typo</option>
+							<option value="Bug">Bug</option>
+							<option value="Idea">Idea</option>
+							<option value="Praise">Praise</option>
+						</InputSelect>
+						<ValidationMessage For="() => FeedbackForm.FeedbackType" />
+					</div>
 
-			<div id="form-button">
-				<button class="btn btn-primary" type="submit">Skicka feedback</button>
-			</div>
-		</div>
+					<div id="form-button">
+						<button class="btn btn-primary" type="submit">Skicka feedback</button>
+					</div>
+				</div>
 	</EditForm>
+	</div>
+	</div>
+
+
+		
 
 </main>
 

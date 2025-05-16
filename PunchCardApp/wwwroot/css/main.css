@@ -2827,16 +2827,19 @@ table th {
 }
 .feedback-content {
   border-radius: 12px;
-  /*    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); */
   width: 100%;
   max-width: 1700px;
   padding: 0 10px;
   background-color: var(--color-background);
   display: flex;
   flex-direction: column;
-  padding: 20px;
   box-sizing: border-box;
   padding-top: 7rem;
+  /*    p {
+      text-align: center;
+      color: #666;
+      margin-bottom: 20px;
+  }*/
 }
 .feedback-content .feedback-toast {
   margin-top: 5rem;
@@ -2848,11 +2851,6 @@ table th {
   text-align: center;
   color: #333;
 }
-.feedback-content p {
-  text-align: center;
-  color: #666;
-  margin-bottom: 20px;
-}
 .feedback-content .alert {
   text-align: center;
   font-size: 14px;
@@ -2861,34 +2859,52 @@ table th {
   background-color: #e8f4ff;
   color: #007bff;
 }
-.feedback-content .form {
+.feedback-content .contact-splitscreen {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+.feedback-content .contact-splitscreen .contact,
+.feedback-content .contact-splitscreen .feedback {
+  flex: 1 1 45%;
+  background-color: #fff;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+.feedback-content .contact-splitscreen .contact {
+  font-size: 16px;
+}
+.feedback-content .contact-splitscreen .contact h1 {
+  font-size: 20px;
+  margin-bottom: 1rem;
+}
+.feedback-content .contact-splitscreen .contact address {
+  line-height: 1.6;
+}
+.feedback-content .contact-splitscreen .contact address i {
+  margin-right: 0.5rem;
+}
+.feedback-content .contact-splitscreen .contact p a,
+.feedback-content .contact-splitscreen .contact p a strong {
+  font-weight: bold;
+  vertical-align: baseline;
+  line-height: inherit;
+  display: inline;
+  color: #333;
+}
+.feedback-content .contact-splitscreen .feedback h5 {
+  font-size: 18px;
+  margin-bottom: 1.5rem;
+}
+.feedback-content .contact-splitscreen .feedback .form {
   display: flex;
   flex-direction: column;
   gap: 15px;
-  /*#form-button {
-      margin-top: 10px;
-
-      button {
-          background: var(--color-theme);
-          color: #fff;
-          border: none;
-          padding: 12px;
-          font-size: 16px;
-          font-weight: bold;
-          border-radius: 8px;
-          cursor: pointer;
-          transition: background 0.3s;
-
-          &:hover {
-              background: #0056b3;
-          }
-      }
-  }*/
 }
-.feedback-content .form .form-floating {
-  background-color: var(--color-white);
-}
-.feedback-content .form .form-floating textarea {
+.feedback-content .contact-splitscreen .feedback .form .form-floating textarea {
   width: 100%;
   height: 120px;
   padding: 12px;
@@ -2898,42 +2914,50 @@ table th {
   resize: none;
   background-color: var(--white);
 }
-.feedback-content .form .form-floating textarea:focus {
+.feedback-content .contact-splitscreen .feedback .form .form-floating textarea:focus {
   border-color: var(--color-secondary);
   outline: none;
   box-shadow: 0px 0px 5px rgba(0, 123, 255, 0.3);
 }
-.feedback-content .form #form-issues {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  width: 50%;
-  font-size: 18px;
-}
-.feedback-content .form #form-issues label {
+.feedback-content .contact-splitscreen .feedback .form .mb-3 label {
   font-size: 16px;
   font-weight: 500;
   color: #444;
   margin-bottom: 4px;
 }
-.feedback-content .form #form-issues select {
-  width: 50%;
+.feedback-content .contact-splitscreen .feedback .form .mb-3 select {
+  width: 100%;
   padding: 0.6rem 1rem;
   font-size: 1rem;
   border: 1px solid #ccc;
   border-radius: 6px;
   background-color: #fff;
   appearance: none;
-  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='10'%3E%3Cpath fill='%23666' d='M1 1l6 6 6-6'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
   background-position: right 1rem center;
   background-size: 12px;
   cursor: pointer;
 }
-.feedback-content .form #form-issues select:focus {
+.feedback-content .contact-splitscreen .feedback .form .mb-3 select:focus {
   outline: none;
   border-color: var(--color-secondary);
   box-shadow: 0 0 0 0.2rem rgba(255, 8, 0, 0.25);
+}
+.feedback-content .contact-splitscreen .feedback .form #form-button {
+  margin-top: 10px;
+}
+.feedback-content .contact-splitscreen .feedback .form #form-button button {
+  background: var(--color-theme, #0078D4);
+  color: #fff;
+  border: none;
+  padding: 12px;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+.feedback-content .contact-splitscreen .feedback .form #form-button button:hover {
+  background: #0056b3;
 }
 
 .main-content {
