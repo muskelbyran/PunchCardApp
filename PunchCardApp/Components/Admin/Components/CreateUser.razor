@@ -8,11 +8,15 @@
 @using Azure.Messaging.ServiceBus
 @using PunchCardApp.Components.Assets
 @using PunchCardApp.Data
+@using PunchCardApp.Enums
+@using PunchCardApp.Models
 
 @inject UserManager<ApplicationUser> UserManager
 @inject IConfiguration Configuration
 
-<div class="container">
+<ConfirmDialog @ref="confirmDialog" />
+
+<div class="punchcard-tab">
     <h5>Skapa en användare</h5>
 
     @if (!string.IsNullOrEmpty(StatusMessage))
@@ -21,32 +25,33 @@
         OnDismiss="@(() => StatusMessage = null)" />
     }
 
-    <EditForm Model="AdminCreateForm" OnValidSubmit="OnValidSubmit">
+    <EditForm Model="AdminCreateForm" OnValidSubmit="ConfirmCreateUser">
         <DataAnnotationsValidator />
-        <div class="form">
+        <div class="form-row">
 
-            <div class="form-floating mb-3">
+            <div class="input-wrapper">
                 <InputText @bind-Value="AdminCreateForm.FirstName" placeholder="Förnamn" />
                 <ValidationMessage For="() => AdminCreateForm.FirstName" />
             </div>
 
-            <div class="form-floating mb-3">
+            <div class="input-wrapper">
                 <InputText @bind-Value="AdminCreateForm.LastName" placeholder="Efternamn" />
                 <ValidationMessage For="() => AdminCreateForm.LastName" />
             </div>
 
-            <div class="form-floating mb-3">
+            <div class="input-wrapper">
                 <InputText @bind-Value="AdminCreateForm.Email" placeholder="E-post" />
                 <ValidationMessage For="() => AdminCreateForm.Email" />
             </div>
 
-            <button type="submit" class="btn btn-primary w-100">Skapa användare</button>
+            <button type="submit" class="btn btn-primary">Skapa användare</button>
         </div>
     </EditForm>
 </div>
 
 @code {
     private string? StatusMessage;
+    private ConfirmDialog? confirmDialog;
 
     public AdminCreateUserModel AdminCreateForm { get; set; } = new();
 
@@ -62,6 +67,26 @@
         [EmailAddress]
         public string Email { get; set; } = string.Empty;
     }
+
+    private async Task ConfirmCreateUser()
+    {
+        var confirmed = await confirmDialog!.ShowAsync(
+            "Bekräfta skapande",
+            $"Är du säker på att du vill skapa användaren {AdminCreateForm.FirstName} {AdminCreateForm.LastName}?",
+            new ConfirmDialogOptions
+                {
+                    YesButtonText = "Ja",
+                    NoButtonText = "Nej",
+                    YesButtonColor = ButtonColor.Primary,
+                    NoButtonColor = ButtonColor.Secondary
+                });
+
+        if (confirmed)
+        {
+            await OnValidSubmit();
+        }
+    }
+
 
     private async Task OnValidSubmit()
     {

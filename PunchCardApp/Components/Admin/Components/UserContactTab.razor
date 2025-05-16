@@ -132,14 +132,14 @@
 @if (!isEditing)
 {
 	<div class="details">
-		<div class="basic-info">
+		@* <div class="basic-info">
 			<h5>@(User.UserProfile?.FirstName ?? "N/A") @(User.UserProfile?.LastName ?? "")</h5>
-			<p><strong>DGFDGDGDGDGDGDGDG:</strong> @User.Email</p>
+			<p><strong>E-post:</strong> @User.Email</p>
 			<p><strong>Telefon:</strong> @User.PhoneNumber</p>
 			<p><strong>Adress:</strong> @User.UserAddress?.AddressLine_1, @User.UserAddress?.PostalCode @User.UserAddress?.City</p>
 			<p><strong>Information:</strong> @User.UserProfile?.Biography</p>
 			<button class="btn btn-primary" @onclick="StartEditing">Uppdatera</button>
-		</div>
+		</div> *@
 	</div>
 }
 else
