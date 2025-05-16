@@ -125,6 +125,33 @@
 		}
 	}
 
+	.details {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 2rem;
+		margin-top: 2rem;
+	}
+			
+		.details > .made,
+		.details > .github {
+			flex: 1 1 48%;
+			border: 1px solid #000;
+		}
+
+	
+	@@media (max-width: 768px) {
+		.details
+
+	{
+		flex-direction: column;
+	}
+
+	.details > .made,
+	.details > .github {
+		flex: 1 1 100%;
+	}
+
+	}
 </style>
 
 <div class="intro">
@@ -159,58 +186,99 @@
 			<p>* Det är långt ifrån klart, det är fortfarande mycket buggar och fix med responsitivet. Mobilt läge är inte 100% i synk med desktop.</p>
 			<br />
 		</div>
-		<div class="github">
-			<h5>Github Changelog</h5>
-			<br />
-			<br />
-			<ul id="commit-list"></ul>
+		<div class="details">
+			<div class="made">
+				<details>
+					<summary><h5>How its made:</h5></summary>
+					<h5>Översikt</h5>
+					<p>
+						Systemet är uppbyggt med microservices där olika delar har tydligt ansvar och kommunicerar med varandra via API:er och databaskopplingar. Användaren interagerar via ett webbgränssnitt och validering hanteras av Azure.
+					</p>
+				<h5>Frontend</h5>
+				<ul>
+					<li><strong>Teknik:</strong> Angular, TypeScript</li>
+					<li><strong>Roll:</strong> Webgränssnitt mot användare.</li>
+				</ul>
+						<h5>Backend</h5>
+				<ul>
+					<li><strong>Teknik:</strong> Blazor, .NET, Entity Framework</li>
+					<li><strong>Roll:</strong> Affärslogik och hantering av användardata, klippkort och kurser.</li>
+					<li>
+						<strong>Integrationer:</strong>
+						<ul>
+							<li>Skickar valideringsmail via Azure</li>
+							<li>Hämtar data från API</li>
+							<li>Skriver/läser från databas</li>
+						</ul>
+					</li>
+				</ul>
+				<h5>API</h5>
+				<ul>
+					<li><strong>Teknik:</strong> .NET</li>
+					<li><strong>Roll:</strong> Tjänst för att hämta kursinformation via JSON/HTTPS</li>
+					<li><strong>Åtkomst:</strong> Läses av frontend</li>
+				</ul>
+				<h5>Databas</h5>
+				<ul>
+					<li><strong>Teknik:</strong> MsSQL</li>
+					<li><strong>Roll:</strong> Central databas för användare, kurser och klippkort</li>
+					<li><strong>Åtkomst:</strong> Backend skriver/läser, API har endast läsbehörighet via SQL/TCP</li>
+				</ul>
+				<h5>Azure</h5>
+				<ul>
+					<li><strong>Komponenter:</strong> Azure Functions, Service Bus</li>
+					<li><strong>Roll:</strong> Skickar valideringsmail som triggas av backend</li>
+				</ul>
+				</details>
+			</div>
+			<div class="github">
+				<details>
+					<summary><h5>GitHub Changelog:</h5></summary>
+					<ul id="commit-list"></ul>
+					<script>
+						const owner = "muskelbyran";
+						const repo = "PunchCardApp";
+						let page = 1;
+						const perPage = 100;
 
-			<script>
-				const owner = "muskelbyran";
-				const repo = "PunchCardApp";
-				let page = 1;
-				const perPage = 100;
+						async function fetchCommits() {
+							let commits = [];
+							let moreData = true;
 
-				async function fetchCommits() {
-					let commits = [];
-					let moreData = true;
+							while (moreData) {
+								const response = await fetch(`https://api.github.com/repos/${owner}/${repo}/commits?per_page=${perPage}&page=${page}`);
+								const data = await response.json();
 
-					while (moreData) {
-						const response = await fetch(`https://api.github.com/repos/${owner}/${repo}/commits?per_page=${perPage}&page=${page}`);
-						const data = await response.json();
+							if (data.length > 0) {
+								commits = commits.concat(data);
+								page++;
+							}
+							else
+							{
+								moreData = false;
+							}
+						}
 
-					if (data.length > 0) {
-						commits = commits.concat(data);
-						page++;
-					}
-					else
-					{
-						moreData = false;
-					}
-				}
+						displayCommits(commits);
+						}
 
-				displayCommits(commits);
-				}
+						function displayCommits(commits) {
+							const list = document.getElementById("commit-list");
 
-				function displayCommits(commits) {
-					const list = document.getElementById("commit-list");
+							commits.forEach(commit => {
+								const li = document.createElement("li");
+								// li.innerHTML = `<a href="${commit.html_url}" target="_blank">${commit.commit.message}</a>`;
+								li.textContent = `${commit.commit.message} – ${new Date(commit.commit.author.date).toLocaleString()}`;
+								list.appendChild(li);
+							});
+						}
 
-					commits.forEach(commit => {
-						const li = document.createElement("li");
-						// li.innerHTML = `<a href="${commit.html_url}" target="_blank">${commit.commit.message}</a>`;
-						li.textContent = `${commit.commit.message} – ${new Date(commit.commit.author.date).toLocaleString()}`;
-						list.appendChild(li);
-					});
-				}
+						fetchCommits();
+					</script>
+				</details>
 
-				fetchCommits();
-			</script>
-
+			</div>
 		</div>
-		<br />
-		<br />
-
-
 	</div>
 	@* 	<div style="display: flex; justify-content: center;">
 		<img src="/images/Resistance Is Futile.jpg" />
