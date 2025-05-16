@@ -15,10 +15,6 @@
 					 Duration="8000"
 					 OnDismiss="@(() => StatusMessage = "")" />
 	</div>
-	<h1>Feedback</h1>
-	<p>Din feedback är viktig för vidareutveckling av den här sidan.</p>
-
-
 	@* 	<ValidationSummary /> *@
 
 	<div class="contact-splitscreen">
@@ -41,7 +37,7 @@
 			<EditForm Model="@FeedbackForm" OnValidSubmit="OnValidSubmit" FormName="feedback" novalidate>
 				<DataAnnotationsValidator />
 				<h5>Skicka feedback</h5>
-
+				<p>Din feedback är viktig för vidareutveckling av funktion och utseende.</p>
 				<div class="form">
 					<div class="form-floating">
 						<InputTextArea @bind-Value="FeedbackForm.Message" autocomplete="off" aria-required="true" placeholder="Din feedback" class="form-control" />

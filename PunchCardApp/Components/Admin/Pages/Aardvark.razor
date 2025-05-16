@@ -20,11 +20,7 @@
 							 Duration="8000"
 							 OnDismiss="@(() => StatusMessage = "")" />
 			</div>
-
-			<div class="main-admin">
-
-				<UserAnalytics />
-
+			<div class="main-admin">				
 				<div class="search-create-container">
 					<div class="search-box">
 						<h3>Sök kund:</h3>
@@ -43,7 +39,6 @@
 						<button class="btn btn-primary mt-2" @onclick="ShowStats">Stats</button>
 					</div>
 				</div>
-
 				<div class="current-view">
 					@switch (currentView)
 					{
@@ -52,7 +47,6 @@
 								<h4>Sökresultat:</h4>
 								<input class="form-control mb-2" placeholder="Sök kund" @bind="searchString" />
 								<button class="btn btn-primary" @onclick="SearchUsers">Sök</button>
-
 								@if (filteredUsers?.Count > 0)
 								{
 									<table class="table mt-3">
