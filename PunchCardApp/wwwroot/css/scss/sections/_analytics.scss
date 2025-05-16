@@ -1,13 +1,12 @@
 #user-analytics {
-    /*    max-width: 1200px;
-    margin: 0 auto;
-    padding: 2rem 1rem;
-    font-family: 'Segoe UI', sans-serif;*/
+    /* max-width: 1200px;
+margin: 0 auto;
+padding: 2rem 1rem;
+*/
 
     max-width: none;
     padding: 1.5rem;
     box-sizing: border-box;
-
 
     .analytics-grid {
         display: flex;
@@ -30,7 +29,6 @@
             box-sizing: border-box;
             transition: transform 0.2s ease;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
-
 
             .analytics-label {
                 font-size: 1rem;
@@ -62,4 +60,9 @@
             }
         }
     }
+}
+
+.stats-splitscreen {
+    display: flex;
+    justify-content: space-evenly;
 }

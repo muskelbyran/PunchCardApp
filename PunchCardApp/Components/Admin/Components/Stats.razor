@@ -3,55 +3,52 @@
 @inject ApplicationDbContext DbContext
 
 <UserAnalytics />
-<div class="stats-info mt-3">
+<div class="stats-splitscreen">
+        <p>Antal registrerade användare: @userCount</p>
 
-    <h4>Statistik</h4>
-    <p>Antal registrerade användare: @userCount</p>
+        <div class="punchcard-stats">
+            <h5>Översikt av Klippkort</h5>
+            <p>Totalt antal klippkort: @totalPunchCards</p>
+            <p>Total antal användningar: @totalPunches</p>
 
-    <div class="punchcard-stats">
-        <h5>Översikt av Klippkort</h5>
-        <p>Totalt antal klippkort: @totalPunchCards</p>
-        <p>Total antal användningar: @totalPunches</p>
-
-        <h6>Top 5 användare med flest klippkort:</h6>
-        <ul>
-            @foreach (var user in topUsers)
-            {
-                <li>@user.Name - Klippkort: @user.PunchCardCount</li>
-            }
-        </ul>
-    </div>
-
-    <div class="search-section mt-4">
-        <h5>Sök Klippkort</h5>
-        <input class="form-control mb-2" placeholder="Sök typ eller längd..." @bind="searchQuery" />
-        <button class="btn btn-primary" @onclick="SearchPunchCards">Sök</button>
-
-        @if (searchedPunchCards != null && searchedPunchCards.Any())
-        {
-            <h6>Resultat:</h6>
+            <h6>Top 5 användare med flest klippkort:</h6>
             <ul>
-                @foreach (var card in searchedPunchCards)
+                @foreach (var user in topUsers)
                 {
-                    <li>@card.Type - Längd: @card.Length</li>
+                    <li><PunchCardApp.Components.Assets.UserProfileInfo /> - Klippkort: @user.PunchCardCount</li>
                 }
             </ul>
-        }
-        else if (!string.IsNullOrEmpty(searchQuery))
-        {
-            <p>Inga klippkort hittades.</p>
-        }
-    </div>
+        </div>
 
-    <div class="recent-events mt-4">
-        <h5>Sista 5 Händelser</h5>
-        <ul>
-            @foreach (var eventItem in recentEvents)
+        <div class="recent-events mt-4">
+            <h5>Sista 5 Händelser</h5>
+            <ul>
+                @foreach (var eventItem in recentEvents)
+                {
+                    <li>@eventItem</li>
+                }
+            </ul>
+        </div>
+        <div class="search-section mt-4">
+            <h5>Sök Klippkort</h5>
+            <input class="form-control mb-2" placeholder="Sök typ eller längd..." @bind="searchQuery" />
+            <button class="btn btn-primary" @onclick="SearchPunchCards">Sök</button>
+
+            @if (searchedPunchCards != null && searchedPunchCards.Any())
             {
-                <li>@eventItem</li>
+                <h6>Resultat:</h6>
+                <ul>
+                    @foreach (var card in searchedPunchCards)
+                    {
+                        <li>@card.Type - Längd: @card.Length</li>
+                    }
+                </ul>
             }
-        </ul>
-    </div>
+            else if (!string.IsNullOrEmpty(searchQuery))
+            {
+                <p>Inga klippkort hittades.</p>
+            }
+        </div>
 </div>
 
 @code {

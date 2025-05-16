@@ -3113,10 +3113,10 @@ table th {
   }
 }
 #user-analytics {
-  /*    max-width: 1200px;
+  /* max-width: 1200px;
   margin: 0 auto;
   padding: 2rem 1rem;
-  font-family: 'Segoe UI', sans-serif;*/
+  */
   max-width: none;
   padding: 1.5rem;
   box-sizing: border-box;
@@ -3169,4 +3169,9 @@ table th {
   #user-analytics .analytics-grid .analytics-card {
     flex: 1 1 100%;
   }
+}
+
+.stats-splitscreen {
+  display: flex;
+  justify-content: space-evenly;
 }
