@@ -1,13 +1,13 @@
 ﻿@*
-    Baserad på referens (2) Blazor-Simplified - (Palkar R., 2024)
- *@
+Baserad på referens (2) Blazor-Simplified - (Palkar R., 2024)
+*@
 @using System.Timers;
 @using PunchCardApp.Services
 
 @implements IDisposable
 @inject NavigationManager NavigationManager
 @inject RoleService RoleService
-@rendermode InteractiveServer﻿
+@rendermode InteractiveServer
 
 <AuthorizeView>
 	<Authorized>
@@ -131,4 +131,4 @@
 	{
 		NavigationManager.LocationChanged -= OnLocationChanged;
 	}
-} 
+}

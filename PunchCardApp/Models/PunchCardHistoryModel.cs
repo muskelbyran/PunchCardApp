@@ -9,4 +9,3 @@ public class PunchCardHistoryModel
     public int UsesLeft { get; set; }
     public List<PunchCardUseHistoryModel> UsageHistory { get; set; } = new();
 }
-

@@ -20,8 +20,8 @@ if (builder.Environment.IsDevelopment())
 }
 
 builder.Services.AddRazorComponents()
-    .AddInteractiveServerComponents()
-    .AddInteractiveWebAssemblyComponents();
+.AddInteractiveServerComponents()
+.AddInteractiveWebAssemblyComponents();
 
 builder.Services.AddHttpClient();
 builder.Services.AddHttpContextAccessor();
@@ -35,11 +35,11 @@ builder.Services.AddAuthentication(options =>
     options.DefaultScheme = IdentityConstants.ApplicationScheme;
     options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
 })
-    .AddIdentityCookies();
+.AddIdentityCookies();
 
 var secretsFilePath = builder.Environment.IsDevelopment()
-        ? "secrets.Development.json"
-        : Path.Combine(builder.Environment.ContentRootPath, "../secrets.Production.json");
+? "secrets.Development.json"
+: Path.Combine(builder.Environment.ContentRootPath, "../secrets.Production.json");
 
 if (File.Exists(secretsFilePath))
 {
@@ -51,21 +51,21 @@ else
 }
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
-    ?? builder.Configuration["DatabaseConnectionString"] // Fallback to secrets
-    ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+?? builder.Configuration["DatabaseConnectionString"] // Fallback to secrets
+?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 var serviceBusConnectionString = builder.Configuration["AzureServiceBus:ConnectionString"]
-    ?? throw new InvalidOperationException("Azure Service Bus connection string not found.");
+?? throw new InvalidOperationException("Azure Service Bus connection string not found.");
 var serviceBusQueueName = builder.Configuration["AzureServiceBus:QueueName"]
-    ?? throw new InvalidOperationException("Azure Service Bus queue name not found.");
+?? throw new InvalidOperationException("Azure Service Bus queue name not found.");
 
-// For Identity / background jobs 
+// For Identity / background jobs
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(connectionString));
+options.UseSqlServer(connectionString));
 
 // For Blazor Server components
 builder.Services.AddDbContextFactory<ApplicationDbContext>(
-    options => options.UseSqlServer(connectionString),
-    ServiceLifetime.Scoped);
+options => options.UseSqlServer(connectionString),
+ServiceLifetime.Scoped);
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
@@ -75,10 +75,10 @@ builder.Services.AddIdentityCore<ApplicationUser>(options =>
     options.User.RequireUniqueEmail = true;
     options.Password.RequiredLength = 8;
 })
-    .AddRoles<IdentityRole>()
-    .AddEntityFrameworkStores<ApplicationDbContext>()
-    .AddSignInManager()
-    .AddDefaultTokenProviders();
+.AddRoles<IdentityRole>()
+.AddEntityFrameworkStores<ApplicationDbContext>()
+.AddSignInManager()
+.AddDefaultTokenProviders();
 
 
 builder.Services.ConfigureApplicationCookie(x =>
@@ -88,7 +88,7 @@ builder.Services.ConfigureApplicationCookie(x =>
     x.AccessDeniedPath = "/Error";
     x.Cookie.HttpOnly = true;
     x.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-    x.ExpireTimeSpan = TimeSpan.FromMinutes(5); 
+    x.ExpireTimeSpan = TimeSpan.FromMinutes(5);
     x.SlidingExpiration = true;
 
     x.Events.OnValidatePrincipal = context =>
@@ -99,11 +99,11 @@ builder.Services.ConfigureApplicationCookie(x =>
             {
                 if (context.Properties.Items.TryGetValue(".rememberMe", out string? value) && value == "true")
                 {
-                    context.Properties.ExpiresUtc = DateTimeOffset.UtcNow.AddDays(14); 
+                    context.Properties.ExpiresUtc = DateTimeOffset.UtcNow.AddDays(14);
                 }
                 else
                 {
-                    context.Properties.ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(5);  
+                    context.Properties.ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(5);
                 }
             }
         }
@@ -139,7 +139,7 @@ builder.Services.AddScoped<CourseService>();
 // Logged on users
 builder.Services.AddSingleton<ICircuitUserService, CircuitUserService>();
 builder.Services.AddScoped<CircuitHandler>((sp) =>
-    new CircuitHandlerService(sp.GetRequiredService<ICircuitUserService>()));
+new CircuitHandlerService(sp.GetRequiredService<ICircuitUserService>()));
 
 // User engagement
 builder.Services.AddScoped<IUserAnalyticsService, UserAnalyticsService>();
@@ -169,7 +169,7 @@ app.UseStaticFiles();
 app.UseRouting();
 app.UseUserSessionValidation(); // Egen middleware för validering att användaren existerar
 
-app.UseAuthentication();  
+app.UseAuthentication();
 app.UseAuthorization();
 app.UseAntiforgery();
 
@@ -190,9 +190,9 @@ using (var scope = app.Services.CreateScope())
 }
 
 app.MapRazorComponents<App>()
-    .AddInteractiveServerRenderMode()
-    .AddInteractiveWebAssemblyRenderMode()
-    .AddAdditionalAssemblies(typeof(PunchCardApp.Client._Imports).Assembly);
+.AddInteractiveServerRenderMode()
+.AddInteractiveWebAssemblyRenderMode()
+.AddAdditionalAssemblies(typeof(PunchCardApp.Client._Imports).Assembly);
 
 // Add additional endpoints required by the Identity /Account Razor components.
 app.MapAdditionalIdentityEndpoints();

@@ -15,7 +15,7 @@
             <ul>
                 @foreach (var user in topUsers)
                 {
-                    <li><PunchCardApp.Components.Assets.UserProfileInfo /> - Klippkort: @user.PunchCardCount</li>
+                <li>@user.Name - Klippkort: @user.PunchCardCount</li>
                 }
             </ul>
         </div>
@@ -67,24 +67,27 @@
         totalPunches = await DbContext.PunchCardUses.CountAsync();
 
         var topUsersQuery = await DbContext.PunchCards
+            .Where(pc => pc.UserProfileId != null)
             .GroupBy(pc => pc.UserProfileId)
-            .OrderByDescending(group => group.Count())
-            .Take(5)
-            .Select(group => new
+            .Select(g => new
             {
-                UserProfileId = group.Key,
-                PunchCardCount = group.Count()
+                UserProfileId = g.Key,
+                PunchCardCount = g.Count()
             })
+            .OrderByDescending(g => g.PunchCardCount)
+            .Take(5)
             .ToListAsync();
 
         topUsers = new List<(string Name, int PunchCardCount)>();
 
         foreach (var user in topUsersQuery)
         {
-            var userName = DbContext.Users
-                .Where(u => u.Id == user.UserProfileId)
-                .Select(u => u.UserProfile != null ? u.UserProfile.FirstName + " " + u.UserProfile.LastName : "N/A")
-                .FirstOrDefault();
+            var userName = await DbContext.Users
+                .Where(u => u.UserProfileId == user.UserProfileId)
+                .Select(u => u.UserProfile != null
+                    ? u.UserProfile.FirstName + " " + u.UserProfile.LastName
+                    : "N/A")
+                .FirstOrDefaultAsync();
 
             topUsers.Add((Name: userName ?? "N/A", PunchCardCount: user.PunchCardCount));
         }

@@ -26,8 +26,8 @@ public class CourseRepository(ApplicationDbContext context)
     public async Task<CourseEntity?> GetCourseByIdAsync(int id)
     {
         return await _context.Courses
-            .Include(c => c.Registrations)
-            .FirstOrDefaultAsync(c => c.Id == id);
+        .Include(c => c.Registrations)
+        .FirstOrDefaultAsync(c => c.Id == id);
     }
 
 

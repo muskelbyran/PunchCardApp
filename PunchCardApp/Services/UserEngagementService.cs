@@ -13,7 +13,7 @@ public class UserEngagementService(IDbContextFactory<ApplicationDbContext> dbCon
         using var context = _dbContextFactory.CreateDbContext();
 
         var isFirstLogin = !await context.UserEngagementLogs
-            .AnyAsync(l => l.UserId == userId && l.Type == EngagementType.Login);
+        .AnyAsync(l => l.UserId == userId && l.Type == EngagementType.Login);
 
         context.UserEngagementLogs.Add(new UserEngagementLog
         {
@@ -56,3 +56,4 @@ public class UserEngagementService(IDbContextFactory<ApplicationDbContext> dbCon
         await context.SaveChangesAsync();
     }
 }
+

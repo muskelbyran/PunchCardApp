@@ -2,33 +2,33 @@
 using PunchCardApp.Data;
 using PunchCardApp.Entities;
 
-public class PunchCardRepository(ApplicationDbContext context)
+public class PunchCardRepository(ApplicationDbContext context) : IPunchCardRepository
 {
     private readonly ApplicationDbContext _context = context;
 
     public async Task<List<PunchCardEntity>> GetPunchCardsByUserProfileIdAsync(string userProfileId)
     {
         var punchCards = await _context.PunchCards
-                               .Where(pc => pc.UserProfileId == userProfileId)
-                               .Include(pc => pc.PunchCardUses)
-                               .ToListAsync();
+        .Where(pc => pc.UserProfileId == userProfileId)
+        .Include(pc => pc.PunchCardUses)
+        .ToListAsync();
 
         Console.WriteLine($"Fetched {punchCards.Count} punch cards for UserProfileId: {userProfileId}");
 
         foreach (var pc in punchCards)
         {
-             Console.WriteLine($"PunchCard {pc.Id}: Type={pc.Type}, TotalUses={pc.TotalUses}, UsesLeft={pc.UsesLeft}");
-             Console.WriteLine($"Usage count: {pc.PunchCardUses.Count}");
+            Console.WriteLine($"PunchCard {pc.Id}: Type={pc.Type}, TotalUses={pc.TotalUses}, UsesLeft={pc.UsesLeft}");
+            Console.WriteLine($"Usage count: {pc.PunchCardUses.Count}");
         }
 
         return punchCards;
     }
-   
+
     public async Task<PunchCardEntity?> GetPunchCardByIdAsync(int punchCardId)
     {
         return await _context.PunchCards
-            .Include(pc => pc.PunchCardUses)
-            .FirstOrDefaultAsync(pc => pc.Id == punchCardId);
+        .Include(pc => pc.PunchCardUses)
+        .FirstOrDefaultAsync(pc => pc.Id == punchCardId);
     }
 
     public async Task AddPunchCardAsync(PunchCardEntity punchCard)
@@ -54,16 +54,16 @@ public class PunchCardRepository(ApplicationDbContext context)
     }
 
     public async Task<string> GetUserFullNameByIdAsync(Guid userId)
-    {  
+    {
         var userProfile = await _context.UserProfiles
-            .Where(up => up.Id == userId.ToString()) 
-            .FirstOrDefaultAsync();
+        .Where(up => up.Id == userId.ToString())
+        .FirstOrDefaultAsync();
 
         if (userProfile == null)
         {
             throw new InvalidOperationException("User profile not found.");
         }
-        
+
         return $"{userProfile.FirstName} {userProfile.LastName}";
     }
 }

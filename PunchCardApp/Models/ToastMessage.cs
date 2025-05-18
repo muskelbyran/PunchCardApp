@@ -1,7 +1,7 @@
 ﻿namespace PunchCardApp.Models;
 
 public class ToastMessage : IEquatable<ToastMessage>
-{   
+{
     public ToastMessage()
     {
         Id = Guid.NewGuid();

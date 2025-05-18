@@ -1,12 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PunchCardApp.Data;
 using PunchCardApp.Factories;
+using PunchCardApp.Interfaces;
 using PunchCardApp.Models;
 using System.Linq.Expressions;
 
 namespace PunchCardApp.Repositories;
 
-public abstract class BaseRepository<TEntity>(ApplicationDbContext context) where TEntity : class
+public abstract class BaseRepository<TEntity>(ApplicationDbContext context) : IBaseRepository<TEntity> where TEntity : class
 {
     private readonly ApplicationDbContext _context = context;
 

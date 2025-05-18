@@ -14,11 +14,11 @@ public class UserAnalyticsService(IDbContextFactory<ApplicationDbContext> contex
 
         var today = DateTime.UtcNow.Date;
         return await context.UserEngagementLogs
-            .AsNoTracking()
-            .Where(l => l.Type == EngagementType.Login && l.Timestamp.Date == today)
-            .Select(l => l.UserId)
-            .Distinct()
-            .CountAsync();
+        .AsNoTracking()
+        .Where(l => l.Type == EngagementType.Login && l.Timestamp.Date == today)
+        .Select(l => l.UserId)
+        .Distinct()
+        .CountAsync();
     }
 
     public async Task<int> GetMonthlyActiveUsersAsync()
@@ -29,26 +29,26 @@ public class UserAnalyticsService(IDbContextFactory<ApplicationDbContext> contex
         var endOfMonth = startOfMonth.AddMonths(1);
 
         var activeUsers = await context.UserEngagementLogs
-            .AsNoTracking()
-            .Where(log => log.Timestamp >= startOfMonth && log.Timestamp < endOfMonth)
-            .Select(log => log.UserId)
-            .Distinct()
-            .ToListAsync();
+        .AsNoTracking()
+        .Where(log => log.Timestamp >= startOfMonth && log.Timestamp < endOfMonth)
+        .Select(log => log.UserId)
+        .Distinct()
+        .ToListAsync();
 
         return activeUsers.Count;
     }
 
     //public async Task<int> GetNewUsersThisMonthAsync()
     //{
-    //    await using var context = await _contextFactory.CreateDbContextAsync();
+    // await using var context = await _contextFactory.CreateDbContextAsync();
 
-    //    var startDate = DateTime.UtcNow.Date.AddDays(-30);
-    //    return await context.UserEngagementLogs
-    //        .AsNoTracking()
-    //        .Where(l => l.Type == EngagementType.Login && l.Timestamp >= startDate && l.IsFirstLogin)
-    //        .Select(l => l.UserId)
-    //        .Distinct()
-    //        .CountAsync();
+    // var startDate = DateTime.UtcNow.Date.AddDays(-30);
+    // return await context.UserEngagementLogs
+    // .AsNoTracking()
+    // .Where(l => l.Type == EngagementType.Login && l.Timestamp >= startDate && l.IsFirstLogin)
+    // .Select(l => l.UserId)
+    // .Distinct()
+    // .CountAsync();
     //}
 
     public async Task<int> GetNewUsersThisMonthAsync()
@@ -59,14 +59,14 @@ public class UserAnalyticsService(IDbContextFactory<ApplicationDbContext> contex
         var startOfNextMonth = startOfMonth.AddMonths(1);
 
         return await context.UserEngagementLogs
-            .AsNoTracking()
-            .Where(l => l.Type == EngagementType.Login
-                && l.IsFirstLogin
-                && l.Timestamp >= startOfMonth
-                && l.Timestamp < startOfNextMonth)
-            .Select(l => l.UserId)
-            .Distinct()
-            .CountAsync();
+        .AsNoTracking()
+        .Where(l => l.Type == EngagementType.Login
+        && l.IsFirstLogin
+        && l.Timestamp >= startOfMonth
+        && l.Timestamp < startOfNextMonth)
+        .Select(l => l.UserId)
+        .Distinct()
+        .CountAsync();
     }
 
     public async Task<List<string>> GetChurnedUsersAsync()
@@ -77,19 +77,20 @@ public class UserAnalyticsService(IDbContextFactory<ApplicationDbContext> contex
         var thisMonth = DateTime.UtcNow.Date.AddDays(-30);
 
         var lastMonthUsers = await context.UserEngagementLogs
-            .AsNoTracking()
-            .Where(l => l.Type == EngagementType.Login && l.Timestamp >= lastMonth && l.Timestamp < thisMonth)
-            .Select(l => l.UserId)
-            .Distinct()
-            .ToListAsync();
+        .AsNoTracking()
+        .Where(l => l.Type == EngagementType.Login && l.Timestamp >= lastMonth && l.Timestamp < thisMonth)
+        .Select(l => l.UserId)
+        .Distinct()
+        .ToListAsync();
 
         var thisMonthUsers = await context.UserEngagementLogs
-            .AsNoTracking()
-            .Where(l => l.Type == EngagementType.Login && l.Timestamp >= thisMonth)
-            .Select(l => l.UserId)
-            .Distinct()
-            .ToListAsync();
+        .AsNoTracking()
+        .Where(l => l.Type == EngagementType.Login && l.Timestamp >= thisMonth)
+        .Select(l => l.UserId)
+        .Distinct()
+        .ToListAsync();
 
         return lastMonthUsers.Except(thisMonthUsers).ToList();
     }
 }
+

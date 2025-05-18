@@ -2,16 +2,10 @@
 using PunchCardApp.Models;
 using PunchCardApp.Repositories;
 
-public class CourseService
+public class CourseService(CourseRepository courseRepository, ILogger<CourseService> logger)
 {
-    private readonly CourseRepository _courseRepository;
-    private readonly ILogger<CourseService> _logger;
-
-    public CourseService(CourseRepository courseRepository, ILogger<CourseService> logger)
-    {
-        _courseRepository = courseRepository;
-        _logger = logger;
-    }
+    private readonly CourseRepository _courseRepository = courseRepository;
+    private readonly ILogger<CourseService> _logger = logger;
 
     public async Task CreateCourseAsync(CreateCourseModel model)
     {
@@ -96,7 +90,6 @@ public class CourseService
         return allCourses.FirstOrDefault(c => c.ImageUrl != null && c.ImageUrl.Contains(imageFileName));
     }
 
-
     public async Task<List<CourseEntity>> GetAllCoursesAsync()
     {
         return await _courseRepository.GetAllCoursesAsync();
@@ -107,9 +100,9 @@ public class CourseService
         // Hämta alla bilder som är länkade till kurser
         var allCourses = await _courseRepository.GetAllCoursesAsync();
         var usedImages = allCourses
-            .Where(course => !string.IsNullOrEmpty(course.ImageUrl))
-            .Select(course => course.ImageUrl)
-            .ToList();
+        .Where(course => !string.IsNullOrEmpty(course.ImageUrl))
+        .Select(course => course.ImageUrl)
+        .ToList();
 
         var imagesFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "courses");
 
@@ -148,6 +141,4 @@ public class CourseService
             throw;
         }
     }
-
-
 }

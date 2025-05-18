@@ -1,7 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
-using PunchCardApp.Entities;
+﻿using PunchCardApp.Entities;
 using PunchCardApp.Models;
-using System.ComponentModel.DataAnnotations;
 
 public class PunchCardService(PunchCardRepository repository)
 {
@@ -34,12 +32,12 @@ public class PunchCardService(PunchCardRepository repository)
             TotalUses = pc.TotalUses,
             UsesLeft = pc.UsesLeft,
             UsageHistory = pc.PunchCardUses
-                .Select(use => new PunchCardUseHistoryModel
-                {
-                    UsedDate = use.UsedDate,
-                    UsedBy = use.UsedBy 
-                })
-                .ToList()
+        .Select(use => new PunchCardUseHistoryModel
+        {
+            UsedDate = use.UsedDate,
+            UsedBy = use.UsedBy
+        })
+        .ToList()
         }).ToList();
     }
 
@@ -61,7 +59,7 @@ public class PunchCardService(PunchCardRepository repository)
         });
 
         await _repository.UpdatePunchCardAsync(punchCard);
-    }  
+    }
 
     public async Task DeletePunchCardAsync(int punchCardId)
     {

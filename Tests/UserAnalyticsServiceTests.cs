@@ -15,24 +15,24 @@ public class UserAnalyticsServiceTests
     {
         // Arrange
         var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-            .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString()) // unik för varje test
-            .Options;
+        .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString()) // unik för varje test
+        .Options;
 
         var context = new ApplicationDbContext(options);
 
         var today = DateTime.UtcNow.Date;
 
         context.UserEngagementLogs.AddRange(
-            new UserEngagementLog { UserId = "user1", Type = EngagementType.Login, Timestamp = today },
-            new UserEngagementLog { UserId = "user2", Type = EngagementType.Login, Timestamp = today },
-            new UserEngagementLog { UserId = "user1", Type = EngagementType.Login, Timestamp = today } // Kopia
+        new UserEngagementLog { UserId = "user1", Type = EngagementType.Login, Timestamp = today },
+        new UserEngagementLog { UserId = "user2", Type = EngagementType.Login, Timestamp = today },
+        new UserEngagementLog { UserId = "user1", Type = EngagementType.Login, Timestamp = today } // Kopia
         );
 
         await context.SaveChangesAsync();
 
         var mockFactory = new Mock<IDbContextFactory<ApplicationDbContext>>();
         mockFactory.Setup(f => f.CreateDbContextAsync(It.IsAny<CancellationToken>()))
-                   .ReturnsAsync(context);
+        .ReturnsAsync(context);
 
         var service = new UserAnalyticsService(mockFactory.Object);
 
@@ -48,8 +48,8 @@ public class UserAnalyticsServiceTests
     {
         // Arrange
         var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-            .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
-            .Options;
+        .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+        .Options;
 
         var context = new ApplicationDbContext(options);
 
@@ -65,7 +65,7 @@ public class UserAnalyticsServiceTests
 
         var mockFactory = new Mock<IDbContextFactory<ApplicationDbContext>>();
         mockFactory.Setup(f => f.CreateDbContextAsync(It.IsAny<CancellationToken>()))
-                   .ReturnsAsync(context);
+        .ReturnsAsync(context);
 
         var service = new UserAnalyticsService(mockFactory.Object);
 
@@ -81,34 +81,34 @@ public class UserAnalyticsServiceTests
     {
         // Arrange
         var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-            .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
-            .Options;
+        .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+        .Options;
 
         var context = new ApplicationDbContext(options);
 
         context.UserEngagementLogs.AddRange(new[]
         {
-        new UserEngagementLog
-        {
-            UserId = "user1",
-            Type = EngagementType.Login,
-            Timestamp = DateTime.UtcNow.Date.AddDays(-1),
-            IsFirstLogin = false
-        },
-        new UserEngagementLog
-        {
+            new UserEngagementLog
+            {
+                UserId = "user1",
+                Type = EngagementType.Login,
+                Timestamp = DateTime.UtcNow.Date.AddDays(-1),
+                IsFirstLogin = false
+            },
+            new UserEngagementLog
+            {
             UserId = "user2",
             Type = EngagementType.Login,
             Timestamp = DateTime.UtcNow.Date.AddDays(-2),
             IsFirstLogin = false
-        }
-    });
+            }
+        });
 
         await context.SaveChangesAsync();
 
         var mockFactory = new Mock<IDbContextFactory<ApplicationDbContext>>();
         mockFactory.Setup(f => f.CreateDbContextAsync(It.IsAny<CancellationToken>()))
-                   .ReturnsAsync(context);
+        .ReturnsAsync(context);
 
         var service = new UserAnalyticsService(mockFactory.Object);
 

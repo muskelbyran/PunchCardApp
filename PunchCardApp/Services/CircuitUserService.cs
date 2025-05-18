@@ -36,9 +36,10 @@ public class CircuitUserService : ICircuitUserService
         CircuitUserModel circuitremoved;
         Circuits.TryRemove(CircuitId, out circuitremoved);
 
-        if(circuitremoved != null)
+        if (circuitremoved != null)
         {
             OnCircuitsChanged();
         }
     }
 }
+

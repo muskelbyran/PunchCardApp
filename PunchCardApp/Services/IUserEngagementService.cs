@@ -1,11 +1,10 @@
 ﻿using PunchCardApp.Models;
 
-namespace PunchCardApp.Services
+namespace PunchCardApp.Services;
+
+public interface IUserEngagementService
 {
-    public interface IUserEngagementService
-    {
-        Task LogEventAsync(string userId, EngagementType type, string? metadata = null);
-        Task LogLoginAsync(string userId);
-        Task LogPageViewAsync(string userId, string pageName);
-    }
+    Task LogEventAsync(string userId, EngagementType type, string? metadata = null);
+    Task LogLoginAsync(string userId);
+    Task LogPageViewAsync(string userId, string pageName);
 }

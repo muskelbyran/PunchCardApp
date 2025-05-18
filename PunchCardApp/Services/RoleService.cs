@@ -18,7 +18,7 @@ public class RoleService(AuthenticationStateProvider authenticationStateProvider
     /// Async check if the current user is authenticated and has the "Manager" role.
     /// </summary>
     /// <returns>
-    /// The task result returns a bool whether the current user is authenticated and 
+    /// The task result returns a bool whether the current user is authenticated and
     /// has the "Manager" role.
     /// </returns>
     public async Task<bool> IsManagerAsync()
