@@ -50,15 +50,40 @@
                 h4 {
                     margin-bottom: 0.5rem;
                 }
-
-                .punch-hearts {
+                /*                .punch-hearts {
                     margin: 10px 0;
                     font-size: 1.2rem;
 
                     i {
                         margin-right: 4px;
                     }
+                }*/
+
+                .punch-hearts {
+                    display: flex;
+                    gap: 4px;
+                    align-items: center;
+
+                    .circle-number {
+                        display: inline-flex;
+                        justify-content: center;
+                        align-items: center;
+                        width: 24px;
+                        height: 24px;
+                        border-radius: 50%;
+                        background-color: var(--color-primary);
+                        color: white;
+                        font-size: 0.85rem;
+                        font-weight: bold;
+                    }
+
+                    i {
+                        margin-right: 2px;
+                    }
                 }
+
+
+
 
                 .punch-button {
                     margin-top: 1rem;

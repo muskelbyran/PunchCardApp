@@ -31,13 +31,43 @@
                     <div class="punch-card">
                         <h4>@card.Type</h4>
 
-                        <div class="punch-hearts">
+@*                         <div class="punch-hearts">
                             @for (int i = 0; i < card.TotalUses; i++)
                             {
                                 <i class="fa-solid fa-face-smile"
                                 style="color: @(i < card.TotalUses - card.UsesLeft ? "var(--color-primary)" : "var(--color-background)"); margin-right: 4px;"></i>
                             }
+                        </div> *@
+
+                        @* <div class="punch-hearts">
+                            @for (int i = 0; i < card.TotalUses; i++)
+                            {
+                                if (i < card.TotalUses - card.UsesLeft)
+                                {
+                                    <i class="fa-solid fa-star used-icon"></i>
+                                }
+                                else
+                                {
+                                    int remainingNumber = card.TotalUses - i;
+                                    <span class="circle-number">@remainingNumber</span>
+                                }
+                            }
+                        </div> *@
+
+                        <div class="punch-hearts">
+                            @for (int i = 0; i < card.TotalUses; i++)
+                            {
+                                if (i < card.TotalUses - card.UsesLeft)
+                                {
+                                    <i class="fa-solid fa-star" style="color: var(--color-primary); font-size: 1.2rem;"></i>
+                                }
+                                else
+                                {
+                                    <span class="circle-number">@(card.TotalUses - i)</span>
+                                }
+                            }
                         </div>
+
 
                         <div class="punch-button">
                             <PunchButton PunchCardId="@card.Id"

@@ -1804,16 +1804,37 @@ $color-background: var(--color-background);*/
   justify-content: center;
   align-content: center;
   align-items: center;
+  /*                .punch-hearts {
+      margin: 10px 0;
+      font-size: 1.2rem;
+
+      i {
+          margin-right: 4px;
+      }
+  }*/
 }
 .main-content-container .main-section .punchcard-grid .punch-card h4 {
   margin-bottom: 0.5rem;
 }
 .main-content-container .main-section .punchcard-grid .punch-card .punch-hearts {
-  margin: 10px 0;
-  font-size: 1.2rem;
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+.main-content-container .main-section .punchcard-grid .punch-card .punch-hearts .circle-number {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: var(--color-primary);
+  color: white;
+  font-size: 0.85rem;
+  font-weight: bold;
 }
 .main-content-container .main-section .punchcard-grid .punch-card .punch-hearts i {
-  margin-right: 4px;
+  margin-right: 2px;
 }
 .main-content-container .main-section .punchcard-grid .punch-card .punch-button {
   margin-top: 1rem;
