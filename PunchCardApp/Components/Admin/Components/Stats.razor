@@ -4,14 +4,18 @@
 
 <UserAnalytics />
 <div class="stats-splitscreen">
-        <p>Antal registrerade användare: @userCount</p>
+        
 
-        <div class="punchcard-stats">
+    <div class="stats-grid">
+        <div class="stats-card">
+            <p>Antal registrerade användare: @userCount</p>
+            <br />
             <h5>Översikt av Klippkort</h5>
             <p>Totalt antal klippkort: @totalPunchCards</p>
             <p>Total antal användningar: @totalPunches</p>
-
-            <h6>Top 5 användare med flest klippkort:</h6>
+            </div>
+        <div class="stats-card">
+            <h5>Top 5 användare med flest klippkort:</h5>
             <ul>
                 @foreach (var user in topUsers)
                 {
@@ -20,7 +24,7 @@
             </ul>
         </div>
 
-        <div class="recent-events mt-4">
+        <div class="stats-card">
             <h5>Sista 5 Händelser</h5>
             <ul>
                 @foreach (var eventItem in recentEvents)
@@ -29,7 +33,7 @@
                 }
             </ul>
         </div>
-        <div class="search-section mt-4">
+        <div class="stats-card">
             <h5>Sök Klippkort</h5>
             <input class="form-control mb-2" placeholder="Sök typ eller längd..." @bind="searchQuery" />
             <button class="btn btn-primary" @onclick="SearchPunchCards">Sök</button>
@@ -48,6 +52,7 @@
             {
                 <p>Inga klippkort hittades.</p>
             }
+        </div>
         </div>
 </div>
 
@@ -95,7 +100,7 @@
         recentEvents = await DbContext.PunchCardUses
             .OrderByDescending(pc => pc.UsedDate)
             .Take(5)
-            .Select(pc => $"Klippkort användes av {pc.UsedBy} den {pc.UsedDate.ToShortDateString()}")
+            .Select(pc => $"Klippt av {pc.UsedBy} den {pc.UsedDate.ToShortDateString()}")
             .ToListAsync();
     }
 

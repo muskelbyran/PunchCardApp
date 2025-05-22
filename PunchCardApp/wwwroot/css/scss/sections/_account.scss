@@ -61,7 +61,7 @@
 
                 .punch-hearts {
                     display: flex;
-                    gap: 4px;
+                    gap: 3.5px;
                     align-items: center;
 
                     .circle-number {
@@ -397,6 +397,7 @@ display: none;
     justify-content: left;
     gap: 1rem;
     overflow: hidden;
+    margin-bottom: 3rem;
 
     .course-card {
         width: 300px;

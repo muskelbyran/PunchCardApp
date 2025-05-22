@@ -8,6 +8,8 @@ using PunchCardApp.Data;
 using PunchCardApp.Models;
 using PunchCardApp.Services;
 
+namespace Tests;
+
 public class UserAnalyticsServiceTests
 {
     [Fact]
@@ -88,21 +90,21 @@ public class UserAnalyticsServiceTests
 
         context.UserEngagementLogs.AddRange(new[]
         {
-            new UserEngagementLog
-            {
-                UserId = "user1",
-                Type = EngagementType.Login,
-                Timestamp = DateTime.UtcNow.Date.AddDays(-1),
-                IsFirstLogin = false
-            },
-            new UserEngagementLog
-            {
-            UserId = "user2",
+        new UserEngagementLog
+        {
+            UserId = "user1",
             Type = EngagementType.Login,
-            Timestamp = DateTime.UtcNow.Date.AddDays(-2),
+            Timestamp = DateTime.UtcNow.Date.AddDays(-1),
             IsFirstLogin = false
-            }
-        });
+        },
+        new UserEngagementLog
+        {
+        UserId = "user2",
+        Type = EngagementType.Login,
+        Timestamp = DateTime.UtcNow.Date.AddDays(-2),
+        IsFirstLogin = false
+        }
+    });
 
         await context.SaveChangesAsync();
 

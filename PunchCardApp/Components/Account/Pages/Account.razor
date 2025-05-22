@@ -23,11 +23,14 @@
         </div>
         <h3>Välkommen <UserProfileInfo /></h3>
         <h5>Klippkort</h5>
+
         @if (UserPunchCards != null && UserPunchCards.Any())
         {
             <div class="punchcard-grid">
                 @foreach (var card in UserPunchCards)
                 {
+                    if (card.TotalUses > 0 && card.UsesLeft > 0)
+                    {
                     <div class="punch-card">
                         <h4>@card.Type</h4>
 
@@ -54,20 +57,22 @@
                             }
                         </div> *@
 
-                        <div class="punch-hearts">
-                            @for (int i = 0; i < card.TotalUses; i++)
-                            {
-                                if (i < card.TotalUses - card.UsesLeft)
+                        @if (card.TotalUses > 0)
+                        {
+                            <div class="punch-hearts">
+                                @for (int i = 0; i < card.TotalUses; i++)
                                 {
-                                    <i class="fa-solid fa-star" style="color: var(--color-primary); font-size: 1.2rem;"></i>
+                                    if (i < card.TotalUses - card.UsesLeft)
+                                    {
+                                        <i class="fa-solid fa-star" style="color: var(--color-primary); font-size: 1.2rem;"></i>
+                                    }
+                                    else
+                                    {
+                                        <span class="circle-number">@(card.TotalUses - i)</span>
+                                    }
                                 }
-                                else
-                                {
-                                    <span class="circle-number">@(card.TotalUses - i)</span>
-                                }
-                            }
-                        </div>
-
+                            </div>
+                        }                        
 
                         <div class="punch-button">
                             <PunchButton PunchCardId="@card.Id"
@@ -76,6 +81,7 @@
                             OnPunchUsed="LoadUserPunchCardsAsync" />                            
                         </div>
                     </div>
+                    }
                 }
             </div>
         }
@@ -100,6 +106,9 @@
             {
                 <CourseCard Course="course" />
             }
+        </div>
+        <div class="order-button">
+            <button class="btn btn-primary" @onclick="OrderPunchCard">Kursanmälan</button>
         </div>
     }
 

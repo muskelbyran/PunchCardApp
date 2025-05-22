@@ -119,8 +119,6 @@
         }
     }
 
-
-
     private async Task UsePunchCardAsync(int punchCardId)
     {
         var confirmed = await confirmDialog!.ShowAsync(
@@ -239,8 +237,8 @@
                         <td>@card.PurchasedDate.ToShortDateString()</td>
                         <td>@card.UsesLeft</td>
                         <td>
-                            <button @onclick="() => UsePunchCardAsync(card.Id)">Färdigknådad!</button>
-                            <button @onclick="() => DeletePunchCardAsync(card.Id)">Radera</button>
+                            <button class="btn btn-primary" @onclick="() => UsePunchCardAsync(card.Id)">Färdigknådad!</button>
+                            <button class="btn btn-danger" @onclick="() => DeletePunchCardAsync(card.Id)">Radera</button>
                         </td>
                     </tr>
                 }

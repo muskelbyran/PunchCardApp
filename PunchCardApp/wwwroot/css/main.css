@@ -1818,7 +1818,7 @@ $color-background: var(--color-background);*/
 }
 .main-content-container .main-section .punchcard-grid .punch-card .punch-hearts {
   display: flex;
-  gap: 4px;
+  gap: 3.5px;
   align-items: center;
 }
 .main-content-container .main-section .punchcard-grid .punch-card .punch-hearts .circle-number {
@@ -2103,6 +2103,7 @@ display: none;
   justify-content: left;
   gap: 1rem;
   overflow: hidden;
+  margin-bottom: 3rem;
 }
 .course-grid .course-card {
   width: 300px;
@@ -2768,6 +2769,10 @@ input.form-control {
   border-color: #666;
 }
 
+.current-view .form-control {
+  margin-bottom: 1rem;
+}
+
 .tabs {
   display: flex;
   gap: 1rem;
@@ -2941,7 +2946,9 @@ table th {
   }*/
 }
 .feedback-content .feedback-toast {
+  height: 80px;
   margin-top: 5rem;
+  margin-bottom: 0.5rem;
   display: flex;
   justify-content: center;
 }
@@ -2955,8 +2962,8 @@ table th {
   font-size: 14px;
   padding: 10px;
   border-radius: 6px;
-  background-color: #e8f4ff;
-  color: #007bff;
+  background-color: #bf6515;
+  color: #000;
 }
 .feedback-content .contact-splitscreen {
   display: flex;
@@ -3271,6 +3278,30 @@ table th {
 }
 
 .stats-splitscreen {
+  max-width: none;
+  padding: 1.5rem;
+  box-sizing: border-box;
+}
+.stats-splitscreen .stats-grid {
   display: flex;
-  justify-content: space-evenly;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 20px;
+  width: 100%;
+  box-sizing: border-box;
+}
+.stats-splitscreen .stats-grid .stats-card {
+  flex: 1 1 22%;
+  min-width: 200px;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #f8f9fa;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  box-sizing: border-box;
+  transition: transform 0.2s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
 }
